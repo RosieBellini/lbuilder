@@ -1,6 +1,23 @@
+/**
+ * Represents the various objects in a Sokoban level. Note that the PLAYER,
+ * PLAYER_ON_GOAL and BOX_ON_GOAL objects can be thought of as "meta-objects".
+ * They aren't actually stored in this form when placed in a level; the
+ * PLAYER_ON_GOAL and BOX_ON_GOAL objects represent that a given coordinate has
+ * a GOAL object in the array of static objects and either a PLAYER or BOX in
+ * the current SaveState, and likewise for the PLAYER object with a SPACE and
+ * the worker's position. For example, placing a BOX_ON_GOAL object will add a
+ * BOX object to the current savestate and a GOAL to the static object array.
+ *
+ */
+
 public enum SokobanObject {
     SPACE, WALL, GOAL, BOX, BOX_ON_GOAL, PLAYER, PLAYER_ON_GOAL;
 
+    /**
+     * Converts a SokobanObject to a String
+     *
+     * @return  string representation of this SokobanObject
+     */
     public String toString() {
         switch(this) {
             case SPACE:             return " ";
@@ -14,6 +31,12 @@ public enum SokobanObject {
         }
     }
 
+    /**
+     * Converts a char to a SokobanObject
+     *
+     * @param ch    the character to be converted
+     * @return      the resulting SokobanObject
+     */
     public static SokobanObject charToSokobanObject(char ch) {
         SokobanObject object = null;
         switch(ch) {

@@ -1,5 +1,10 @@
 import java.util.Stack;
 
+/**
+ * A simple wrapper class to make a Stack of fixed size. If the FixedSizeStack
+ * exceeds the given size, the oldest contents are discarded. Keeps track of
+ * how long the FixedSizeStack *would* be if items weren't discarded.
+ */
 @SuppressWarnings("serial")
 public class FixedSizeStack<T> extends Stack<T> {
     private int size;

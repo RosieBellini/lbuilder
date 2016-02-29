@@ -1,5 +1,8 @@
 import java.util.*;
 
+/**
+ * Represents the positions of dynamic objects (the player and boxes)
+ */
 public final class SaveState {
     private final Coordinate wPos;
     private final Set<Coordinate> boxPositions;

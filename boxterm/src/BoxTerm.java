@@ -5,6 +5,14 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/** Box Terminator main method. This class handles importing the level, drawing
+ * the game screen and interpreting key presses.
+ *
+ * TODO:    -Fix freeze when clicking on the level
+ *          -Draw the level with something more appropriate - JavaFX or Graphics
+ *          2d?
+ */
+
 @SuppressWarnings("serial")
 public class BoxTerm extends JPanel {
     private static SokobanMap map;
@@ -12,6 +20,10 @@ public class BoxTerm extends JPanel {
     private static int ySize;
     private static JTextArea textArea;
 
+    /**
+     * A constructor to initialise the key listener which allows methods to be
+     * run when key presses are detected
+     */
     public BoxTerm() {
         addKeyListener(new KeyListener() {
             @Override
@@ -30,10 +42,17 @@ public class BoxTerm extends JPanel {
         setFocusable(true);
     }
 
-
+    /**
+     * Interprets the contents of the "level" file and stores it as a SokobanMap
+     */
     private static void importLevel() {
         int x = 0;
         int y = 0;
+
+        /*
+         * First, get the raw data as an array of strings and use this to
+         * determine the size of the level
+         */
         ArrayList<String> levelLines = new ArrayList<String>();
         try {
             Scanner level = new Scanner(new FileReader("src/level"));
@@ -45,6 +64,11 @@ public class BoxTerm extends JPanel {
                 levelLines.add(line);
             }
             ySize = levelLines.size();
+
+            /*
+             * Then convert the raw data into a SokobanMap using the static
+             * method charToSokobanObject from the SokobanObject class
+             */
             map = new SokobanMap(xSize, ySize);
             for (String line: levelLines) {
                 for (char ch: line.toCharArray()) {
@@ -62,6 +86,14 @@ public class BoxTerm extends JPanel {
         }
     }
 
+    /**
+     * Runs player movement methods when keypresses are detected, then checks
+     * to see if the level has been completed. If it has, displays "YOU WON!",
+     * else redraws the level.
+     *
+     * TODO:    Only check if win conditions have been met when a box is placed
+     *          on a goal rather than every time the player moves
+     */
     private static void moveWorker(KeyEvent e) {
         switch(e.getKeyCode()) {
             case KeyEvent.VK_W:     map.move(new Coordinate(0, -1));
@@ -85,6 +117,9 @@ public class BoxTerm extends JPanel {
         }
     }
 
+    /**
+     * Updates the contents of the game window
+     */
     public static void redraw() {
         textArea.setText(map.toString());
         textArea.append(Integer.toString(map.totalHistoryLength() - 1));

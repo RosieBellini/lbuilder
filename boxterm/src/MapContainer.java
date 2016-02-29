@@ -1,16 +1,29 @@
 import java.util.*;
 
+/**
+ * Represents a Sokoban level. "Static" objects (spaces, walls, goals) are
+ * represented in an array of SokobanObjects whereas "dynamic" objects (boxes
+ * and the player) are represented in a FixedSizeStack of SaveState objects.
+ * This separation reduces the amount of information we need to store for the
+ * undo command and solver.
+ *
+ * TODO: make the array of static objects immutable
+ */
 public class MapContainer {
     private FixedSizeStack<SaveState> history;
     private Stack<SaveState> redoStack;
     private SokobanObject[][] map;
+    private final int MAXUNDOS = 20;
 
+    /**
+     * Initialises a MapContainer of the given size filled with spaces
+     */
     public MapContainer(int xSize, int ySize) {
         map = new SokobanObject[ySize][xSize];
         for (SokobanObject[] row : map) {
             Arrays.fill(row, SokobanObject.SPACE);
         }
-        history = new FixedSizeStack<SaveState>(20);
+        history = new FixedSizeStack<SaveState>(MAXUNDOS);
         history.push(new SaveState(new Coordinate(-1, -1), new HashSet<Coordinate>()));
         redoStack = new Stack<SaveState>();
     }
@@ -27,6 +40,15 @@ public class MapContainer {
         history.push(new SaveState(getWPos(), getBoxPositions()));
     }
 
+    /**
+     * Pops a SaveState out of the history stack. If the stack is then empty,
+     * the SaveState is put back in place as we require that there is always one
+     * state to represent the positions of dynamic objects.
+     *
+     * @param sendToRedoStack   whether or not to place the popped SaveState
+     *                          into the redo stack e.g. when the user inputs a
+     *                          command
+     */
     public void undo(boolean sendToRedoStack) {
         SaveState state = history.pop();
         if (historyLength() == 0) {
@@ -36,6 +58,9 @@ public class MapContainer {
         }
     }
 
+    /**
+     * Puts an undone state back
+     */
     public void redo() {
         if (redoStack.size() != 0) {
             history.push(redoStack.pop());
@@ -54,6 +79,12 @@ public class MapContainer {
         return history.getTotalSize();
     }
 
+    /**
+     * Checks the positions of all boxes to see if they've been placed on a
+     * goal
+     *
+     * @return  true if all boxes are on a goal, false otherwise
+     */
     public boolean isDone() {
         for (Coordinate coord : getBoxPositions()) {
             if (get(coord) != SokobanObject.BOX_ON_GOAL) {
@@ -63,6 +94,11 @@ public class MapContainer {
         return true;
     }
 
+    /**
+     * Get the position of the worker
+     *
+     * @return  coordinates of the worker
+     */
     public Coordinate getWPos() {
         return history.peek().getWPos();
     }
@@ -71,12 +107,22 @@ public class MapContainer {
         return history.peek().getBoxPositions();
     }
 
+    /**
+     * Put a SokobanObject in the given position. See SokobanObject
+     * documentation for an explanation of how objects are stored. Respects the
+     * rules of the game e.g. can't place a PLAYER on top of a WALL.
+     *
+     * @param object    the object to be stored
+     * @param coord     the coordinate at which to place it
+     * @return          true if successful, false otherwise
+     */
     public boolean put(SokobanObject object, Coordinate coord) {
         Set<Coordinate> boxPositions = getBoxPositions();
         Coordinate wPos = getWPos();
         SokobanObject target = get(coord);
         int x = coord.getX();
         int y = coord.getY();
+
         if (object == SokobanObject.PLAYER || object == SokobanObject.PLAYER_ON_GOAL) {
             switch(target) {
                 case SPACE:
@@ -87,6 +133,7 @@ public class MapContainer {
             if (object == SokobanObject.PLAYER_ON_GOAL) {
                 map[y][x] = SokobanObject.GOAL;
             }
+
         } else if (object == SokobanObject.BOX || object == SokobanObject.BOX_ON_GOAL) {
             switch(target) {
                 case SPACE:
@@ -99,14 +146,17 @@ public class MapContainer {
             if (object == SokobanObject.BOX_ON_GOAL) {
                 map[y][x] = SokobanObject.GOAL;
             }
+
         } else if (object == SokobanObject.WALL) {
             if (wPos.equals(coord) || boxHere(coord)) {
                 return false;
             }
             map[y][x] = SokobanObject.WALL;
+
         } else {
             map[y][x] = object;
         }
+
         history.pop();
         history.push(new SaveState(wPos, boxPositions));
         return true;
@@ -116,6 +166,12 @@ public class MapContainer {
         return getBoxPositions().contains(coord);
     }
 
+    /**
+     * Removes a "layer" from the given coordinate. If there is a BOX or PLAYER
+     * on a SPACE or GOAL, remove it; otherwise, make the coordinate a SPACE.
+     *
+     * @param coord     the coordinate to remove a layer from
+     */
     public void removeLayer(Coordinate coord) {
         Set<Coordinate> boxPositions = getBoxPositions();
         Coordinate wPos = getWPos();
@@ -130,6 +186,11 @@ public class MapContainer {
         history.push(new SaveState(wPos, boxPositions));
     }
 
+    /**
+     * Get the type of SokobanObject at the given coordinate. Again, see the
+     * SokobanObject documentation for an explanation of how objects are stored
+     * and returned.
+     */
     public SokobanObject get(Coordinate coord) {
         int x = coord.getX();
         int y = coord.getY();
