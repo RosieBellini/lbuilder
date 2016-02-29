@@ -126,6 +126,8 @@ public class BoxTerm extends JPanel {
     public static void redraw() {
         textArea.setText(map.toString());
         textArea.append(Integer.toString(map.totalHistoryLength() - 1));
+        // New line here to redraw the spriteMap.
+        spriteMap.placeSprites();
     }
 
     public static void main(String[] args) {
@@ -140,12 +142,11 @@ public class BoxTerm extends JPanel {
 		spriteMap = new SpriteMap(map);		
 		redraw();
 		frame.add(boxterm);
-		//        frame.add(new JScrollPane(textArea));    
+//        frame.add(new JScrollPane(textArea));    
 		// Following two lines added by Josh. 16.02.29.
 		frame.setSize((xSize)*32,(ySize+1)*32);
 		frame.add(spriteMap);
 		frame.pack();
 		frame.setVisible(true);
-
     }
 }
