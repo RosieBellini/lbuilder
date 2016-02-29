@@ -19,6 +19,8 @@ public class BoxTerm extends JPanel {
     private static int xSize;
     private static int ySize;
     private static JTextArea textArea;
+    // SpriteMap class to display the tileset.
+    private static SpriteMap spriteMap;
 
     /**
      * A constructor to initialise the key listener which allows methods to be
@@ -110,11 +112,12 @@ public class BoxTerm extends JPanel {
                                     break;
             default:                return;
         }
-        if (map.isDone()) {
-            textArea.setText("YOU WON!");
-        } else {
-            redraw();
-        }
+		// Removed if block here, rely on spriteMap to draw Win Screen instead.
+//		if (map.isDone()) {
+//			textArea.setText("YOU WON!");
+//		} else {
+			redraw();
+//		}
     }
 
     /**
@@ -126,17 +129,23 @@ public class BoxTerm extends JPanel {
     }
 
     public static void main(String[] args) {
-        importLevel();
-        BoxTerm boxterm = new BoxTerm();
-        JFrame frame = new JFrame("Box Terminator");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        textArea = new JTextArea(ySize + 1, xSize + 1);
-        textArea.setFont(new Font("monospaced", Font.PLAIN, 24));
-        textArea.setEditable(false);
-        redraw();
-        frame.add(boxterm);
-        frame.add(new JScrollPane(textArea));
-        frame.pack();
-        frame.setVisible(true);
+		importLevel();
+		BoxTerm boxterm = new BoxTerm();
+		JFrame frame = new JFrame("Box Terminator");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		textArea = new JTextArea(ySize + 1, xSize + 1);
+		textArea.setFont(new Font("monospaced", Font.PLAIN, 24));
+		textArea.setEditable(false);	
+		// Added by Josh 16.02.29.
+		spriteMap = new SpriteMap(map);		
+		redraw();
+		frame.add(boxterm);
+		//        frame.add(new JScrollPane(textArea));    
+		// Following two lines added by Josh. 16.02.29.
+		frame.setSize((xSize)*32,(ySize+1)*32);
+		frame.add(spriteMap);
+		frame.pack();
+		frame.setVisible(true);
+
     }
 }
