@@ -2,67 +2,62 @@ import java.awt.GridLayout;
 import javax.imageio.*;
 import javax.swing.*;
 import java.io.*;
+import java.util.*;
 
-public class SpriteMap extends JPanel{
-	private ImageIcon space;
-	private ImageIcon wall;
-	private ImageIcon goal;
-	private ImageIcon box;
-	private ImageIcon box_on_goal;
-	private ImageIcon player;
-	private ImageIcon player_on_goal;
+public class SpriteMap extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private SokobanMap map;
+    private int xSize;
+    private int ySize;
+    private JLabel[][] panelHolder;
+    private Map<String, ImageIcon> iconMap;
 
 	public SpriteMap(SokobanMap map){
-		super(new GridLayout(map.getYSize(),map.getXSize()));
+        xSize = map.getXSize();
+        ySize = map.getYSize();
+        panelHolder = new JLabel[ySize][xSize];
+        setLayout(new GridLayout(ySize, xSize));
+        for (int y = 0; y < ySize; y++) {
+            for (int x = 0; x < xSize; x++) {
+                panelHolder[y][x] = new JLabel();
+                add(panelHolder[y][x]);
+            }
+        }
 		this.map=map;
+        iconMap = new HashMap<String, ImageIcon>();
 		loadSprites();
 		setVisible(true);
 		placeSprites();
 	}
 
 	public void placeSprites(){
-		removeAll();
-		String mapString = map.toString();
-		for (char sp: mapString.toCharArray()){
-			switch(sp){
-			case '@':   add(new JLabel(player));
-			break;
-			case '$':   add(new JLabel(box));
-			break;
-			case '.':   add(new JLabel(goal));
-			break;
-			case '#':   add(new JLabel(wall));
-			break;
-			case '+':   add(new JLabel(player_on_goal));
-			break;
-			case '*':   add(new JLabel(box_on_goal));
-			break;
-			case ' ':   add(new JLabel(space));
-			break;
-			}
-		}
+        for (int y = 0; y < ySize; y++) {
+            for (int x = 0; x < xSize; x++) {
+                SokobanObject object = map.get(new Coordinate(x, y));
+                System.out.print(object);
+                panelHolder[y][x].setIcon(iconMap.get(object.name()));
+            }
+        }
 		win();
 		revalidate();
 		repaint();
 	}
 
-	public void win(){
-		if(map.isDone())
-		{	removeAll();
-			add (new JLabel("YOU WON!!"));}
+	public void win() {
+		if(map.isDone()) {
+            removeAll();
+			add (new JLabel("YOU WON!!"));
+        }
 	}
 
 	public void loadSprites(){
-		try{
-			space = new ImageIcon(ImageIO.read(new File("src/tileset01/SPACE.png")));
-			wall = new ImageIcon(ImageIO.read(new File("src/tileset01/WALL.png")));
-			goal = new ImageIcon(ImageIO.read(new File("src/tileset01/GOAL.png")));
-			box = new ImageIcon(ImageIO.read(new File("src/tileset01/BOX.png")));
-			box_on_goal = new ImageIcon(ImageIO.read(new File("src/tileset01/BOX_ON_GOAL.png")));
-			player = new ImageIcon(ImageIO.read(new File("src/tileset01/PLAYER.png")));
-			player_on_goal = new ImageIcon(ImageIO.read(new File("src/tileset01/PLAYER_ON_GOAL.png")));
-		}catch (IOException e){e.printStackTrace();}
+		try {
+            String[] iconNames = {"SPACE", "WALL", "GOAL", "BOX", "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL"};
+            for (String icon : iconNames) {
+                iconMap.put(icon, new ImageIcon(ImageIO.read(new File("src/tileset01/" + icon + ".png"))));
+            }
+		} catch (IOException e) {
+            e.printStackTrace();
+        }
 	}
 }
