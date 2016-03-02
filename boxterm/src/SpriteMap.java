@@ -4,6 +4,10 @@ import javax.swing.*;
 import java.io.*;
 import java.util.*;
 
+/**
+ * TODO: put the counter back
+ */
+
 public class SpriteMap extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private SokobanMap map;
@@ -13,7 +17,7 @@ public class SpriteMap extends JPanel {
     private Map<String, ImageIcon> iconMap;
     private boolean mapDrawn;
 
-	public SpriteMap(SokobanMap map){
+	public SpriteMap(SokobanMap map) {
         mapDrawn = false;
         xSize = map.getXSize();
         ySize = map.getYSize();
@@ -25,19 +29,18 @@ public class SpriteMap extends JPanel {
                 add(panelHolder[y][x]);
             }
         }
-		this.map=map;
+		this.map = map;
         iconMap = new HashMap<String, ImageIcon>();
 		loadSprites();
 		setVisible(true);
 		placeSprites();
 	}
 
-	public void placeSprites(){
+	public void placeSprites() {
         if (!mapDrawn) {
             for (int y = 0; y < ySize; y++) {
                 for (int x = 0; x < xSize; x++) {
                     SokobanObject object = map.get(new Coordinate(x, y));
-                    System.out.print(object);
                     panelHolder[y][x].setIcon(iconMap.get(object.name()));
                 }
             }
@@ -45,7 +48,6 @@ public class SpriteMap extends JPanel {
         } else {
             for (Coordinate coord : map.getChanges()) {
                     SokobanObject object = map.get(coord);
-                    System.out.print(object);
                     panelHolder[coord.getY()][coord.getX()].setIcon(iconMap.get(object.name()));
             }
         }
@@ -61,7 +63,7 @@ public class SpriteMap extends JPanel {
         }
 	}
 
-	public void loadSprites(){
+	public void loadSprites() {
 		try {
             String[] iconNames = {"SPACE", "WALL", "GOAL", "BOX", "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL"};
             for (String icon : iconNames) {
