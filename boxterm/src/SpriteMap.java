@@ -11,8 +11,10 @@ public class SpriteMap extends JPanel {
     private int ySize;
     private JLabel[][] panelHolder;
     private Map<String, ImageIcon> iconMap;
+    private boolean mapDrawn;
 
 	public SpriteMap(SokobanMap map){
+        mapDrawn = false;
         xSize = map.getXSize();
         ySize = map.getYSize();
         panelHolder = new JLabel[ySize][xSize];
@@ -31,11 +33,20 @@ public class SpriteMap extends JPanel {
 	}
 
 	public void placeSprites(){
-        for (int y = 0; y < ySize; y++) {
-            for (int x = 0; x < xSize; x++) {
-                SokobanObject object = map.get(new Coordinate(x, y));
-                System.out.print(object);
-                panelHolder[y][x].setIcon(iconMap.get(object.name()));
+        if (!mapDrawn) {
+            for (int y = 0; y < ySize; y++) {
+                for (int x = 0; x < xSize; x++) {
+                    SokobanObject object = map.get(new Coordinate(x, y));
+                    System.out.print(object);
+                    panelHolder[y][x].setIcon(iconMap.get(object.name()));
+                }
+            }
+            mapDrawn = true;
+        } else {
+            for (Coordinate coord : map.getChanges()) {
+                    SokobanObject object = map.get(coord);
+                    System.out.print(object);
+                    panelHolder[coord.getY()][coord.getX()].setIcon(iconMap.get(object.name()));
             }
         }
 		win();
