@@ -17,7 +17,7 @@ public class SpriteMap extends JPanel{
 	public SpriteMap(SokobanMap map){
 		super(new GridLayout(map.getYSize(),map.getXSize()));
 		this.map=map;
-		loadSprites();		
+		loadSprites();
 		setVisible(true);
 		placeSprites();
 	}
@@ -46,13 +46,12 @@ public class SpriteMap extends JPanel{
 		win();
 		revalidate();
 		repaint();
-
 	}
 
-	public void win(){		
+	public void win(){
 		if(map.isDone())
 		{	removeAll();
-			add (new JLabel("YOU WON!!"));}	
+			add (new JLabel("YOU WON!!"));}
 	}
 
 	public void loadSprites(){
@@ -63,7 +62,7 @@ public class SpriteMap extends JPanel{
 			box = new ImageIcon(ImageIO.read(new File("src/tileset01/BOX.png")));
 			box_on_goal = new ImageIcon(ImageIO.read(new File("src/tileset01/BOX_ON_GOAL.png")));
 			player = new ImageIcon(ImageIO.read(new File("src/tileset01/PLAYER.png")));
-			player_on_goal = new ImageIcon(ImageIO.read(new File("src/tileset01/PLAYER_ON_GOAL.png")));			
-		}catch (IOException e){e.printStackTrace();}		
+			player_on_goal = new ImageIcon(ImageIO.read(new File("src/tileset01/PLAYER_ON_GOAL.png")));
+		}catch (IOException e){e.printStackTrace();}
 	}
 }

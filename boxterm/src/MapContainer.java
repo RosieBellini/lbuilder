@@ -222,4 +222,28 @@ public class MapContainer {
         }
         return mapLine;
     }
+
+    public Set<Coordinate> getChanges() {
+        Set<Coordinate> changedPlaces = new HashSet<Coordinate>();
+        SaveState[] stateArray = new SaveState[MAXUNDOS];
+        history.toArray(stateArray);
+        if (history.size() < 2) {
+            return changedPlaces;
+        }
+        SaveState lastState = stateArray[history.size() - 2];
+        System.out.println(lastState.getWPos());
+        if (!lastState.getWPos().equals(getWPos())) {
+            changedPlaces.add(getWPos());
+            changedPlaces.add(lastState.getWPos());
+        }
+
+        Set<Coordinate> currentBoxPositionsCopy = new HashSet<Coordinate>(getBoxPositions());
+        Set<Coordinate> lastBoxPositionsCopy = new HashSet<Coordinate>(lastState.getBoxPositions());
+        currentBoxPositionsCopy.removeAll(lastState.getBoxPositions());
+        lastBoxPositionsCopy.removeAll(getBoxPositions());
+        changedPlaces.addAll(currentBoxPositionsCopy);
+        changedPlaces.addAll(lastBoxPositionsCopy);
+        System.out.println(changedPlaces);
+        return changedPlaces;
+    }
 }

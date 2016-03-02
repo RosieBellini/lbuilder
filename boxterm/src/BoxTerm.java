@@ -110,6 +110,8 @@ public class BoxTerm extends JPanel {
                                     break;
             case KeyEvent.VK_R:     map.redo();
                                     break;
+            case KeyEvent.VK_H:     map.getChanges();
+                                    break;
             default:                return;
         }
 		// Removed if block here, rely on spriteMap to draw Win Screen instead.

@@ -9,15 +9,25 @@ import java.util.Stack;
 public class FixedSizeStack<T> extends Stack<T> {
     private int size;
     private int discarded;
+    private int numPushes;
 
     public FixedSizeStack(int size) {
         super();
         this.size = size;
         discarded = 0;
+        numPushes = 0;
     }
 
     public int getTotalSize() {
         return this.size() + discarded;
+    }
+
+    public int getSize() {
+        return this.size;
+    }
+
+    public int getNumPushes() {
+        return numPushes;
     }
 
     @Override
@@ -26,6 +36,12 @@ public class FixedSizeStack<T> extends Stack<T> {
             this.remove(0);
             discarded++;
         }
+        numPushes++;
         return super.push(object);
+    }
+
+    public T pop() {
+        numPushes--;
+        return super.pop();
     }
 }
