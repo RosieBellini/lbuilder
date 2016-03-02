@@ -85,10 +85,10 @@ public class SpriteMap extends JPanel {
 		try {
 			for (String icon : iconNames) {
 				iconMap.put(icon, new ImageIcon(ImageIO.read(new File("src/tileset01/" + icon + ".png"))));
-				wallIconMap.put(0,new ImageIcon(ImageIO.read(new File("src/tileset01/WALL.png"))));
-				for (int i=0; i<noOfWalls;i++){
-					wallIconMap.put(i+1,new ImageIcon(ImageIO.read(new File("src/tileset01/WALL"+(i+2)+".png"))));
-				}
+				wallIconMap.put(0,new ImageIcon(ImageIO.read(new File("src/tileset01/WALL.png"))));	
+			}
+			for (int i=0; i<noOfWalls;i++){
+				wallIconMap.put(i+1,new ImageIcon(ImageIO.read(new File("src/tileset01/WALL"+(i+2)+".png"))));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
