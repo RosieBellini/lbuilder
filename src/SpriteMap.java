@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import javax.imageio.*;
 import javax.swing.*;
@@ -15,9 +17,9 @@ public class SpriteMap extends JPanel {
 	private int ySize;
 	private JLabel[][] panelHolder;
 	private Map<String, ImageIcon> iconMap;
-	private Map<Integer, ImageIcon> wallIconMap;
 	private boolean mapDrawn;
 	int noOfWalls;
+	int noOfGrass;
 
 	public SpriteMap(SokobanMap map) {
 		mapDrawn = false;
@@ -33,11 +35,8 @@ public class SpriteMap extends JPanel {
 		}
 		this.map = map;
 		iconMap = new HashMap<String, ImageIcon>();
-		wallIconMap = new HashMap<Integer, ImageIcon>();
-		loadSprites();
+		loadSprites(1);
 		setVisible(true);
-		placeSprites();
-        System.
 	}
 
 	public void placeSprites() {
@@ -47,7 +46,10 @@ public class SpriteMap extends JPanel {
 					SokobanObject object = map.get(new Coordinate(x, y));
 					if(object.name()=="WALL"){
 						panelHolder[y][x].setIcon(randomWall());
-					}          
+					}
+					else if(object.name()=="GRASS"){
+						panelHolder[y][x].setIcon(randomGrass());
+					}        
 					else {panelHolder[y][x].setIcon(iconMap.get(object.name()));}
 				}
 			}
@@ -58,41 +60,58 @@ public class SpriteMap extends JPanel {
 				panelHolder[coord.getY()][coord.getX()].setIcon(iconMap.get(object.name()));
 			}
 		}
-
 		win();
 		revalidate();
 		repaint();
 	}
 
 	public ImageIcon randomWall(){		
-		if (noOfWalls==0){return wallIconMap.get(0);}
+		if (noOfWalls==1){return iconMap.get("WALL");}
 		Random r = new Random();
-		int randomNumber = r.nextInt(noOfWalls+1);
-		return wallIconMap.get(randomNumber);
+		String randomNumber = Integer.toString(r.nextInt(noOfWalls)+1);
+		if (randomNumber.equals("1")){randomNumber="";}
+		return iconMap.get("WALL"+randomNumber);
+	}
+	
+	public ImageIcon randomGrass(){		
+		if (noOfGrass==1){return iconMap.get("GRASS");}
+		Random r = new Random();
+		String randomNumber = Integer.toString(r.nextInt(noOfGrass)+1);
+		if (randomNumber.equals("1")){randomNumber="";}
+		return iconMap.get("GRASS"+randomNumber);
 	}
 
 	public void win() {
 		if(map.isDone()) {
 			removeAll();
-			add (new JLabel("YOU WON!!"));
+			this.setBackground(Color.green);
+			JLabel winIcon = new JLabel("YOU WON!!");
+			winIcon.setFont(new Font("Courier New", Font.ITALIC, 50));
+			winIcon.setForeground(Color.WHITE);
+			add (winIcon);
 		}
 	}
 
-	public void loadSprites() {
-		String[] iconNames = {"SPACE", "GOAL", "BOX", "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL"};
-		while(new File("src/tileset01/WALL"+(noOfWalls+2)+".png").exists()){
+	public void loadSprites(int tileSetNo) {
+		String tilesetpath = "src/tileset0"+tileSetNo+"/";
+		ArrayList<String> iconNames = new ArrayList<String>(Arrays.asList("SPACE", "GOAL", "BOX", "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL", "GRASS", "WALL"));
+		noOfWalls=1;
+		noOfGrass=1;
+		while(new File(tilesetpath+"WALL"+(noOfWalls+1)+".png").exists()){
+			iconNames.add("WALL"+(noOfWalls+1));
 			noOfWalls++;
+		}
+		while(new File(tilesetpath+"GRASS"+(noOfGrass+1)+".png").exists()){
+			iconNames.add("GRASS"+(noOfGrass+1));
+			noOfGrass++;
 		}	
 		try {
 			for (String icon : iconNames) {
-				iconMap.put(icon, new ImageIcon(ImageIO.read(new File("src/tileset01/" + icon + ".png"))));
-				wallIconMap.put(0,new ImageIcon(ImageIO.read(new File("src/tileset01/WALL.png"))));	
-			}
-			for (int i=0; i<noOfWalls;i++){
-				wallIconMap.put(i+1,new ImageIcon(ImageIO.read(new File("src/tileset01/WALL"+(i+2)+".png"))));
-			}
+				iconMap.put(icon, new ImageIcon(ImageIO.read(new File(tilesetpath + icon + ".png"))));}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		mapDrawn=false;
+		placeSprites();
 	}
 }
