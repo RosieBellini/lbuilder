@@ -37,6 +37,7 @@ public class SpriteMap extends JPanel {
 		loadSprites();
 		setVisible(true);
 		placeSprites();
+        System.
 	}
 
 	public void placeSprites() {
