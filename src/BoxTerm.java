@@ -211,6 +211,5 @@ public class BoxTerm extends JPanel {
 		makeMenuBar(frame);
 		frame.pack();
 		frame.setVisible(true);
-        System.
 	}
 }
