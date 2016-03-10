@@ -46,14 +46,16 @@ public class SpriteMap extends JPanel {
             for (int y = 0; y < ySize; y++) {
                 for (int x = 0; x < xSize; x++) {
                     SokobanObject object = map.get(new Coordinate(x, y));
-                    // if(object.name()=="WALL"){
-                    //     panelHolder[y][x].setIcon(randomWall());
-                    // }
-                    // else if(object.name()=="GRASS"){
-                    //     panelHolder[y][x].setIcon(randomGrass());
-                    // }
-                    // else {panelHolder[y][x].setIcon(iconMap.get(object.name()));}
-                    panelHolder[y][x].setIcon(iconMap.get(object.name()));
+                    if(object.name()=="WALL") {
+                        panelHolder[y][x].setIcon(randomWall());
+                    }
+                    else if (object.name()=="GRASS") {
+                        panelHolder[y][x].setIcon(randomGrass());
+                    }
+                    else {
+                        panelHolder[y][x].setIcon(iconMap.get(object.name()));
+                    }
+                    // panelHolder[y][x].setIcon(iconMap.get(object.name()));
                 }
             }
             mapDrawn = true;
@@ -69,7 +71,7 @@ public class SpriteMap extends JPanel {
         repaint();
     }
 
-    public ImageIcon randomWall(){
+    public ImageIcon randomWall() {
         if (noOfWalls == 1) {
             return iconMap.get("WALL");
         }
@@ -78,15 +80,19 @@ public class SpriteMap extends JPanel {
         if (randomNumber.equals("1")) {
             randomNumber="";
         }
-        return iconMap.get("WALL"+randomNumber);
+        return iconMap.get("WALL" + randomNumber);
     }
 
-    public ImageIcon randomGrass(){
-        if (noOfGrass==1){return iconMap.get("GRASS");}
+    public ImageIcon randomGrass() {
+        if (noOfGrass==1) {
+            return iconMap.get("GRASS");
+        }
         Random r = new Random();
-        String randomNumber = Integer.toString(r.nextInt(noOfGrass)+1);
-        if (randomNumber.equals("1")){randomNumber="";}
-        return iconMap.get("GRASS"+randomNumber);
+        String randomNumber = Integer.toString(r.nextInt(noOfGrass) + 1);
+        if (randomNumber.equals("1")) {
+            randomNumber="";
+        }
+        return iconMap.get("GRASS" + randomNumber);
     }
 
     public void win() {
@@ -103,16 +109,16 @@ public class SpriteMap extends JPanel {
     public void loadSprites(int tileSetNo) {
         String tilesetpath = "/tileset0" + tileSetNo + "/";
         ArrayList<String> iconNames = new ArrayList<String>(Arrays.asList("SPACE", "GOAL", "BOX", "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL", "GRASS", "WALL"));
-        // noOfWalls=1;
-        // noOfGrass=1;
-        // while(new File(tilesetpath+"WALL"+(noOfWalls+1)+".png").exists()){
-        // 	iconNames.add("WALL"+(noOfWalls+1));
-        // 	noOfWalls++;
-        // }
-        // while(new File(tilesetpath+"GRASS"+(noOfGrass+1)+".png").exists()){
-        // 	iconNames.add("GRASS"+(noOfGrass+1));
-        // 	noOfGrass++;
-        // }
+        noOfWalls=1;
+        noOfGrass=1;
+        while (getClass().getResource(tilesetpath + "WALL" + (noOfWalls + 1) + ".png") != null) {
+        	iconNames.add("WALL" + (noOfWalls + 1));
+        	noOfWalls++;
+        }
+        while (getClass().getResource(tilesetpath+"GRASS"+(noOfGrass+1)+".png") != null) {
+        	iconNames.add("GRASS" + (noOfGrass + 1));
+        	noOfGrass++;
+        }
         // try {
         for (String icon : iconNames) {
             iconMap.put(icon, new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource(tilesetpath + icon + ".png"))));
