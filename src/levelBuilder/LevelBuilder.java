@@ -87,11 +87,11 @@ public class LevelBuilder{
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setBackground(Color.RED);
+        
+        mainPanel.add(new GridMap(20,20));
         frame.add(mainPanel);
-        
-        
-        mainPanel.add(new GridMap(5, 5));
-        
+        frame.pack();
+
 		frame.setVisible(true);
 
 	}

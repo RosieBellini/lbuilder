@@ -9,36 +9,26 @@ import javax.swing.JLabel;
 public class Cell extends JLabel{
 
 	private static final long serialVersionUID = 1L;
-	private int x;
-	private int y;
 	private boolean inUse;
 	private char tileType;
+	// Coordinate values: Named i and j so they don't affect LayoutManager:
 	
-	public Cell(int x, int y)
+	private int i;
+	private int j;
+	
+	public Cell(int i, int j)
 	{
-		super("HELLO");
-		this.x = x;
-		this.y = y;
+		super();
+		this.i = i;
+		this.j = j;
 		inUse = false;
 		tileType = 'z';
 		setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/WALL.png"), "Wall"));
-		setVisible(true);
-
-	
-		
 	}
 	
 	// Accessor methods:
 	
-	public int getX()
-	{
-		return x;
-	}
-	
-	public int getY()
-	{
-		return y;
-	}
+
 	
 	public boolean getInUse()
 	{

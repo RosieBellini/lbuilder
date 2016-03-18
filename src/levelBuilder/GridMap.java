@@ -2,8 +2,6 @@ package levelBuilder;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class GridMap extends JPanel 
@@ -16,18 +14,14 @@ public class GridMap extends JPanel
 	
 	public GridMap(int rows, int cols)
 	{
-		super(new GridLayout(cols, rows));
-		setBackground(Color.GREEN);
-		JLabel test = new JLabel("hello");
-		JLabel test1 = new JLabel("hello1");
-		JLabel test2 = new JLabel("hello2");
-
-		add(test);
-		add(test1);
-		add(test2);
+		super();
 		this.rows = rows;
 		this.cols = cols;
-		cells = new Cell[rows][cols];		
+		setLayout(new GridLayout(rows, cols, 1,1));
+		setBackground(Color.RED);
+		cells = new Cell[rows][cols];
+		drawCells();
+			
 	}
 	
 	// Accessor Methods:
@@ -46,14 +40,12 @@ public class GridMap extends JPanel
 	
 	public void drawCells()
 	{
-		for(int i=0; i<cols; i++)
+		for(int y=0; y<rows; y++)
 		{
-			System.out.print("i = " +i);
-			for(int j=0; j<rows; j++)
+			for(int x=0; x<cols; x++)
 			{
-			System.out.println("j = " +j);
-			cells[j][i] = new Cell(j, i);
-			add(cells[j][i]);
+			cells[x][y] = new Cell();
+			add(cells[x][y]);
 			}
 		}
 		
