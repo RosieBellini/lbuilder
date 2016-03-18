@@ -12,7 +12,7 @@ public class GridMap extends JPanel
 	private int cols;
 	private Cell[][] cells;
 	
-	public GridMap(int rows, int cols)
+	public GridMap(int cols, int rows)
 	{
 		super();
 		this.rows = rows;
@@ -44,8 +44,8 @@ public class GridMap extends JPanel
 		{
 			for(int x=0; x<cols; x++)
 			{
-			cells[x][y] = new Cell();
-			add(cells[x][y]);
+			cells[y][x] = new Cell(x, y);
+			add(cells[y][x]);
 			}
 		}
 		

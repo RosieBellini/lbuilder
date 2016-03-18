@@ -1,11 +1,11 @@
 package levelBuilder;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -17,9 +17,12 @@ public class LevelBuilder{
 	private static JMenuBar menuBar;
 	private static JMenu file, edit, help;
 	private static JMenuItem newMap, open, save, compile, exit, undo, redo;
+	private static int x, y;
+	protected static char state = 'b';
 	
 	public static void main(String[] args)
 	{
+		
 		// Initialise GUI:
 		GUI frame = new GUI();
 		frame.setSize(new Dimension(700, 500));
@@ -85,13 +88,20 @@ public class LevelBuilder{
         
         // Setup Main Panel:
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         mainPanel.setBackground(Color.RED);
         
-        mainPanel.add(new GridMap(20,20));
+        // Setup GridMap
+        x = 20;
+        y = 20;
+        mainPanel.add(new GridMap(x,y));
+        
+        // Setup TilePalette
+        mainPanel.add(new TilePalette());
+        
+        
         frame.add(mainPanel);
         frame.pack();
-
 		frame.setVisible(true);
 
 	}
