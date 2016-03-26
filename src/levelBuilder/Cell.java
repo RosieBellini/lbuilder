@@ -6,6 +6,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
+import levelBuilder.TilePalette.ListListener;
+
 public class Cell extends JLabel{
 
 	private static final long serialVersionUID = 1L;
@@ -22,34 +24,72 @@ public class Cell extends JLabel{
 		this.j = j;
 		inUse = false;
 		tileType = 'z';
-		setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/WALL.png"), "Wall"));
+		setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/DEFAULT.png"), "Default"));
 		
 		// Mouse listener:
 		addMouseListener(new MouseAdapter(){
 			
-			public void mouseClicked(MouseEvent me)
+			public void mousePressed(MouseEvent me)
 			{
+				// If left mouse button is clicked
+				if (me.getButton() == MouseEvent.BUTTON1) {
 				// Change icon and TileType depending on current palette state:
 				
-				if(LevelBuilder.state == 'b')
-				{
-				setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/BOX.png"), "Box"));
+				int choice = LevelBuilder.state;
+				
+				switch(choice) {
+				case 'w': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/WALL.png"), "Wall"));
+				break;
+				case 'b': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/BOX.png"), "Box"));
+				TilePalette.boxCount = TilePalette.boxCount + 1;
+				TilePalette.boxCounter.setText("" + TilePalette.boxCount);	// increment box count
+				break;
+				case 's': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/SPACE.png"), "Space"));
+				break;
+				case 'p': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/PRESSURE_PAD.png"), "Pressure Pad"));
+				TilePalette.pressureCount = TilePalette.pressureCount + 1;
+				TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // increment pressure pad count
+				break;
+				case 'q': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/PLAYER.png"), "Player"));
+				TilePalette.playerCount = TilePalette.playerCount + 1; //	increment player count
+				break;
+				case 'h': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/GRASS.png"), "Grass"));
+				break;
+				
 				
 				}
-				else if(LevelBuilder.state == 'n')
-				{
-					
-				}
-				else if(LevelBuilder.state == 'w')
-				{
-					
+				inUse = true; // tile is in use if clicked
 				}
 				
+				
+				// If right mouse is clicked, undo 
+				if (me.getButton() == MouseEvent.BUTTON3) {
+					LevelBuilder.state = 'z';
+					setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/DEFAULT_HOVER.png"), "Default"));
+					inUse = false;
+				}
 			}
 			
+			//	Mouse hover
+			
+			public void mouseEntered(MouseEvent me) {
+				if (!inUse) {
+				setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/DEFAULT_HOVER.png")));
+				}
+			}
+			
+			public void mouseExited(MouseEvent me) {
+				if (!inUse) {
+				setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/DEFAULT.png")));
+				}
+			}	
+
+			
 		});
+	
 	}
 	
+
 	// Accessor methods:
 	public int getI()
 	{
