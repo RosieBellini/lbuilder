@@ -1,24 +1,30 @@
 package levelBuilder;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowAdapter;
 
 import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-public class LevelBuilder{
+public class LevelBuilder extends JPanel{
 	
+	private static final long serialVersionUID = 1L;
 	private static JMenuBar menuBar;
 	private static JMenu file, edit, help;
 	private static JMenuItem newMap, open, save, compile, exit, undo, redo;
 	private static int x, y;
-	protected static char state = 'b';
+	protected static char state = 'z';
 	
 	public static void main(String[] args)
 	{
@@ -28,6 +34,8 @@ public class LevelBuilder{
 		frame.setSize(new Dimension(700, 500));
 		frame.setResizable(false);
 		
+		// Set up new WindowListener
+		frame.addWindowListener(new WindowListen());
 		
 		// Setup menu bar:
 		// Setup Menu Bar:
@@ -103,8 +111,44 @@ public class LevelBuilder{
         frame.add(mainPanel);
         frame.pack();
 		frame.setVisible(true);
+		
+		}
+	}
 
+	// Setup Window Listener
+	
+	class WindowListen implements WindowListener {
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		final JOptionPane optionPane = new JOptionPane(
+		"Are you sure you want to quit level builder?\n",
+		JOptionPane.QUESTION_MESSAGE,
+		JOptionPane.YES_NO_OPTION);
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
 	}
 	
-	
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+	}
 }

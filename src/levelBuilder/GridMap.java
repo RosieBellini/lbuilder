@@ -17,8 +17,8 @@ public class GridMap extends JPanel
 		super();
 		this.rows = rows;
 		this.cols = cols;
-		setLayout(new GridLayout(rows, cols, 1,1));
-		setBackground(Color.RED);
+		setLayout(new GridLayout(rows, cols, 0, 0));
+		setBackground(Color.BLACK);
 		cells = new Cell[rows][cols];
 		drawCells();
 			
