@@ -4,11 +4,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.PrintWriter;
 import java.awt.event.WindowAdapter;
-
 import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -17,17 +18,31 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+
 public class LevelBuilder extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
 	private static JMenuBar menuBar;
 	private static JMenu file, edit, help;
 	private static JMenuItem newMap, open, save, compile, exit, undo, redo;
+	private static String fileName;
 	private static int x, y;
+	private static GridMap gridMap;
+	private static PrintWriter txtFile;
 	protected static char state = 'z';
 	
 	public static void main(String[] args)
 	{
+		// Setup ActionListeners:
+        class SaveAction implements ActionListener{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+		         fileName = JOptionPane.showInputDialog("Please input a name for your map");
+
+			}
+        	
+        }
 		
 		// Initialise GUI:
 		GUI frame = new GUI();
@@ -68,6 +83,7 @@ public class LevelBuilder extends JPanel{
         save = new JMenuItem("Save", KeyEvent.VK_S);
         save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
         save.setToolTipText("Save current map design to file");
+        save.addActionListener(new SaveAction());
         
         compile = new JMenuItem("Compile Map", KeyEvent.VK_C);
         compile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
@@ -94,6 +110,9 @@ public class LevelBuilder extends JPanel{
         edit.add(undo);
         edit.add(redo);
         
+        
+
+        
         // Setup Main Panel:
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
@@ -102,7 +121,7 @@ public class LevelBuilder extends JPanel{
         // Setup GridMap
         x = 20;
         y = 20;
-        mainPanel.add(new GridMap(x,y));
+        mainPanel.add(gridMap = new GridMap(x,y));
         
         // Setup TilePalette
         mainPanel.add(new TilePalette());
@@ -113,6 +132,22 @@ public class LevelBuilder extends JPanel{
 		frame.setVisible(true);
 		
 		}
+	
+	public static void saveMap(Cell[][] tile, int rows, int cols, String fileName)
+	{
+		for(int y=0; y<rows; y++)
+		{
+			for(int x=0; x<cols; x++)
+			{
+			char tileType = tile[y][x].getTileType();
+			switch(tileType){
+				case 'z': 
+					
+			}
+			}
+		}
+	}
+	
 	}
 
 	// Setup Window Listener

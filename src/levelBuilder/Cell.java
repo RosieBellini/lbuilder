@@ -29,6 +29,7 @@ public class Cell extends JLabel{
 		// Mouse listener:
 		addMouseListener(new MouseAdapter(){
 			
+
 			public void mousePressed(MouseEvent me)
 			{
 				// If left mouse button is clicked
@@ -39,21 +40,27 @@ public class Cell extends JLabel{
 				
 				switch(choice) {
 				case 'w': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/WALL.png"), "Wall"));
+				tileType = 'w';
 				break;
 				case 'b': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/BOX.png"), "Box"));
 				TilePalette.boxCount = TilePalette.boxCount + 1;
 				TilePalette.boxCounter.setText("" + TilePalette.boxCount);	// increment box count
+				tileType = 'b';
 				break;
 				case 's': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/SPACE.png"), "Space"));
+				tileType = 's';
 				break;
 				case 'p': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/PRESSURE_PAD.png"), "Pressure Pad"));
 				TilePalette.pressureCount = TilePalette.pressureCount + 1;
 				TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // increment pressure pad count
+				tileType = 'p';
 				break;
 				case 'q': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/PLAYER.png"), "Player"));
 				TilePalette.playerCount = TilePalette.playerCount + 1; //	increment player count
+				tileType = 'q';
 				break;
 				case 'h': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/GRASS.png"), "Grass"));
+				tileType = 'h';
 				break;
 				
 				
@@ -66,6 +73,7 @@ public class Cell extends JLabel{
 				if (me.getButton() == MouseEvent.BUTTON3) {
 					LevelBuilder.state = 'z';
 					setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/DEFAULT_HOVER.png"), "Default"));
+					tileType = 'z';
 					inUse = false;
 				}
 			}
