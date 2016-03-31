@@ -86,7 +86,7 @@ public class Cell extends JLabel{
 					tileType = 'z';
 					inUse = false;
 				}
-				}
+				
 			}
 			
 			//	Mouse hover
