@@ -70,11 +70,22 @@ public class Cell extends JLabel{
 				
 				
 				// If right mouse is clicked, undo 
+				// If right mouse is clicked, undo 
 				if (me.getButton() == MouseEvent.BUTTON3) {
-					LevelBuilder.state = 'z';
+					
+					if (LevelBuilder.state == 'b' && TilePalette.boxCount != 0) {
+						TilePalette.boxCount -= 1;
+						TilePalette.boxCounter.setText("" + TilePalette.boxCount); // decrease box count
+					}
+					if (LevelBuilder.state == 'p' && TilePalette.pressureCount != 0) {
+						TilePalette.pressureCount -= 1;
+						TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // decrease pressure pad count
+					}
+					
 					setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/DEFAULT_HOVER.png"), "Default"));
 					tileType = 'z';
 					inUse = false;
+				}
 				}
 			}
 			
