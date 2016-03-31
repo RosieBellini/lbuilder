@@ -36,6 +36,11 @@ public class GridMap extends JPanel
 		return cols;
 	}
 	
+	public Cell[][] getCells()
+	{
+		return cells;
+	}
+	
 	// Methods:
 	
 	public void drawCells()

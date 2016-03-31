@@ -8,6 +8,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.awt.event.WindowAdapter;
 import javax.swing.BoxLayout;
@@ -38,8 +41,14 @@ public class LevelBuilder extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-		         fileName = JOptionPane.showInputDialog("Please input a name for your map");
-
+		         fileName = JOptionPane.showInputDialog("Please input a name for your map. \nIf file name already exists, it will be overwritten.");
+		         try{
+		         saveMap(gridMap.getCells(), x, y, fileName);
+		         }
+		         catch(IOException e)
+		         {
+		        	 System.out.print("IOEXception found");
+		         }
 			}
         	
         }
@@ -133,16 +142,28 @@ public class LevelBuilder extends JPanel{
 		
 		}
 	
-	public static void saveMap(Cell[][] tile, int rows, int cols, String fileName)
+	public static void saveMap(Cell[][] tile, int rows, int cols, String fileName) throws IOException
 	{
+		FileWriter writer = new FileWriter(new File(".").getAbsolutePath()+"//wip//"+fileName+".txt", true);
+		txtFile = new PrintWriter(writer);
 		for(int y=0; y<rows; y++)
 		{
 			for(int x=0; x<cols; x++)
 			{
 			char tileType = tile[y][x].getTileType();
 			switch(tileType){
-				case 'z': 
-					
+				case 'z': txtFile.print(" ");
+				break;
+				case 'b': txtFile.print("$");
+				break;
+				case 's': txtFile.print("_");
+				break;
+				case 'p': txtFile.print(".");
+				break;
+				case 'q': txtFile.print("@");
+				break;
+				case 'w': txtFile.print("#");
+				break;
 			}
 			}
 		}
