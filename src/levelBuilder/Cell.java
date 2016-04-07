@@ -43,17 +43,21 @@ public class Cell extends JLabel{
 				tileType = 'w';
 				break;
 				case 'b': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/BOX.png"), "Box"));
-				TilePalette.boxCount = TilePalette.boxCount + 1;
-				TilePalette.boxCounter.setText("" + TilePalette.boxCount);	// increment box count
-				tileType = 'b';
+						if (tileType != 'b') {
+						TilePalette.boxCount = TilePalette.boxCount + 1;
+						TilePalette.boxCounter.setText("" + TilePalette.boxCount);	// increment box count
+						tileType = 'b';
+						}
 				break;
 				case 's': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/SPACE.png"), "Space"));
 				tileType = 's';
 				break;
 				case 'p': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/PRESSURE_PAD.png"), "Pressure Pad"));
-				TilePalette.pressureCount = TilePalette.pressureCount + 1;
-				TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // increment pressure pad count
-				tileType = 'p';
+						if (tileType != 'p') {
+						TilePalette.pressureCount = TilePalette.pressureCount + 1;
+						TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // increment pressure pad count
+						tileType = 'p';
+						}
 				break;
 				case 'q': setIcon(new ImageIcon(LevelBuilder.class.getResource("/tileset01/PLAYER.png"), "Player"));
 				TilePalette.playerCount = TilePalette.playerCount + 1; //	increment player count
@@ -65,6 +69,7 @@ public class Cell extends JLabel{
 				
 				
 				}
+				System.out.println(tileType);
 				inUse = true; // tile is in use if clicked
 				}
 				
@@ -73,11 +78,11 @@ public class Cell extends JLabel{
 				// If right mouse is clicked, undo 
 				if (me.getButton() == MouseEvent.BUTTON3) {
 					
-					if (LevelBuilder.state == 'b' && TilePalette.boxCount != 0) {
+					if (tileType == 'b' && inUse == true && TilePalette.boxCount != 0) {
 						TilePalette.boxCount -= 1;
 						TilePalette.boxCounter.setText("" + TilePalette.boxCount); // decrease box count
 					}
-					if (LevelBuilder.state == 'p' && TilePalette.pressureCount != 0) {
+					if (tileType == 'p' && inUse == true && TilePalette.pressureCount != 0) {
 						TilePalette.pressureCount -= 1;
 						TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // decrease pressure pad count
 					}
