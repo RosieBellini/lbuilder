@@ -9,10 +9,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.regex.Pattern;
 import java.awt.event.WindowAdapter;
+
 import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -41,14 +44,27 @@ public class LevelBuilder extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				boolean finished = false;
+				while(!finished){
 		         fileName = JOptionPane.showInputDialog("Please input a name for your map. \nIf file name already exists, it will be overwritten.");
 		         try{
-		         saveMap(gridMap.getCells(), x, y, fileName);
+		         saveMap(gridMap.getCells(), 20, 20, fileName);
+		         finished=true;
 		         }
-		         catch(IOException e)
+		         catch(FileNotFoundException e)
 		         {
-		        	 System.out.print("IOEXception found");
+		        	 System.out.print("FileNotFoundException found");
 		         }
+		         catch(IllegalArgumentException e)
+		         {
+		        	 JOptionPane.showMessageDialog(null,e.getMessage(),  "Warning: Save Error",JOptionPane.WARNING_MESSAGE);
+		         }
+		         catch(NullPointerException e)
+		         {
+		        	 // A NullPointerException is thrown if the user click cancel:
+		        	 finished = true;
+		         }
+			}
 			}
         	
         }
@@ -142,10 +158,34 @@ public class LevelBuilder extends JPanel{
 		
 		}
 	
-	public static void saveMap(Cell[][] tile, int rows, int cols, String fileName) throws IOException
+	/**
+	 * Used to parse a map from the 2d Cell Array into a txt file. Throws FileNotFoundException.
+	 * 
+	 * @param tile
+	 * @param rows the number of rows in the 2d Array.
+	 * @param cols the number of cols in the 2d Array.
+	 * @param fileName the user's chosen filename for the txt file.
+	 * @throws FileNotFoundException
+	 */
+	public static void saveMap(Cell[][] tile, int rows, int cols, String fileName) throws FileNotFoundException
 	{
-		FileWriter writer = new FileWriter(new File(".").getAbsolutePath()+"//wip//"+fileName+".txt", true);
-		txtFile = new PrintWriter(writer);
+		// First, check if fileName is empty and throw an exception:
+		if(fileName.isEmpty())
+		{
+			throw new IllegalArgumentException("Error: File name must not be empty.");
+		}
+		
+		// Next, use a regular expression to ensure the fileName has no special characters and is not longer than 30 characters.
+		String pattern = "\\w+{1,30}";
+		if(!fileName.matches(pattern))
+		{
+			throw new IllegalArgumentException("Error: File name must only contain letters, numbers and underscores and be no more than 30 characters in length.");
+		}
+		
+		// If nothing is thrown, begin parsing the map into a text file with the user's chosen filename:
+		File fileDir = new File("src/incomplete_maps//"+fileName+".txt");
+		System.out.println(fileDir.getAbsolutePath());
+		txtFile = new PrintWriter(fileDir);
 		for(int y=0; y<rows; y++)
 		{
 			for(int x=0; x<cols; x++)
@@ -166,7 +206,11 @@ public class LevelBuilder extends JPanel{
 				break;
 			}
 			}
+			txtFile.println();
+
 		}
+		txtFile.flush();
+		txtFile.close();
 	}
 	
 	}
