@@ -1,0 +1,20 @@
+Level Builder Functions to cover
+
+# Visual Graphics Level Builder
+- Sort out tile palette positioning 
+- Transfer visual representation of level to text format
+- Function to save text format to file - FileWriter 
+- Save button?
+- 'Solver' button? (eg. function that checks box and pressure pad count, character count + whether walls are touching?
+
+# Text Area Editor for Level Builder
+- TextArea editor for level builder
+- Transfer text representation of level to text format
+- Save text format to file - FileWriter (borrow functionality from 2.)
+- Ability to load pre-existing games into editor
+
+# Functions that both have in common
+- Save progress 
+- Utilise box count and pressure pad in save 
+- "Are you sure you wish to exit?"
+- Ability to switch between level editor and main game 
