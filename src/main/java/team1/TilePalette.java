@@ -1,14 +1,11 @@
-package levelBuilder;
+package team1;
 
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.ListModel;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Image;
 
 public class TilePalette extends JPanel {
 	
@@ -46,12 +43,12 @@ public class TilePalette extends JPanel {
 	
 	public void importImages() {
 		
-		ImageIcon wall = new ImageIcon(LevelBuilder.class.getResource("/tileset01/WALL.png"), "Wall");
-		ImageIcon box = new ImageIcon(LevelBuilder.class.getResource("/tileset01/BOX.png"), "Box");
-		ImageIcon space = new ImageIcon(LevelBuilder.class.getResource("/tileset01/SPACE.png"), "Space");
-		ImageIcon pressure = new ImageIcon(LevelBuilder.class.getResource("/tileset01/PRESSURE_PAD.png"), "Pressure Pad");
-		ImageIcon player = new ImageIcon(LevelBuilder.class.getResource("/tileset01/PLAYER.png"), "Player");
-		ImageIcon grass = new ImageIcon(LevelBuilder.class.getResource("/tileset01/GRASS.png"), "Grass");
+		ImageIcon wall = new ImageIcon(getClass().getResource("/tileset01/WALL.png"), "Wall");
+		ImageIcon box = new ImageIcon(getClass().getResource("/tileset01/BOX.png"), "Box");
+		ImageIcon space = new ImageIcon(getClass().getResource("/tileset01/SPACE.png"), "Space");
+		ImageIcon pressure = new ImageIcon(getClass().getResource("/tileset01/PRESSURE_PAD.png"), "Pressure Pad");
+		ImageIcon player = new ImageIcon(getClass().getResource("/tileset01/PLAYER.png"), "Player");
+		ImageIcon grass = new ImageIcon(getClass().getResource("/tileset01/GRASS.png"), "Grass");
 		
 		tiles[0] = wall;
 		tiles[1] = box;

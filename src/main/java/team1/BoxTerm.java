@@ -168,6 +168,14 @@ public class BoxTerm extends JPanel {
                 spriteMap.loadSprites(tileSetNo%3);; }
         });
         fileMenu.add(tileItem);
+
+        JMenuItem levelBuilderItem = new JMenuItem("Start level builder");
+        levelBuilderItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                LevelBuilder.activate();
+            }
+        });
+        fileMenu.add(levelBuilderItem);
     }
 
     public static File getFile()

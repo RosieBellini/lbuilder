@@ -1,4 +1,4 @@
-package levelBuilder;
+package team1;
 
 import java.awt.Color;
 import java.awt.GridLayout;
