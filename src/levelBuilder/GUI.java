@@ -1,4 +1,4 @@
-package levelBuilder;
+package team1;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
