@@ -16,7 +16,7 @@ public class MapContainer {
 	private Stack<SaveState> redoStack;
 	private SokobanObject[][] map;
 	private final int MAXUNDOS = 20;
-    private int prevRedoStackSize;
+	private int prevRedoStackSize;
 
 	/**
 	 * Initialises a MapContainer of the given size filled with spaces
@@ -29,7 +29,7 @@ public class MapContainer {
 		history = new FixedSizeStack<SaveState>(MAXUNDOS);
 		history.push(new SaveState(new Coordinate(-1, -1), new HashSet<Coordinate>()));
 		redoStack = new Stack<SaveState>();
-        prevRedoStackSize = 0;
+		prevRedoStackSize = 0;
 	}
 
 	public int getYSize() {
@@ -42,6 +42,31 @@ public class MapContainer {
 
 	public void storeState() {
 		history.push(new SaveState(getWPos(), getBoxPositions()));
+	}
+
+	/**
+	 * Returns a SaveState object that contains the upper leftmost accessible square and the box positions.
+	 * This will be used to determine a state of the map independent of the players exact position.
+	 * @return a SaveState which represents a state of the game for the solving algorithm to use.
+	 */
+	public SaveState getState(){
+		Set<Coordinate> accessibleSpaces = accessibleSpaces(getWPos(),true);
+		Coordinate potentialTopLeftSpace = new Coordinate(getXSize(),getYSize());
+		boolean done = false;
+		for(int y=0;y<getYSize();y++){
+			for(int x=0;x<getXSize();x++){	
+				potentialTopLeftSpace = new Coordinate(x,y);
+				if (accessibleSpaces.contains(potentialTopLeftSpace)){
+					done=true;
+					break;
+				}
+			}
+			if (done){
+				break;
+			}
+		}
+//		System.out.println(potentialTopLeftSpace.getX()+""+potentialTopLeftSpace.getY());
+		return new SaveState(potentialTopLeftSpace, getBoxPositions());
 	}
 
 	/**
@@ -58,7 +83,7 @@ public class MapContainer {
 		if (historyLength() == 0) {
 			history.push(state);
 		} else if (sendToRedoStack) {
-            prevRedoStackSize = redoStack.size();
+			prevRedoStackSize = redoStack.size();
 			redoStack.push(state);
 		}
 	}
@@ -68,7 +93,7 @@ public class MapContainer {
 	 */
 	public void redo() {
 		if (redoStack.size() != 0) {
-            prevRedoStackSize = redoStack.size();
+			prevRedoStackSize = redoStack.size();
 			history.push(redoStack.pop());
 		}
 	}
@@ -237,12 +262,12 @@ public class MapContainer {
 			return changedPlaces;
 		}
 
-        SaveState lastState;
-        if (prevRedoStackSize < redoStack.size()) {
-            lastState = redoStack.peek();
-        } else {
-            lastState = stateArray[history.size() - 2];
-        }
+		SaveState lastState;
+		if (prevRedoStackSize < redoStack.size()) {
+			lastState = redoStack.peek();
+		} else {
+			lastState = stateArray[history.size() - 2];
+		}
 
 		if (!lastState.getWPos().equals(getWPos())) {
 			changedPlaces.add(getWPos());
@@ -262,8 +287,10 @@ public class MapContainer {
 	/**
 	 * Takes a coordinate and returns the set of coordinates which are accessible from there.
 	 * Accessible meaning not blocked by a WALL.
+	 * @param origin The coordinate space from which to start the search for accessible spaces.
+	 * @param doBoxesBlock true if you want to ignore boxes in the search.
 	 */
-	public Set<Coordinate> accessibleFrom(Coordinate origin) {
+	public Set<Coordinate> accessibleSpaces(Coordinate origin,boolean ignoreBoxes) {
 		Set<Coordinate> edges = new HashSet<Coordinate>();
 		Set<Coordinate> accessible = new HashSet<Coordinate>();
 		Set<Coordinate> newEdges = new HashSet<Coordinate>();
@@ -272,9 +299,17 @@ public class MapContainer {
 			for (Coordinate edge: edges) {
 				accessible.add(edge);
 				for (Coordinate potentialEdge : neighbors(edge)) {
-					if (get(potentialEdge) != SokobanObject.WALL) {
-                        newEdges.add(potentialEdge);
-                    }
+					SokobanObject objectInPotentialEdge=get(potentialEdge);
+					if (ignoreBoxes){
+						if (objectInPotentialEdge != SokobanObject.WALL) {
+							newEdges.add(potentialEdge);
+						}
+					}
+					if(!ignoreBoxes){
+						if (objectInPotentialEdge != SokobanObject.WALL && objectInPotentialEdge != SokobanObject.BOX) {
+						}
+						newEdges.add(potentialEdge);
+					}
 				}
 			}
 			edges.addAll(newEdges);
@@ -287,15 +322,16 @@ public class MapContainer {
 	 * Takes a coordinate and returns its orthogonal neighbors (avoiding out of bounds areas).
 	 */
 	public Set<Coordinate> neighbors(Coordinate origin){
+		Set<Coordinate> potentialNeighbors = new HashSet<Coordinate>();
 		Set<Coordinate> neighbors = new HashSet<Coordinate>();
-		neighbors.add(origin.add(new Coordinate(1,0)));
-		neighbors.add(origin.add(new Coordinate(-1,0)));
-		neighbors.add(origin.add(new Coordinate(0,1)));
-		neighbors.add(origin.add(new Coordinate(0,-1)));
-		for(Coordinate potentialNeighbor : neighbors){
-			if (potentialNeighbor.getX()<0||potentialNeighbor.getX()>this.getXSize()||
-					potentialNeighbor.getY()<0||potentialNeighbor.getY()>this.getYSize()){
-				neighbors.remove(potentialNeighbor);
+		potentialNeighbors.add(origin.add(new Coordinate(1,0)));
+		potentialNeighbors.add(origin.add(new Coordinate(-1,0)));
+		potentialNeighbors.add(origin.add(new Coordinate(0,1)));
+		potentialNeighbors.add(origin.add(new Coordinate(0,-1)));
+		for(Coordinate potentialNeighbor : potentialNeighbors){
+			if (potentialNeighbor.getX()>=0&&potentialNeighbor.getX()<=this.getXSize()&&
+					potentialNeighbor.getY()>=0&&potentialNeighbor.getY()<=this.getYSize()){
+				neighbors.add(potentialNeighbor);
 			}
 		}
 		return neighbors;
@@ -303,11 +339,11 @@ public class MapContainer {
 
 	public void growGrass(){
 		Set<Coordinate> potentialGrass = Coordinate.allValidCoordinates(getXSize(), getYSize());
-		potentialGrass.removeAll(accessibleFrom(getWPos()));
+		potentialGrass.removeAll(accessibleSpaces(getWPos(),true));
 		for(Coordinate potentialGrassSpace : potentialGrass){
 			if (get(potentialGrassSpace) == SokobanObject.SPACE) {
-                put(SokobanObject.GRASS, potentialGrassSpace);
-            }
+				put(SokobanObject.GRASS, potentialGrassSpace);
+			}
 		}
 	}
 }
