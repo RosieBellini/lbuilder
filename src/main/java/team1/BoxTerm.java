@@ -138,9 +138,9 @@ public class BoxTerm extends JPanel {
         // create the File manu
         JMenu fileMenu = new JMenu("File");
         menubar.add(fileMenu);
-        
+
         JMenu helpMenu = new JMenu("Help");
-        menubar.add(helpMenu);        		
+        menubar.add(helpMenu);
 
          JMenuItem openItem = new JMenuItem("Open");
          openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
@@ -162,13 +162,6 @@ public class BoxTerm extends JPanel {
          });
          fileMenu.add(openItem);
 
-        JMenuItem quitItem = new JMenuItem("Quit");
-        quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, SHORTCUT_MASK));
-        quitItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) { System.exit(0);; }
-        });
-        fileMenu.add(quitItem);
-
         JMenuItem tileItem = new JMenuItem("Change Tileset");
         tileItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, SHORTCUT_MASK));
         tileItem.addActionListener(new ActionListener() {
@@ -185,7 +178,14 @@ public class BoxTerm extends JPanel {
             }
         });
         fileMenu.add(levelBuilderItem);
-        
+
+        JMenuItem quitItem = new JMenuItem("Quit");
+        quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, SHORTCUT_MASK));
+        quitItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) { System.exit(0);; }
+        });
+        fileMenu.add(quitItem);
+
         JMenuItem aboutItem = new JMenuItem("About Box Terminator");
         aboutItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -202,7 +202,7 @@ public class BoxTerm extends JPanel {
         if(returnVal != JFileChooser.APPROVE_OPTION) {
             return null;  // cancelled
         }
-        File selectedFile = fileChooser.getSelectedFile();       
+        File selectedFile = fileChooser.getSelectedFile();
         InputStream streamToReturn = new FileInputStream(selectedFile);
         return streamToReturn;
     }
