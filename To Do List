@@ -1,7 +1,7 @@
 Level Builder Functions to cover
 
 # Visual Graphics Level Builder
-- Sort out tile palette positioning 
+- Sort out tile palette positioning
 - Transfer visual representation of level to text format - DONE
 - Function to save text format to file - FileWriter  - IN PROGRESS
 - Save button?
@@ -14,7 +14,10 @@ Level Builder Functions to cover
 - Ability to load pre-existing games into editor
 
 # Functions that both have in common
-- Save progress 
-- Utilise box count and pressure pad in save 
+- Save progress
+- Utilise box count and pressure pad in save
 - "Are you sure you wish to exit?" (Window Listener)
-- Ability to switch between level editor and main game 
+- Ability to switch between level editor and main game (implemented, but we need to discuss whether or not the game window should disappear)
+
+# Code repetition
+- Modify level editor to use SpriteMap
