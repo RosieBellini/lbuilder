@@ -129,4 +129,8 @@ public class SpriteMap extends JPanel {
         mapDrawn=false;
         placeSprites();
     }
+    
+    public ImageIcon getPlayerSprite(){
+    	return iconMap.get("PLAYER");
+    }
 }

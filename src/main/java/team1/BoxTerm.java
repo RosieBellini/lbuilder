@@ -138,6 +138,9 @@ public class BoxTerm extends JPanel {
         // create the File manu
         JMenu fileMenu = new JMenu("File");
         menubar.add(fileMenu);
+        
+        JMenu helpMenu = new JMenu("Help");
+        menubar.add(helpMenu);        		
 
          JMenuItem openItem = new JMenuItem("Open");
          openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
@@ -182,6 +185,14 @@ public class BoxTerm extends JPanel {
             }
         });
         fileMenu.add(levelBuilderItem);
+        
+        JMenuItem aboutItem = new JMenuItem("About Box Terminator");
+        aboutItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	JOptionPane.showMessageDialog(spriteMap, "A Sokoban clone.", "Box Terminator",JOptionPane.PLAIN_MESSAGE,spriteMap.getPlayerSprite());
+            }
+        });
+        helpMenu.add(aboutItem);
     }
 
     //TODO The getFile method should check for a valid Sokoban level file and force the user to choose another level
