@@ -139,19 +139,25 @@ public class BoxTerm extends JPanel {
         JMenu fileMenu = new JMenu("File");
         menubar.add(fileMenu);
 
-        // JMenuItem openItem = new JMenuItem("Open");
-        // openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
-        // openItem.addActionListener(new ActionListener() {
-        // 	public void actionPerformed(ActionEvent e) {
-        // 	// GOT TO SORT THIS OUT.  Possibly put this and repeated code in main method in importLevel().
-        // 		importLevel(getFile());
-        // 		frame.remove(spriteMap);
-        // 		spriteMap = new SpriteMap(map);
-        // 		redraw();
-        // 		frame.add(spriteMap);
-        // 		frame.pack();}
-        // });
-        // fileMenu.add(openItem);
+         JMenuItem openItem = new JMenuItem("Open");
+         openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
+         openItem.addActionListener(new ActionListener() {
+         	public void actionPerformed(ActionEvent e) {
+         	// GOT TO SORT THIS OUT.  Possibly put this and repeated code in main method in importLevel().
+         		try {
+					importLevel(getFile());
+				} catch (FileNotFoundException e1) {
+					// TODO Sort out some verification here.
+					System.out.println("BAD LEVEL");
+					e1.printStackTrace();
+				}
+         		frame.remove(spriteMap);
+         		spriteMap = new SpriteMap(map);
+         		redraw();
+         		frame.add(spriteMap);
+         		frame.pack();}
+         });
+         fileMenu.add(openItem);
 
         JMenuItem quitItem = new JMenuItem("Quit");
         quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, SHORTCUT_MASK));
@@ -178,14 +184,16 @@ public class BoxTerm extends JPanel {
         fileMenu.add(levelBuilderItem);
     }
 
-    public static File getFile()
+    //TODO The getFile method should check for a valid Sokoban level file and force the user to choose another level
+    public static InputStream getFile() throws FileNotFoundException
     {
         int returnVal = fileChooser.showOpenDialog(null);
         if(returnVal != JFileChooser.APPROVE_OPTION) {
             return null;  // cancelled
         }
-        File selectedFile = fileChooser.getSelectedFile();
-        return selectedFile;
+        File selectedFile = fileChooser.getSelectedFile();       
+        InputStream streamToReturn = new FileInputStream(selectedFile);
+        return streamToReturn;
     }
 
     /**
