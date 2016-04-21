@@ -30,10 +30,8 @@ public class Cell extends JLabel{
 
                 public void mousePressed(MouseEvent me)
                 {
-                    spriteMap.getMap().storeState();
                     // If left mouse button is clicked
                     if (me.getButton() == MouseEvent.BUTTON1) {
-                        // setIcon(SpriteMap.getIconMap().get(LevelBuilder.state.name()));
                         spriteMap.getMap().put(LevelBuilder.state, position);
                         tileType = LevelBuilder.state;
                     }
@@ -44,10 +42,12 @@ public class Cell extends JLabel{
                         tileType = SokobanObject.SPACE;
                     }
                     spriteMap.placeSprites();
-                    TilePalette.boxCount = spriteMap.getMap().getMyState().getBoxPositions().size();
-                    TilePalette.pressureCount = spriteMap.getMap().getMyState().getGoalPositions().size();
-                    TilePalette.boxCounter.setText("" + TilePalette.boxCount);
-                    TilePalette.pressureCounter.setText("" + TilePalette.pressureCount);
+                    spriteMap.getMap().storeState();
+                    spriteMap.getMap().clearRedoStack();
+
+                    int boxCount = spriteMap.getMap().getMyState().getBoxPositions().size();
+                    int pressureCount = spriteMap.getMap().getMyState().getGoalPositions().size();
+                    TilePalette.updateCounters(boxCount, pressureCount);
                 }
 
                 //	Mouse hover

@@ -129,6 +129,9 @@ public class LevelBuilder extends JPanel{
 		undo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 map.undo(true);
+                int boxCount = map.getMyState().getBoxPositions().size();
+                int pressureCount = map.getMyState().getGoalPositions().size();
+                TilePalette.updateCounters(boxCount, pressureCount);
                 spriteMap.placeSprites();
             }
 		});
@@ -139,6 +142,9 @@ public class LevelBuilder extends JPanel{
 		redo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 map.redo();
+                int boxCount = map.getMyState().getBoxPositions().size();
+                int pressureCount = map.getMyState().getGoalPositions().size();
+                TilePalette.updateCounters(boxCount, pressureCount);
                 spriteMap.placeSprites();
             }
 		});

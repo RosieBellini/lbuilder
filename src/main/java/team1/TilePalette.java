@@ -76,6 +76,11 @@ public class TilePalette extends JPanel {
         }
     }
 
+    public static void updateCounters(int boxCount, int pressureCount) {
+        boxCounter.setText("" + boxCount);
+        pressureCounter.setText("" + pressureCount);
+    }
+
     class ListListener implements ListSelectionListener {
 
         @Override
