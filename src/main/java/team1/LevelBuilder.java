@@ -186,31 +186,31 @@ public class LevelBuilder extends JPanel{
         File fileDir = new File("src/incomplete_maps//"+fileName+".txt");
         System.out.println(fileDir.getAbsolutePath());
         txtFile = new PrintWriter(fileDir);
-        for(int y=0; y<rows; y++)
-        {
-            for(int x=0; x<cols; x++)
-            {
-                char tileType = tile[y][x].getTileType();
-                switch(tileType){
-                    case 'z': txtFile.print(" ");
-                              break;
-                    case 'b': txtFile.print("$");
-                              break;
-                    case 's': txtFile.print("_");
-                              break;
-                    case 'p': txtFile.print(".");
-                              break;
-                    case 'q': txtFile.print("@");
-                              break;
-                    case 'w': txtFile.print("#");
-                              break;
-                }
-            }
-            txtFile.println();
+        // for(int y=0; y<rows; y++)
+        // {
+        //     for(int x=0; x<cols; x++)
+        //     {
+        //         char tileType = tile[y][x].getTileType();
+        //         switch(tileType){
+        //             case 'z': txtFile.print(" ");
+        //                       break;
+        //             case 'b': txtFile.print("$");
+        //                       break;
+        //             case 's': txtFile.print("_");
+        //                       break;
+        //             case 'p': txtFile.print(".");
+        //                       break;
+        //             case 'q': txtFile.print("@");
+        //                       break;
+        //             case 'w': txtFile.print("#");
+        //                       break;
+        //         }
+        //     }
+        //     txtFile.println();
 
-        }
-        txtFile.flush();
-        txtFile.close();
+        // }
+        // txtFile.flush();
+        // txtFile.close();
     }
 
 }

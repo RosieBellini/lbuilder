@@ -105,7 +105,7 @@ public class Cell extends JLabel{
         return inUse;
     }
 
-    public char getTileType()
+    public String getTileType()
     {
         return tileType;
     }
