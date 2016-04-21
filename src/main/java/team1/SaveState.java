@@ -28,14 +28,6 @@ public final class SaveState {
         simpleState = false;
     }
 
-    public SaveState(Coordinate wPos, SaveState stateToCopy) {
-        this.wPos = new Coordinate(wPos);
-        this.boxPositions = new HashSet<Coordinate>(stateToCopy.getBoxPositions());
-        this.wallPositions = new HashSet<Coordinate>(stateToCopy.getWallPositions());
-        this.goalPositions = new HashSet<Coordinate>(stateToCopy.getGoalPositions());
-        simpleState = false;
-    }
-
     public SaveState(Coordinate wPos, Set<Coordinate> boxPositions) {
         this.wPos = new Coordinate(wPos);
         this.boxPositions = new HashSet<Coordinate>(boxPositions);
