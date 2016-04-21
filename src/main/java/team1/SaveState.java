@@ -10,12 +10,14 @@ public final class SaveState {
     private Set<Coordinate> boxPositions;
     private Set<Coordinate> wallPositions;
     private Set<Coordinate> goalPositions;
+    private final boolean simpleState;
 
     public SaveState(Coordinate wPos, Set<Coordinate> boxPositions, Set<Coordinate> wallPositions, Set<Coordinate> goalPositions) {
         this.wPos = new Coordinate(wPos.getX(), wPos.getY());
         this.boxPositions = new HashSet<Coordinate>(boxPositions);
         this.wallPositions = new HashSet<Coordinate>(wallPositions);
         this.goalPositions = new HashSet<Coordinate>(goalPositions);
+        simpleState = false;
     }
 
     public SaveState(SaveState stateToCopy) {
@@ -23,6 +25,7 @@ public final class SaveState {
         this.boxPositions = new HashSet<Coordinate>(stateToCopy.getBoxPositions());
         this.wallPositions = new HashSet<Coordinate>(stateToCopy.getWallPositions());
         this.goalPositions = new HashSet<Coordinate>(stateToCopy.getGoalPositions());
+        simpleState = false;
     }
 
     public SaveState(Coordinate wPos, SaveState stateToCopy) {
@@ -30,6 +33,15 @@ public final class SaveState {
         this.boxPositions = new HashSet<Coordinate>(stateToCopy.getBoxPositions());
         this.wallPositions = new HashSet<Coordinate>(stateToCopy.getWallPositions());
         this.goalPositions = new HashSet<Coordinate>(stateToCopy.getGoalPositions());
+        simpleState = false;
+    }
+
+    public SaveState(Coordinate wPos, Set<Coordinate> boxPositions) {
+        this.wPos = new Coordinate(wPos);
+        this.boxPositions = new HashSet<Coordinate>(boxPositions);
+        this.wallPositions = new HashSet<Coordinate>();
+        this.goalPositions = new HashSet<Coordinate>();
+        simpleState = true;
     }
 
     public SokobanObject get(Coordinate position) {
