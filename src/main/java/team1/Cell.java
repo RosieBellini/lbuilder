@@ -15,16 +15,18 @@ public class Cell extends JLabel{
     private SpriteMap spriteMap;
     // Coordinate values: Named i and j so they don't affect LayoutManager.
     private Coordinate position;
+    private boolean playable;
 
     public Cell(Coordinate position, SpriteMap spriteMap, boolean playable) {
         super();
+        this.playable=playable;
         this.position = position;
         this.spriteMap = spriteMap;
         tileType = SokobanObject.SPACE;
-        setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE.png"), "Default"));
+//        setIcon(new ImageIcon(getClass().getResource("/tileset01/DEFAULT.png"), "Default"));
 
         // Mouse listener:
-        if (!playable) {
+        if (!this.playable) {
             addMouseListener(new MouseAdapter(){
 
 
@@ -37,7 +39,7 @@ public class Cell extends JLabel{
                     }
 
                     if (me.getButton() == MouseEvent.BUTTON3) {
-                        setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE_HOVER.png"), "Default"));
+//                        setIcon(new ImageIcon(getClass().getResource("/tileset01/DEFAULT_HOVER.png"), "Default"));
                         spriteMap.getMap().removeLayer(position);
                         tileType = SokobanObject.SPACE;
                     }
@@ -54,12 +56,17 @@ public class Cell extends JLabel{
 
                 public void mouseEntered(MouseEvent me) {
                     if (tileType.equals(SokobanObject.SPACE)) {
-                        setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE_HOVER.png")));
+                        setIcon(spriteMap.getIconMap().get("DEFAULT_HOVER"));
                     }
                 }
 
                 public void mouseExited(MouseEvent me) {
-                    setIcon(SpriteMap.getIconMap().get(spriteMap.getMap().get(position).name()));
+                	if(spriteMap.getMap().get(position).name().equals("SPACE")){
+                		setIcon(spriteMap.getIconMap().get("DEFAULT"));
+                	}
+                	else{
+                    setIcon(spriteMap.getIconMap().get(spriteMap.getMap().get(position).name()));
+                	}
                 }
             });
         }

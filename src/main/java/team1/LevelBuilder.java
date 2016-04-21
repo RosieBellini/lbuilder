@@ -170,11 +170,11 @@ public class LevelBuilder extends JPanel{
         x = 20;
         y = 20;
         map = new SokobanMap(x, y, 100);
-        mainPanel.add(spriteMap = new SpriteMap(map, false, 3));
-		spriteMap.placeSprites();
+        mainPanel.add(spriteMap = new SpriteMap(map, false, BoxTerm.getTileSetNo()%3));
+//		spriteMap.placeSprites();
 
         // Setup TilePalette
-        mainPanel.add(new TilePalette());
+        mainPanel.add(new TilePalette(spriteMap));
 
 
         frame.add(mainPanel);
