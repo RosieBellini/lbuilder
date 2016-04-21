@@ -11,18 +11,16 @@ import javax.swing.JLabel;
 public class Cell extends JLabel{
 
     private static final long serialVersionUID = 1L;
-    private boolean inUse;
-    private String tileType;
+    private SokobanObject tileType;
     // Coordinate values: Named i and j so they don't affect LayoutManager.
     private int i; // X Coordinate
     private int j; // Y Coordinate
 
-    public Cell(int i, int j, boolean playable) {
+    public Cell(int i, int j, SokobanMap map, boolean playable) {
         super();
         this.i = i;
         this.j = j;
-        inUse = false;
-        tileType = "SPACE";
+        tileType = SokobanObject.SPACE;
         setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE.png"), "Default"));
 
         // Mouse listener:
@@ -34,18 +32,17 @@ public class Cell extends JLabel{
                 {
                     // If left mouse button is clicked
                     if (me.getButton() == MouseEvent.BUTTON1) {
-                        setIcon(SpriteMap.getIconMap().get(LevelBuilder.state));
+                        setIcon(SpriteMap.getIconMap().get(LevelBuilder.state.name()));
                         tileType = LevelBuilder.state;
-                        if (tileType == "BOX") {
+                        if (tileType == SokobanObject.BOX) {
                             TilePalette.boxCount = TilePalette.boxCount + 1;
                             TilePalette.boxCounter.setText("" + TilePalette.boxCount);	// increment box count
-                        } else if (tileType == "GOAL") {
+                        } else if (tileType == SokobanObject.GOAL) {
                             TilePalette.pressureCount = TilePalette.pressureCount + 1;
                             TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // increment pressure pad count
-                        } else if (tileType == "PLAYER") {
+                        } else if (tileType == SokobanObject.PLAYER) {
                             TilePalette.playerCount = TilePalette.playerCount + 1; //	increment player count
                         }
-                        inUse = true; // tile is in use if clicked
                     }
 
 
@@ -53,18 +50,17 @@ public class Cell extends JLabel{
                     // If right mouse is clicked, undo
                     if (me.getButton() == MouseEvent.BUTTON3) {
 
-                        if (LevelBuilder.state == "BOX" && TilePalette.boxCount != 0) {
+                        if (LevelBuilder.state == SokobanObject.BOX && TilePalette.boxCount != 0) {
                             TilePalette.boxCount -= 1;
                             TilePalette.boxCounter.setText("" + TilePalette.boxCount); // decrease box count
                         }
-                        if (LevelBuilder.state == "GOAL" && TilePalette.pressureCount != 0) {
+                        if (LevelBuilder.state == SokobanObject.GOAL && TilePalette.pressureCount != 0) {
                             TilePalette.pressureCount -= 1;
                             TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // decrease pressure pad count
                         }
 
                         setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE_HOVER.png"), "Default"));
-                        tileType = "SPACE";
-                        inUse = false;
+                        tileType = SokobanObject.SPACE;
                     }
 
                 }
@@ -72,14 +68,14 @@ public class Cell extends JLabel{
                 //	Mouse hover
 
                 public void mouseEntered(MouseEvent me) {
-                    if (!inUse) {
+                    if (tileType.equals(SokobanObject.SPACE)) {
                         setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE_HOVER.png")));
                     }
                 }
 
                 public void mouseExited(MouseEvent me) {
-                    if (!inUse) {
-                        setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE.png")));
+                    if (tileType.equals(SokobanObject.SPACE)) {
+                        setIcon(SpriteMap.getIconMap().get("SPACE"));
                     }
                 }
 
@@ -100,12 +96,7 @@ public class Cell extends JLabel{
         return j;
     }
 
-    public boolean getInUse()
-    {
-        return inUse;
-    }
-
-    public String getTileType()
+    public SokobanObject getTileType()
     {
         return tileType;
     }

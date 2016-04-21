@@ -39,6 +39,8 @@ public class TilePalette extends JPanel {
         list.setBackground(Color.GRAY);
         list.setForeground(Color.BLACK);
         add(list);
+        list.setSelectedIndex(0);
+        selectTile();
     }
 
     public void importImages() {
@@ -69,13 +71,13 @@ public class TilePalette extends JPanel {
 
         int selection = list.getSelectedIndex();
         switch(selection) {
-            case 0: LevelBuilder.state = "WALL";
+            case 0: LevelBuilder.state = SokobanObject.WALL;
                     break;
-            case 1: LevelBuilder.state = "BOX";
+            case 1: LevelBuilder.state = SokobanObject.BOX;
                     break;
-            case 2: LevelBuilder.state = "GOAL";
+            case 2: LevelBuilder.state = SokobanObject.GOAL;
                     break;
-            case 3: LevelBuilder.state = "PLAYER";
+            case 3: LevelBuilder.state = SokobanObject.PLAYER;
                     break;
         }
     }

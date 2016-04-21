@@ -14,7 +14,7 @@ import java.util.*;
 
 public class SpriteMap extends JPanel {
     private static final long serialVersionUID = 1L;
-    private static SokobanMap map;
+    private SokobanMap map;
     private int xSize;
     private int ySize;
     private JLabel[][] panelHolder;
@@ -32,11 +32,11 @@ public class SpriteMap extends JPanel {
         setLayout(new GridLayout(ySize, xSize));
         for (int y = 0; y < ySize; y++) {
             for (int x = 0; x < xSize; x++) {
-                panelHolder[y][x] = new Cell(x, y, playable);
+                panelHolder[y][x] = new Cell(x, y, map, playable);
                 add(panelHolder[y][x]);
             }
         }
-        SpriteMap.map = map;
+        this.map = map;
         this.playable = playable;
         iconMap = new HashMap<String, ImageIcon>();
         loadSprites(tileSetNo);
@@ -138,7 +138,7 @@ public class SpriteMap extends JPanel {
     	return iconMap.get("PLAYER");
     }
 
-    public static SokobanMap getMap() {
+    public SokobanMap getMap() {
         return map;
     }
 
