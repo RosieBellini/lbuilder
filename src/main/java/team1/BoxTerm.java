@@ -61,7 +61,7 @@ public class BoxTerm extends JPanel {
 		});
 		setFocusable(true);
 	}
-	
+
 	public static int getTileSetNo(){
 		return tileSetNo;
 	}
@@ -111,6 +111,9 @@ public class BoxTerm extends JPanel {
 		JMenu fileMenu = new JMenu("File");
 		menubar.add(fileMenu);
 
+		JMenu gameMenu = new JMenu("Game");
+		menubar.add(gameMenu);
+
 		JMenu viewMenu = new JMenu("View");
 		menubar.add(viewMenu);
 
@@ -152,6 +155,16 @@ public class BoxTerm extends JPanel {
 			public void actionPerformed(ActionEvent e) { System.exit(0);; }
 		});
 		fileMenu.add(quitItem);
+
+		JMenuItem resetItem = new JMenuItem("Reset level");
+		resetItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
+		resetItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                spriteMap.reset();
+                redraw();
+            }
+		});
+		gameMenu.add(resetItem);
 
 		JMenuItem tileItem = new JMenuItem("Change Tileset");
 		tileItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, SHORTCUT_MASK));

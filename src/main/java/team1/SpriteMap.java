@@ -96,6 +96,11 @@ public class SpriteMap extends JPanel {
         repaint();
     }
 
+    public void reset() {
+        map.reset();
+        mapDrawn = false;
+    }
+
     public ImageIcon randomWall() {
         if (noOfWalls == 1) {
             return iconMap.get("WALL");

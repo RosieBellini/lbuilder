@@ -108,6 +108,11 @@ public class SokobanMap {
         redoStack.clear();
     }
 
+    public void reset() {
+        history.reset();
+        clearRedoStack();
+    }
+
     public int historyLength() {
         return history.size();
     }

@@ -32,6 +32,14 @@ public class FixedSizeStack<T> extends Stack<T> {
         return numPushes;
     }
 
+    public void reset() {
+        while (this.size() > 1) {
+            super.pop();
+        }
+        numPushes = 0;
+        discarded = 0;
+    }
+
     @Override
     public T push(T object) {
         while (this.size() >= size) {
