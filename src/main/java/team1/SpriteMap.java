@@ -32,7 +32,7 @@ public class SpriteMap extends JPanel {
         setLayout(new GridLayout(ySize, xSize));
         for (int y = 0; y < ySize; y++) {
             for (int x = 0; x < xSize; x++) {
-                panelHolder[y][x] = new Cell(x, y, map, playable);
+                panelHolder[y][x] = new Cell(new Coordinate(x, y), this, playable);
                 add(panelHolder[y][x]);
             }
         }
@@ -64,8 +64,10 @@ public class SpriteMap extends JPanel {
         }
         else {
             for (Coordinate coord : map.getChanges()) {
-                SokobanObject object = map.get(coord);
-                panelHolder[coord.getY()][coord.getX()].setIcon(iconMap.get(object.name()));
+                if (!coord.equals(new Coordinate(-1, -1))) {
+                    SokobanObject object = map.get(coord);
+                    panelHolder[coord.getY()][coord.getX()].setIcon(iconMap.get(object.name()));
+                }
             }
         }
         if (playable) {

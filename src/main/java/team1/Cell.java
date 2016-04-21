@@ -12,14 +12,14 @@ public class Cell extends JLabel{
 
     private static final long serialVersionUID = 1L;
     private SokobanObject tileType;
+    private SpriteMap spriteMap;
     // Coordinate values: Named i and j so they don't affect LayoutManager.
-    private int i; // X Coordinate
-    private int j; // Y Coordinate
+    private Coordinate position;
 
-    public Cell(int i, int j, SokobanMap map, boolean playable) {
+    public Cell(Coordinate position, SpriteMap spriteMap, boolean playable) {
         super();
-        this.i = i;
-        this.j = j;
+        this.position = position;
+        this.spriteMap = spriteMap;
         tileType = SokobanObject.SPACE;
         setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE.png"), "Default"));
 
@@ -30,19 +30,12 @@ public class Cell extends JLabel{
 
                 public void mousePressed(MouseEvent me)
                 {
+                    spriteMap.getMap().storeState();
                     // If left mouse button is clicked
                     if (me.getButton() == MouseEvent.BUTTON1) {
-                        setIcon(SpriteMap.getIconMap().get(LevelBuilder.state.name()));
+                        // setIcon(SpriteMap.getIconMap().get(LevelBuilder.state.name()));
+                        spriteMap.getMap().put(LevelBuilder.state, position);
                         tileType = LevelBuilder.state;
-                        if (tileType == SokobanObject.BOX) {
-                            TilePalette.boxCount = TilePalette.boxCount + 1;
-                            TilePalette.boxCounter.setText("" + TilePalette.boxCount);	// increment box count
-                        } else if (tileType == SokobanObject.GOAL) {
-                            TilePalette.pressureCount = TilePalette.pressureCount + 1;
-                            TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // increment pressure pad count
-                        } else if (tileType == SokobanObject.PLAYER) {
-                            TilePalette.playerCount = TilePalette.playerCount + 1; //	increment player count
-                        }
                     }
 
 
@@ -62,7 +55,7 @@ public class Cell extends JLabel{
                         setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE_HOVER.png"), "Default"));
                         tileType = SokobanObject.SPACE;
                     }
-
+                    spriteMap.placeSprites();
                 }
 
                 //	Mouse hover
@@ -78,22 +71,8 @@ public class Cell extends JLabel{
                         setIcon(SpriteMap.getIconMap().get("SPACE"));
                     }
                 }
-
-
             });
         }
-    }
-
-
-    // Accessor methods:
-    public int getI()
-    {
-        return i;
-    }
-
-    public int getJ()
-    {
-        return j;
     }
 
     public SokobanObject getTileType()
@@ -101,6 +80,7 @@ public class Cell extends JLabel{
         return tileType;
     }
 
-
-
+    public Coordinate getPosition() {
+        return position;
+    }
 }

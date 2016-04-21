@@ -83,7 +83,7 @@ public class BoxTerm extends JPanel {
 		 * Then convert the raw data into a SokobanMap using the static
 		 * method charToSokobanObject from the SokobanObject class
 		 */
-		map = new SokobanMap(xSize, ySize);
+		map = new SokobanMap(xSize, ySize, 20);
 		for (String line: levelLines) {
 			for (char ch: line.toCharArray()) {
 				Coordinate coord = new Coordinate(x, y);

@@ -28,6 +28,7 @@ public class LevelBuilder extends JPanel{
     private static JMenu file, edit, help;
     private static JMenuItem newMap, open, save, compile, exit, undo, redo;
     private static String fileName;
+    private static SokobanMap map;
     private static int x, y;
     private static SpriteMap spriteMap;
     private static PrintWriter txtFile;
@@ -146,7 +147,9 @@ public class LevelBuilder extends JPanel{
         // Setup GridMap
         x = 20;
         y = 20;
-        mainPanel.add(spriteMap = new SpriteMap(new SokobanMap(x, y), false, 3));
+        map = new SokobanMap(x, y, 100);
+        mainPanel.add(spriteMap = new SpriteMap(map, false, 3));
+		spriteMap.placeSprites();
 
         // Setup TilePalette
         mainPanel.add(new TilePalette());

@@ -44,7 +44,7 @@ public class TilePalette extends JPanel {
     }
 
     public void importImages() {
-        tiles[0] = SpriteMap.getIconMap().get("SPACE");
+        tiles[0] = SpriteMap.getIconMap().get("WALL");
         tiles[1] = SpriteMap.getIconMap().get("BOX");
         tiles[2] = SpriteMap.getIconMap().get("GOAL");
         tiles[3] = SpriteMap.getIconMap().get("PLAYER");

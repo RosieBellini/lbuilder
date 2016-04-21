@@ -7,8 +7,8 @@ import java.awt.Toolkit;
  */
 public class SokobanMap extends MapContainer {
 
-    public SokobanMap(int xSize, int ySize) {
-        super(xSize, ySize);
+    public SokobanMap(int xSize, int ySize, int maxUndos) {
+        super(xSize, ySize, maxUndos);
     }
 
     /**
