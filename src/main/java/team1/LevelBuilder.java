@@ -31,7 +31,7 @@ public class LevelBuilder extends JPanel{
     private static int x, y;
     private static SpriteMap spriteMap;
     private static PrintWriter txtFile;
-    protected static char state = 'z';
+    protected static String state = "SPACE";
 
     public static void main(String args[]) {
         activate();

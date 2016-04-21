@@ -12,7 +12,7 @@ public class Cell extends JLabel{
 
     private static final long serialVersionUID = 1L;
     private boolean inUse;
-    private char tileType;
+    private String tileType;
     // Coordinate values: Named i and j so they don't affect LayoutManager.
     private int i; // X Coordinate
     private int j; // Y Coordinate
@@ -22,7 +22,7 @@ public class Cell extends JLabel{
         this.i = i;
         this.j = j;
         inUse = false;
-        tileType = 'z';
+        tileType = "SPACE";
         setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE.png"), "Default"));
 
         // Mouse listener:
@@ -34,36 +34,16 @@ public class Cell extends JLabel{
                 {
                     // If left mouse button is clicked
                     if (me.getButton() == MouseEvent.BUTTON1) {
-                        // Change icon and TileType depending on current palette state:
-
-                        int choice = LevelBuilder.state;
-
-                        switch(choice) {
-                            case 'w': setIcon(new ImageIcon(getClass().getResource("/tileset03/WALL.png"), "Wall"));
-                                      tileType = 'w';
-                                      break;
-                            case 'b': setIcon(new ImageIcon(getClass().getResource("/tileset03/BOX.png"), "Box"));
-                                      TilePalette.boxCount = TilePalette.boxCount + 1;
-                                      TilePalette.boxCounter.setText("" + TilePalette.boxCount);	// increment box count
-                                      tileType = 'b';
-                                      break;
-                            case 's': setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE.png"), "Space"));
-                                      tileType = 's';
-                                      break;
-                            case 'p': setIcon(new ImageIcon(getClass().getResource("/tileset03/GOAL.png"), "Pressure Pad"));
-                                      TilePalette.pressureCount = TilePalette.pressureCount + 1;
-                                      TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // increment pressure pad count
-                                      tileType = 'p';
-                                      break;
-                            case 'q': setIcon(new ImageIcon(getClass().getResource("/tileset03/PLAYER.png"), "Player"));
-                                      TilePalette.playerCount = TilePalette.playerCount + 1; //	increment player count
-                                      tileType = 'q';
-                                      break;
-                            case 'h': setIcon(new ImageIcon(getClass().getResource("/tileset03/GRASS.png"), "Grass"));
-                                      tileType = 'h';
-                                      break;
-
-
+                        setIcon(SpriteMap.getIconMap().get(LevelBuilder.state));
+                        tileType = LevelBuilder.state;
+                        if (tileType == "BOX") {
+                            TilePalette.boxCount = TilePalette.boxCount + 1;
+                            TilePalette.boxCounter.setText("" + TilePalette.boxCount);	// increment box count
+                        } else if (tileType == "GOAL") {
+                            TilePalette.pressureCount = TilePalette.pressureCount + 1;
+                            TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // increment pressure pad count
+                        } else if (tileType == "PLAYER") {
+                            TilePalette.playerCount = TilePalette.playerCount + 1; //	increment player count
                         }
                         inUse = true; // tile is in use if clicked
                     }
@@ -73,17 +53,17 @@ public class Cell extends JLabel{
                     // If right mouse is clicked, undo
                     if (me.getButton() == MouseEvent.BUTTON3) {
 
-                        if (LevelBuilder.state == 'b' && TilePalette.boxCount != 0) {
+                        if (LevelBuilder.state == "BOX" && TilePalette.boxCount != 0) {
                             TilePalette.boxCount -= 1;
                             TilePalette.boxCounter.setText("" + TilePalette.boxCount); // decrease box count
                         }
-                        if (LevelBuilder.state == 'p' && TilePalette.pressureCount != 0) {
+                        if (LevelBuilder.state == "GOAL" && TilePalette.pressureCount != 0) {
                             TilePalette.pressureCount -= 1;
                             TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // decrease pressure pad count
                         }
 
                         setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE_HOVER.png"), "Default"));
-                        tileType = 'z';
+                        tileType = "SPACE";
                         inUse = false;
                     }
 

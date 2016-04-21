@@ -14,11 +14,11 @@ import java.util.*;
 
 public class SpriteMap extends JPanel {
     private static final long serialVersionUID = 1L;
-    private SokobanMap map;
+    private static SokobanMap map;
     private int xSize;
     private int ySize;
     private JLabel[][] panelHolder;
-    private Map<String, ImageIcon> iconMap;
+    private static Map<String, ImageIcon> iconMap;
     private boolean mapDrawn;
     private boolean playable;
     int noOfWalls;
@@ -36,7 +36,7 @@ public class SpriteMap extends JPanel {
                 add(panelHolder[y][x]);
             }
         }
-        this.map = map;
+        SpriteMap.map = map;
         this.playable = playable;
         iconMap = new HashMap<String, ImageIcon>();
         loadSprites(tileSetNo);
@@ -136,5 +136,13 @@ public class SpriteMap extends JPanel {
 
     public ImageIcon getPlayerSprite(){
     	return iconMap.get("PLAYER");
+    }
+
+    public static SokobanMap getMap() {
+        return map;
+    }
+
+    public static Map<String, ImageIcon> getIconMap() {
+        return iconMap;
     }
 }

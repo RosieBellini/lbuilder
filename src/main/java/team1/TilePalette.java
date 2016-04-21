@@ -73,17 +73,15 @@ public class TilePalette extends JPanel {
 
         int selection = list.getSelectedIndex();
         switch(selection) {
-            case 0: LevelBuilder.state = 'w'; // wall
+            case 0: LevelBuilder.state = "WALL";
                     break;
-            case 1: LevelBuilder.state = 'b'; // box
+            case 1: LevelBuilder.state = "BOX";
                     break;
-            case 2: LevelBuilder.state = 's'; // space (floor)
+            case 2: LevelBuilder.state = "SPACE";
                     break;
-            case 3: LevelBuilder.state = 'p'; // pressure pad
+            case 3: LevelBuilder.state = "GOAL";
                     break;
-            case 4: LevelBuilder.state = 'q'; // player
-                    break;
-            case 5: LevelBuilder.state = 'h'; // grass
+            case 4: LevelBuilder.state = "PLAYER";
                     break;
         }
     }
