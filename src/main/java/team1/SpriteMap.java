@@ -45,16 +45,16 @@ public class SpriteMap extends JPanel {
 
     public void placeSprites() {
         if (!mapDrawn) {
+            Set<Coordinate> grassPositions = map.growGrass();
             for (int y = 0; y < ySize; y++) {
                 for (int x = 0; x < xSize; x++) {
                     SokobanObject object = map.get(new Coordinate(x, y));
                     if(object.name()=="WALL") {
                         panelHolder[y][x].setIcon(randomWall());
                     }
-                    else if (object.name()=="GRASS") {
+                    else if (grassPositions.contains(new Coordinate(x, y))) {
                         panelHolder[y][x].setIcon(randomGrass());
-                    }
-                    else {
+                    } else {
                         panelHolder[y][x].setIcon(iconMap.get(object.name()));
                     }
                     // panelHolder[y][x].setIcon(iconMap.get(object.name()));

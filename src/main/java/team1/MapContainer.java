@@ -14,12 +14,10 @@ import java.util.*;
 public class MapContainer {
     private FixedSizeStack<SaveState> history;
     private Stack<SaveState> redoStack;
-    // private SokobanObject[][] map;
     private int prevRedoStackSize;
     private int xSize;
     private int ySize;
     private int maxUndos;
-    private Set<Coordinate> grassPositions;
 
     /**
      * Initialises a MapContainer of the given size filled with spaces
@@ -29,7 +27,6 @@ public class MapContainer {
         history.push(new SaveState(new Coordinate(-1, -1), new HashSet<Coordinate>(), new HashSet<Coordinate>(), new HashSet<Coordinate>()));
         redoStack = new Stack<SaveState>();
         prevRedoStackSize = 0;
-        grassPositions = new HashSet<Coordinate>();
         this.maxUndos = maxUndos;
         this.xSize = xSize;
         this.ySize = ySize;
@@ -158,14 +155,11 @@ public class MapContainer {
      * @return          true if successful, false otherwise
      */
     public boolean put(SokobanObject object, Coordinate coord) {
-        // System.out.println("Placing " + object.name());
         Set<Coordinate> boxPositions = getBoxPositions();
         Set<Coordinate> wallPositions = getWallPositions();
         Set<Coordinate> goalPositions = getGoalPositions();
         Coordinate wPos = getWPos();
         SokobanObject target = get(coord);
-        // int x = coord.getX();
-        // int y = coord.getY();
 
         if (object == SokobanObject.PLAYER || object == SokobanObject.PLAYER_ON_GOAL) {
             switch(target) {
@@ -205,13 +199,6 @@ public class MapContainer {
             boxPositions.remove(coord);
             wallPositions.remove(coord);
             goalPositions.remove(coord);
-        } else if (object == SokobanObject.GRASS) {
-            if (wallPositions.contains(coord) || goalPositions.contains(coord)) {
-                return false;
-            }
-            grassPositions.add(coord);
-            // 		} else {
-            // 			map[y][x] = object;
         }
 
     history.pop();
@@ -271,8 +258,6 @@ public class MapContainer {
             return SokobanObject.PLAYER;
         } else if (getGoalPositions().contains(coord)) {
             return SokobanObject.GOAL;
-        } else if (grassPositions.contains(coord)) {
-            return SokobanObject.GRASS;
         }
         return SokobanObject.SPACE;
     }
@@ -304,18 +289,6 @@ public class MapContainer {
         } else {
             lastState = stateArray[history.size() - 2];
         }
-
-        // if (!lastState.getWPos().equals(getWPos())) {
-        // 	changedPlaces.add(getWPos());
-        // 	changedPlaces.add(lastState.getWPos());
-        // }
-
-        // Set<Coordinate> currentBoxPositionsCopy = new HashSet<Coordinate>(getBoxPositions());
-        // Set<Coordinate> lastBoxPositionsCopy = new HashSet<Coordinate>(lastState.getBoxPositions());
-        // currentBoxPositionsCopy.removeAll(lastState.getBoxPositions());
-        // lastBoxPositionsCopy.removeAll(getBoxPositions());
-        // changedPlaces.addAll(currentBoxPositionsCopy);
-        // changedPlaces.addAll(lastBoxPositionsCopy);
 
         return history.peek().compareStates(lastState);
     }
@@ -373,13 +346,15 @@ public class MapContainer {
         return neighbors;
     }
 
-    public void growGrass(){
+    public Set<Coordinate> growGrass() {
         Set<Coordinate> potentialGrass = Coordinate.allValidCoordinates(getXSize(), getYSize());
+        Set<Coordinate> grassPositions = new HashSet<Coordinate>();
         potentialGrass.removeAll(accessibleSpaces(getWPos(),true));
         for(Coordinate potentialGrassSpace : potentialGrass){
             if (get(potentialGrassSpace) == SokobanObject.SPACE) {
-                put(SokobanObject.GRASS, potentialGrassSpace);
+                grassPositions.add(potentialGrassSpace);
             }
         }
+        return grassPositions;
     }
 }

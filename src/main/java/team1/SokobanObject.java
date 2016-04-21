@@ -13,7 +13,7 @@ package team1;
  */
 
 public enum SokobanObject {
-    SPACE, WALL, GOAL, BOX, BOX_ON_GOAL, PLAYER, PLAYER_ON_GOAL, GRASS;
+    SPACE, WALL, GOAL, BOX, BOX_ON_GOAL, PLAYER, PLAYER_ON_GOAL;
 
     /**
      * Converts a SokobanObject to a String
@@ -29,7 +29,6 @@ public enum SokobanObject {
             case BOX_ON_GOAL:       return "*";
             case PLAYER:            return "@";
             case PLAYER_ON_GOAL:    return "+";
-            case GRASS:				return "G";
             default:                return "!";
         }
     }
@@ -57,8 +56,6 @@ public enum SokobanObject {
                         break;
             case ' ':   object = SokobanObject.SPACE;
                         break;
-            case 'G':   object = SokobanObject.GRASS;
-            			break;
         }
         return object;
     }
