@@ -38,24 +38,16 @@ public class Cell extends JLabel{
                         tileType = LevelBuilder.state;
                     }
 
-
-                    // If right mouse is clicked, undo
-                    // If right mouse is clicked, undo
                     if (me.getButton() == MouseEvent.BUTTON3) {
-
-                        if (LevelBuilder.state == SokobanObject.BOX && TilePalette.boxCount != 0) {
-                            TilePalette.boxCount -= 1;
-                            TilePalette.boxCounter.setText("" + TilePalette.boxCount); // decrease box count
-                        }
-                        if (LevelBuilder.state == SokobanObject.GOAL && TilePalette.pressureCount != 0) {
-                            TilePalette.pressureCount -= 1;
-                            TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // decrease pressure pad count
-                        }
-
                         setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE_HOVER.png"), "Default"));
+                        spriteMap.getMap().removeLayer(position);
                         tileType = SokobanObject.SPACE;
                     }
                     spriteMap.placeSprites();
+                    TilePalette.boxCount = spriteMap.getMap().getBoxPositions().size();
+                    TilePalette.pressureCount = spriteMap.getMap().getGoalPositions().size();
+                    TilePalette.boxCounter.setText("" + TilePalette.boxCount);
+                    TilePalette.pressureCounter.setText("" + TilePalette.pressureCount);
                 }
 
                 //	Mouse hover
@@ -67,9 +59,7 @@ public class Cell extends JLabel{
                 }
 
                 public void mouseExited(MouseEvent me) {
-                    if (tileType.equals(SokobanObject.SPACE)) {
-                        setIcon(SpriteMap.getIconMap().get("SPACE"));
-                    }
+                    setIcon(SpriteMap.getIconMap().get(spriteMap.getMap().get(position).name()));
                 }
             });
         }

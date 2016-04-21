@@ -46,26 +46,26 @@ public class LevelBuilder extends JPanel{
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 boolean finished = false;
-                // while(!finished){
-                //     fileName = JOptionPane.showInputDialog("Please input a name for your map. \nIf file name already exists, it will be overwritten.");
-                //     try{
-                //         saveMap(gridMap.getCells(), 20, 20, fileName);
-                //         finished=true;
-                //     }
-                //     catch(FileNotFoundException e)
-                //     {
-                //         System.out.print("FileNotFoundException found");
-                //     }
-                //     catch(IllegalArgumentException e)
-                //     {
-                //         JOptionPane.showMessageDialog(null,e.getMessage(),  "Warning: Save Error",JOptionPane.WARNING_MESSAGE);
-                //     }
-                //     catch(NullPointerException e)
-                //     {
-                //         // A NullPointerException is thrown if the user click cancel:
-                //         finished = true;
-                //     }
-                // }
+                while(!finished){
+                    fileName = JOptionPane.showInputDialog("Please input a name for your map. \nIf file name already exists, it will be overwritten.");
+                    try{
+                        saveMap(fileName);
+                        finished=true;
+                    }
+                    catch(FileNotFoundException e)
+                    {
+                        System.out.print("FileNotFoundException found");
+                    }
+                    catch(IllegalArgumentException e)
+                    {
+                        JOptionPane.showMessageDialog(null,e.getMessage(),  "Warning: Save Error",JOptionPane.WARNING_MESSAGE);
+                    }
+                    catch(NullPointerException e)
+                    {
+                        // A NullPointerException is thrown if the user click cancel:
+                        finished = true;
+                    }
+                }
             }
 
         }
@@ -122,10 +122,22 @@ public class LevelBuilder extends JPanel{
         // Edit Sub-Menu Items:
         undo = new JMenuItem("Undo", KeyEvent.VK_Z);
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
+		undo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                map.undo(true);
+                spriteMap.placeSprites();
+            }
+		});
         undo.setToolTipText("Undo block placements");
 
         redo = new JMenuItem("Redo", KeyEvent.VK_Y);
         redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+		redo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                map.redo();
+                spriteMap.placeSprites();
+            }
+		});
         redo.setToolTipText("Redo block placements");
 
         file.add(newMap);
@@ -170,7 +182,7 @@ public class LevelBuilder extends JPanel{
      * @param fileName the user's chosen filename for the txt file.
      * @throws FileNotFoundException
      */
-    public static void saveMap(Cell[][] tile, int rows, int cols, String fileName) throws FileNotFoundException
+    public static void saveMap(String fileName) throws FileNotFoundException
     {
         // First, check if fileName is empty and throw an exception:
         if(fileName.isEmpty())
@@ -186,34 +198,14 @@ public class LevelBuilder extends JPanel{
         }
 
         // If nothing is thrown, begin parsing the map into a text file with the user's chosen filename:
-        File fileDir = new File("src/incomplete_maps//"+fileName+".txt");
+        File fileDir = new File(fileName+".txt");
         System.out.println(fileDir.getAbsolutePath());
         txtFile = new PrintWriter(fileDir);
-        // for(int y=0; y<rows; y++)
-        // {
-        //     for(int x=0; x<cols; x++)
-        //     {
-        //         char tileType = tile[y][x].getTileType();
-        //         switch(tileType){
-        //             case 'z': txtFile.print(" ");
-        //                       break;
-        //             case 'b': txtFile.print("$");
-        //                       break;
-        //             case 's': txtFile.print("_");
-        //                       break;
-        //             case 'p': txtFile.print(".");
-        //                       break;
-        //             case 'q': txtFile.print("@");
-        //                       break;
-        //             case 'w': txtFile.print("#");
-        //                       break;
-        //         }
-        //     }
-        //     txtFile.println();
+        txtFile.println(map.toString());
 
         // }
-        // txtFile.flush();
-        // txtFile.close();
+        txtFile.flush();
+        txtFile.close();
     }
 
 }
