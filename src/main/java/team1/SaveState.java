@@ -155,5 +155,16 @@ public final class SaveState {
         changedPlaces.addAll(symmetricDiff(goalPositions, someState.getGoalPositions()));
         return changedPlaces;
     }
+
+    public boolean equals(SaveState someState) {
+        return wPos.equals(someState.getWPos())
+            && boxPositions.equals(someState.getBoxPositions())
+            && wallPositions.equals(someState.getWallPositions())
+            && goalPositions.equals(someState.getGoalPositions());
+    }
+
+    public int hashCode(){
+        return Arrays.hashCode(new Object[]{wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(), goalPositions.hashCode()});
+    }
 }
 
