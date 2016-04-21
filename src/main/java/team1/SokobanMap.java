@@ -53,7 +53,6 @@ public class SokobanMap extends MapContainer {
 		}
 		level.close();
         return map;
-		// map.growGrass();
 	}
 
     public SokobanMap(int xSize, int ySize, int maxUndos) {
@@ -120,7 +119,7 @@ public class SokobanMap extends MapContainer {
      * @return true if the move is permitted, false otherwise
      */
     public boolean move(Coordinate direction) {
-        Coordinate wCoord = super.getWPos();
+        Coordinate wCoord = super.getMyState().getWPos();
         Coordinate nCoord = wCoord.add(direction);
         super.storeState();
 

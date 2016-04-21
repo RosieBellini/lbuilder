@@ -11,6 +11,11 @@ public class Coordinate {
         this.y = y;
     }
 
+    public Coordinate(Coordinate coordToCopy) {
+        this.x = coordToCopy.getX();
+        this.y = coordToCopy.getY();
+    }
+
     public int getX() {
         return x;
     }

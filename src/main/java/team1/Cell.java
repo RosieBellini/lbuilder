@@ -44,8 +44,8 @@ public class Cell extends JLabel{
                         tileType = SokobanObject.SPACE;
                     }
                     spriteMap.placeSprites();
-                    TilePalette.boxCount = spriteMap.getMap().getBoxPositions().size();
-                    TilePalette.pressureCount = spriteMap.getMap().getGoalPositions().size();
+                    TilePalette.boxCount = spriteMap.getMap().getMyState().getBoxPositions().size();
+                    TilePalette.pressureCount = spriteMap.getMap().getMyState().getGoalPositions().size();
                     TilePalette.boxCounter.setText("" + TilePalette.boxCount);
                     TilePalette.pressureCounter.setText("" + TilePalette.pressureCount);
                 }

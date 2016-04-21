@@ -52,7 +52,7 @@ public class SpriteMap extends JPanel {
                     if(object.name()=="WALL") {
                         panelHolder[y][x].setIcon(randomWall());
                     }
-                    else if (grassPositions.contains(new Coordinate(x, y))) {
+                    else if (playable && grassPositions.contains(new Coordinate(x, y))) {
                         panelHolder[y][x].setIcon(randomGrass());
                     } else {
                         panelHolder[y][x].setIcon(iconMap.get(object.name()));

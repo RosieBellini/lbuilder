@@ -41,7 +41,7 @@ public class MapContainer {
     }
 
     public void storeState() {
-        history.push(new SaveState(getWPos(), getBoxPositions(), getWallPositions(), getGoalPositions()));
+        history.push(new SaveState(getMyState()));
     }
 
     /**
@@ -50,7 +50,7 @@ public class MapContainer {
      * @return a SaveState which represents a state of the game for the solving algorithm to use.
      */
     public SaveState getState(){
-        Set<Coordinate> accessibleSpaces = accessibleSpaces(getWPos(),true);
+        Set<Coordinate> accessibleSpaces = accessibleSpaces(getMyState().getWPos(),true);
         Coordinate potentialTopLeftSpace = new Coordinate(getXSize(),getYSize());
         boolean done = false;
         for(int y=0;y<getYSize();y++){
@@ -66,7 +66,7 @@ public class MapContainer {
             }
         }
         //		System.out.println(potentialTopLeftSpace.getX()+""+potentialTopLeftSpace.getY());
-        return new SaveState(potentialTopLeftSpace, getBoxPositions(), getWallPositions(), getGoalPositions());
+        return new SaveState(potentialTopLeftSpace, getMyState());
     }
 
     /**
@@ -116,33 +116,16 @@ public class MapContainer {
      * @return  true if all boxes are on a goal, false otherwise
      */
     public boolean isDone() {
-        for (Coordinate coord : getGoalPositions()) {
-        	if (get(coord) != SokobanObject.BOX_ON_GOAL) {
-        		return false;
-        	}
+        for (Coordinate coord : getMyState().getGoalPositions()) {
+            if (get(coord) != SokobanObject.BOX_ON_GOAL) {
+                return false;
+            }
         }
         return true;
     }
 
-    /**
-     * Get the position of the worker
-     *
-     * @return  coordinates of the worker
-     */
-    public Coordinate getWPos() {
-        return history.peek().getWPos();
-    }
-
-    public Set<Coordinate> getBoxPositions() {
-        return history.peek().getBoxPositions();
-    }
-
-    public Set<Coordinate> getWallPositions() {
-        return history.peek().getWallPositions();
-    }
-
-    public Set<Coordinate> getGoalPositions() {
-        return history.peek().getGoalPositions();
+    public SaveState getMyState() {
+        return history.peek();
     }
 
     /**
@@ -155,59 +138,7 @@ public class MapContainer {
      * @return          true if successful, false otherwise
      */
     public boolean put(SokobanObject object, Coordinate coord) {
-        Set<Coordinate> boxPositions = getBoxPositions();
-        Set<Coordinate> wallPositions = getWallPositions();
-        Set<Coordinate> goalPositions = getGoalPositions();
-        Coordinate wPos = getWPos();
-        SokobanObject target = get(coord);
-
-        if (object == SokobanObject.PLAYER || object == SokobanObject.PLAYER_ON_GOAL) {
-            switch(target) {
-                case SPACE:
-                case GOAL:      wPos = coord;
-                                break;
-                default:        return false;
-            }
-            if (object == SokobanObject.PLAYER_ON_GOAL) {
-                goalPositions.add(coord);
-            }
-
-        } else if (object == SokobanObject.BOX || object == SokobanObject.BOX_ON_GOAL) {
-            switch(target) {
-                case SPACE:
-                case GOAL:  if (!boxHere(coord)) {
-                                boxPositions.add(coord);
-                }
-                break;
-                default:    return false;
-            }
-            if (object == SokobanObject.BOX_ON_GOAL) {
-                goalPositions.add(coord);
-            }
-
-        } else if (object == SokobanObject.WALL) {
-            if (wPos.equals(coord) || boxHere(coord)) {
-                return false;
-            }
-            wallPositions.add(coord);
-        } else if (object == SokobanObject.GOAL) {
-            if (wallPositions.contains(coord)) {
-                return false;
-            }
-            goalPositions.add(coord);
-        } else if (object == SokobanObject.SPACE) {
-            boxPositions.remove(coord);
-            wallPositions.remove(coord);
-            goalPositions.remove(coord);
-        }
-
-    history.pop();
-    history.push(new SaveState(wPos, boxPositions, wallPositions, goalPositions));
-    return true;
-    }
-
-    public boolean boxHere(Coordinate coord) {
-        return getBoxPositions().contains(coord);
+        return getMyState().put(object, coord);
     }
 
     /**
@@ -217,23 +148,7 @@ public class MapContainer {
      * @param coord     the coordinate to remove a layer from
      */
     public void removeLayer(Coordinate coord) {
-        Coordinate wPos = getWPos();
-        Set<Coordinate> boxPositions = getBoxPositions();
-        Set<Coordinate> wallPositions = getWallPositions();
-        Set<Coordinate> goalPositions = getGoalPositions();
-        if (wPos.equals(coord)) {
-            wPos = new Coordinate(-1, -1);
-        } else if (get(coord).equals(SokobanObject.BOX_ON_GOAL)) {
-            boxPositions.remove(coord);
-        } else if (get(coord).equals(SokobanObject.BOX)) {
-            boxPositions.remove(coord);
-        } else if (get(coord).equals(SokobanObject.WALL)) {
-            wallPositions.remove(coord);
-        } else if (get(coord).equals(SokobanObject.GOAL)) {
-            goalPositions.remove(coord);
-        }
-        history.pop();
-        history.push(new SaveState(wPos, boxPositions, wallPositions, goalPositions));
+        getMyState().removeLayer(coord);
     }
 
     /**
@@ -242,24 +157,7 @@ public class MapContainer {
      * and returned.
      */
     public SokobanObject get(Coordinate coord) {
-        int x = coord.getX();
-        int y = coord.getY();
-        if (x > getXSize() - 1 || y > getYSize() - 1 || x < 0 || y < 0 || getWallPositions().contains(coord)) {
-            return SokobanObject.WALL;
-        } else if (boxHere(coord)) {
-            if (getGoalPositions().contains(coord)) {
-                return SokobanObject.BOX_ON_GOAL;
-            }
-            return SokobanObject.BOX;
-        } else if (getWPos().equals(coord)) {
-            if (getGoalPositions().contains(coord)) {
-                return SokobanObject.PLAYER_ON_GOAL;
-            }
-            return SokobanObject.PLAYER;
-        } else if (getGoalPositions().contains(coord)) {
-            return SokobanObject.GOAL;
-        }
-        return SokobanObject.SPACE;
+        return getMyState().get(coord);
     }
 
     public String toString() {
@@ -290,7 +188,7 @@ public class MapContainer {
             lastState = stateArray[history.size() - 2];
         }
 
-        return history.peek().compareStates(lastState);
+        return getMyState().compareStates(lastState);
     }
 
     /**
@@ -349,7 +247,7 @@ public class MapContainer {
     public Set<Coordinate> growGrass() {
         Set<Coordinate> potentialGrass = Coordinate.allValidCoordinates(getXSize(), getYSize());
         Set<Coordinate> grassPositions = new HashSet<Coordinate>();
-        potentialGrass.removeAll(accessibleSpaces(getWPos(),true));
+        potentialGrass.removeAll(accessibleSpaces(getMyState().getWPos(),true));
         for(Coordinate potentialGrassSpace : potentialGrass){
             if (get(potentialGrassSpace) == SokobanObject.SPACE) {
                 grassPositions.add(potentialGrassSpace);

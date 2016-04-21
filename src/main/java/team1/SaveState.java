@@ -6,10 +6,10 @@ import java.util.*;
  * Represents the positions of dynamic objects (the player and boxes)
  */
 public final class SaveState {
-    private final Coordinate wPos;
-    private final Set<Coordinate> boxPositions;
-    private final Set<Coordinate> wallPositions;
-    private final Set<Coordinate> goalPositions;
+    private Coordinate wPos;
+    private Set<Coordinate> boxPositions;
+    private Set<Coordinate> wallPositions;
+    private Set<Coordinate> goalPositions;
 
     public SaveState(Coordinate wPos, Set<Coordinate> boxPositions, Set<Coordinate> wallPositions, Set<Coordinate> goalPositions) {
         this.wPos = new Coordinate(wPos.getX(), wPos.getY());
@@ -18,12 +18,101 @@ public final class SaveState {
         this.goalPositions = new HashSet<Coordinate>(goalPositions);
     }
 
-    public final Coordinate getWPos() {
-        return wPos;
+    public SaveState(SaveState stateToCopy) {
+        this.wPos = new Coordinate(stateToCopy.getWPos());
+        this.boxPositions = new HashSet<Coordinate>(stateToCopy.getBoxPositions());
+        this.wallPositions = new HashSet<Coordinate>(stateToCopy.getWallPositions());
+        this.goalPositions = new HashSet<Coordinate>(stateToCopy.getGoalPositions());
     }
 
-    public boolean isEmpty(Coordinate position) {
-        return boxPositions.contains(position) || goalPositions.contains(position) || wallPositions.contains(position);
+    public SaveState(Coordinate wPos, SaveState stateToCopy) {
+        this.wPos = new Coordinate(wPos);
+        this.boxPositions = new HashSet<Coordinate>(stateToCopy.getBoxPositions());
+        this.wallPositions = new HashSet<Coordinate>(stateToCopy.getWallPositions());
+        this.goalPositions = new HashSet<Coordinate>(stateToCopy.getGoalPositions());
+    }
+
+    public SokobanObject get(Coordinate position) {
+        if (wallPositions.contains(position)) {
+            return SokobanObject.WALL;
+        } else if (goalPositions.contains(position)) {
+            if (wPos.equals(position)) {
+                return SokobanObject.PLAYER_ON_GOAL;
+            } else if (boxPositions.contains(position)) {
+                return SokobanObject.BOX_ON_GOAL;
+            }
+            return SokobanObject.GOAL;
+        } else if (boxPositions.contains(position)) {
+            return SokobanObject.BOX;
+        } else if (wPos.equals(position)) {
+            return SokobanObject.PLAYER;
+        } else {
+            return SokobanObject.SPACE;
+        }
+    }
+
+    public boolean put(SokobanObject object, Coordinate coord) {
+        SokobanObject target = get(coord);
+
+        if (object == SokobanObject.PLAYER || object == SokobanObject.PLAYER_ON_GOAL) {
+            switch(target) {
+                case SPACE:
+                case GOAL:      wPos = coord;
+                                break;
+                default:        return false;
+            }
+            if (object == SokobanObject.PLAYER_ON_GOAL) {
+                goalPositions.add(coord);
+            }
+
+        } else if (object == SokobanObject.BOX || object == SokobanObject.BOX_ON_GOAL) {
+            switch(target) {
+                case SPACE:
+                case GOAL:  if (!boxPositions.contains(coord)) {
+                                boxPositions.add(coord);
+                }
+                break;
+                default:    return false;
+            }
+            if (object == SokobanObject.BOX_ON_GOAL) {
+                goalPositions.add(coord);
+            }
+
+        } else if (object == SokobanObject.WALL) {
+            if (wPos.equals(coord) || boxPositions.contains(coord)) {
+                return false;
+            }
+            wallPositions.add(coord);
+        } else if (object == SokobanObject.GOAL) {
+            if (wallPositions.contains(coord)) {
+                return false;
+            }
+            goalPositions.add(coord);
+        } else if (object == SokobanObject.SPACE) {
+            boxPositions.remove(coord);
+            wallPositions.remove(coord);
+            goalPositions.remove(coord);
+        }
+        return true;
+    }
+
+    public void removeLayer(Coordinate coord) {
+        Coordinate wPos = getWPos();
+        if (wPos.equals(coord)) {
+            wPos = new Coordinate(-1, -1);
+        } else if (get(coord).equals(SokobanObject.BOX_ON_GOAL)) {
+            boxPositions.remove(coord);
+        } else if (get(coord).equals(SokobanObject.BOX)) {
+            boxPositions.remove(coord);
+        } else if (get(coord).equals(SokobanObject.WALL)) {
+            wallPositions.remove(coord);
+        } else if (get(coord).equals(SokobanObject.GOAL)) {
+            goalPositions.remove(coord);
+        }
+    }
+
+    public final Coordinate getWPos() {
+        return wPos;
     }
 
     public void makeEmpty(Coordinate position) {
