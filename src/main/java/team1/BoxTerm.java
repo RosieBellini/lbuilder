@@ -1,16 +1,25 @@
 package team1;
 
-import java.util.*;
-import java.io.*;
 import java.awt.Font;
 import java.awt.Toolkit;
-
-import javax.swing.*;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 
 /** Box Terminator main method. This class handles importing the level, drawing
  * the game screen and interpreting key presses.
@@ -51,51 +60,6 @@ public class BoxTerm extends JPanel {
 			}
 		});
 		setFocusable(true);
-	}
-
-	/**
-	 * Interprets the contents of the "level" file and stores it as a SokobanMap
-	 */
-	private static void importLevel(InputStream levelFile) {
-		if (levelFile == null) { //If Getfile is cancelled.
-			return;
-		}
-		int x = 0;
-		int y = 0;
-		xSize = 0;
-		ySize = 0;
-		/*
-		 * First, get the raw data as an array of strings and use this to
-		 * determine the size of the level
-		 */
-		ArrayList<String> levelLines = new ArrayList<String>();
-		Scanner level = new Scanner(levelFile);
-		while (level.hasNextLine()) {
-			String line = level.nextLine();
-			if (line.length() > xSize) {
-				xSize = line.length();
-			}
-			levelLines.add(line);
-		}
-		ySize = levelLines.size();
-
-		/*
-		 * Then convert the raw data into a SokobanMap using the static
-		 * method charToSokobanObject from the SokobanObject class
-		 */
-		map = new SokobanMap(xSize, ySize, 20);
-		for (String line: levelLines) {
-			for (char ch: line.toCharArray()) {
-				Coordinate coord = new Coordinate(x, y);
-				SokobanObject object = SokobanObject.charToSokobanObject(ch);
-				map.put(object, coord);
-				x++;
-			}
-			x = 0;
-			y++;
-		}
-		level.close();
-		map.growGrass();
 	}
 
 	/**
@@ -148,7 +112,7 @@ public class BoxTerm extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// GOT TO SORT THIS OUT.  Possibly put this and repeated code in main method in importLevel().
 				try {
-					importLevel(getFile());
+					SokobanMap.importLevel(getFile());
 				} catch (FileNotFoundException e1) {
 					// TODO Sort out some verification here.
 					System.out.println("BAD LEVEL");
@@ -221,7 +185,8 @@ public class BoxTerm extends JPanel {
 	public static void main(String[] args) {
 		// importLevel(new File("src/main/resources/level"));
 		InputStream level = BoxTerm.class.getClassLoader().getResourceAsStream("level");
-		importLevel(level);
+		map = SokobanMap.importLevel(level);
+        map.growGrass();
 		BoxTerm boxterm = new BoxTerm();
 		JFrame frame = new JFrame("Box Terminator");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

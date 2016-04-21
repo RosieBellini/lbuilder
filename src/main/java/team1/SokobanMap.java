@@ -1,11 +1,60 @@
 package team1;
 
 import java.awt.Toolkit;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Provides methods to move objects around in a MapContainer
  */
 public class SokobanMap extends MapContainer {
+
+	/**
+	 * Interprets the contents of the "level" file and stores it as a SokobanMap
+	 */
+	public static SokobanMap importLevel(InputStream levelFile) {
+		// if (levelFile == null) { //If Getfile is cancelled.
+		// 	return;
+		// }
+		int x = 0;
+		int y = 0;
+		int xSize = 0;
+		int ySize = 0;
+		/*
+		 * First, get the raw data as an array of strings and use this to
+		 * determine the size of the level
+		 */
+		ArrayList<String> levelLines = new ArrayList<String>();
+		Scanner level = new Scanner(levelFile);
+		while (level.hasNextLine()) {
+			String line = level.nextLine();
+			if (line.length() > xSize) {
+				xSize = line.length();
+			}
+			levelLines.add(line);
+		}
+		ySize = levelLines.size();
+
+		SokobanMap map = new SokobanMap(xSize, ySize, 20);
+		/*
+		 * Then convert the raw data into a SokobanMap using the static
+		 * method charToSokobanObject from the SokobanObject class
+		 */
+		for (String line: levelLines) {
+			for (char ch: line.toCharArray()) {
+				Coordinate coord = new Coordinate(x, y);
+				SokobanObject object = SokobanObject.charToSokobanObject(ch);
+				map.put(object, coord);
+				x++;
+			}
+			x = 0;
+			y++;
+		}
+		level.close();
+        return map;
+		// map.growGrass();
+	}
 
     public SokobanMap(int xSize, int ySize, int maxUndos) {
         super(xSize, ySize, maxUndos);
