@@ -3,6 +3,8 @@ import java.awt.Toolkit;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
+
 // import javax.imageio.*;
 import javax.swing.*;
 // import java.io.*;
@@ -23,6 +25,7 @@ public class SpriteMap extends JPanel {
     private boolean playable;
     int noOfWalls;
     int noOfGrass;
+    float magnification;
 
     public SpriteMap(SokobanMap map, boolean playable, int tileSetNo) {
         mapDrawn = false;
@@ -38,6 +41,7 @@ public class SpriteMap extends JPanel {
         }
         this.map = map;
         this.playable = playable;
+        magnification = 1;
         iconMap = new HashMap<String, ImageIcon>();
         loadSprites(tileSetNo);
         setVisible(true);
@@ -45,6 +49,7 @@ public class SpriteMap extends JPanel {
 
     public void placeSprites() {
         if (!mapDrawn) {
+        	resizeSprites();
             Set<Coordinate> grassPositions = map.growGrass();
             for (int y = 0; y < ySize; y++) {
                 for (int x = 0; x < xSize; x++) {
@@ -147,4 +152,25 @@ public class SpriteMap extends JPanel {
     public static Map<String, ImageIcon> getIconMap() {
         return iconMap;
     }
+        
+    public void changeMagnification(boolean getBigger){
+        if (getBigger){
+            magnification++;
+            }
+        else {
+            magnification=magnification/2;
+        }
+        mapDrawn=false;
+    }
+    
+    public void resizeSprites(){
+        float iconDimension = magnification*32;
+        int newIconDimension= (int)iconDimension;
+        for(String iconName:iconMap.keySet()){
+            Image iconImage = iconMap.get(iconName).getImage();
+            Image resizedImage = iconImage.getScaledInstance(newIconDimension,newIconDimension,Image.SCALE_DEFAULT);
+            iconMap.put(iconName, new ImageIcon(resizedImage));
+        }        
+    }
+
 }
