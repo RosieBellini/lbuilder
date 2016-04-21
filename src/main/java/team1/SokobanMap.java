@@ -2,7 +2,11 @@ package team1;
 
 import java.awt.Toolkit;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * Represents a Sokoban level. "Static" objects (spaces, walls, goals) are
