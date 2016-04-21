@@ -32,7 +32,7 @@ public class SpriteMap extends JPanel {
         setLayout(new GridLayout(ySize, xSize));
         for (int y = 0; y < ySize; y++) {
             for (int x = 0; x < xSize; x++) {
-                panelHolder[y][x] = new JLabel();
+                panelHolder[y][x] = new Cell(x, y, playable);
                 add(panelHolder[y][x]);
             }
         }

@@ -17,95 +17,95 @@ public class Cell extends JLabel{
     private int i; // X Coordinate
     private int j; // Y Coordinate
 
-    public Cell(int i, int j)
-    {
+    public Cell(int i, int j, boolean playable) {
         super();
         this.i = i;
         this.j = j;
         inUse = false;
         tileType = 'z';
-        setIcon(new ImageIcon(getClass().getResource("/tileset01/DEFAULT.png"), "Default"));
+        setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE.png"), "Default"));
 
         // Mouse listener:
-        addMouseListener(new MouseAdapter(){
+        if (!playable) {
+            addMouseListener(new MouseAdapter(){
 
 
-            public void mousePressed(MouseEvent me)
-            {
-                // If left mouse button is clicked
-                if (me.getButton() == MouseEvent.BUTTON1) {
-                    // Change icon and TileType depending on current palette state:
+                public void mousePressed(MouseEvent me)
+                {
+                    // If left mouse button is clicked
+                    if (me.getButton() == MouseEvent.BUTTON1) {
+                        // Change icon and TileType depending on current palette state:
 
-                    int choice = LevelBuilder.state;
+                        int choice = LevelBuilder.state;
 
-                    switch(choice) {
-                        case 'w': setIcon(new ImageIcon(getClass().getResource("/tileset01/WALL.png"), "Wall"));
-                                  tileType = 'w';
-                                  break;
-                        case 'b': setIcon(new ImageIcon(getClass().getResource("/tileset01/BOX.png"), "Box"));
-                                  TilePalette.boxCount = TilePalette.boxCount + 1;
-                                  TilePalette.boxCounter.setText("" + TilePalette.boxCount);	// increment box count
-                                  tileType = 'b';
-                                  break;
-                        case 's': setIcon(new ImageIcon(getClass().getResource("/tileset01/SPACE.png"), "Space"));
-                                  tileType = 's';
-                                  break;
-                        case 'p': setIcon(new ImageIcon(getClass().getResource("/tileset01/GOAL.png"), "Pressure Pad"));
-                                  TilePalette.pressureCount = TilePalette.pressureCount + 1;
-                                  TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // increment pressure pad count
-                                  tileType = 'p';
-                                  break;
-                        case 'q': setIcon(new ImageIcon(getClass().getResource("/tileset01/PLAYER.png"), "Player"));
-                                  TilePalette.playerCount = TilePalette.playerCount + 1; //	increment player count
-                                  tileType = 'q';
-                                  break;
-                        case 'h': setIcon(new ImageIcon(getClass().getResource("/tileset01/GRASS.png"), "Grass"));
-                                  tileType = 'h';
-                                  break;
-
-
-                    }
-                    inUse = true; // tile is in use if clicked
-                }
+                        switch(choice) {
+                            case 'w': setIcon(new ImageIcon(getClass().getResource("/tileset03/WALL.png"), "Wall"));
+                                      tileType = 'w';
+                                      break;
+                            case 'b': setIcon(new ImageIcon(getClass().getResource("/tileset03/BOX.png"), "Box"));
+                                      TilePalette.boxCount = TilePalette.boxCount + 1;
+                                      TilePalette.boxCounter.setText("" + TilePalette.boxCount);	// increment box count
+                                      tileType = 'b';
+                                      break;
+                            case 's': setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE.png"), "Space"));
+                                      tileType = 's';
+                                      break;
+                            case 'p': setIcon(new ImageIcon(getClass().getResource("/tileset03/GOAL.png"), "Pressure Pad"));
+                                      TilePalette.pressureCount = TilePalette.pressureCount + 1;
+                                      TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // increment pressure pad count
+                                      tileType = 'p';
+                                      break;
+                            case 'q': setIcon(new ImageIcon(getClass().getResource("/tileset03/PLAYER.png"), "Player"));
+                                      TilePalette.playerCount = TilePalette.playerCount + 1; //	increment player count
+                                      tileType = 'q';
+                                      break;
+                            case 'h': setIcon(new ImageIcon(getClass().getResource("/tileset03/GRASS.png"), "Grass"));
+                                      tileType = 'h';
+                                      break;
 
 
-                // If right mouse is clicked, undo
-                // If right mouse is clicked, undo
-                if (me.getButton() == MouseEvent.BUTTON3) {
-
-                    if (LevelBuilder.state == 'b' && TilePalette.boxCount != 0) {
-                        TilePalette.boxCount -= 1;
-                        TilePalette.boxCounter.setText("" + TilePalette.boxCount); // decrease box count
-                    }
-                    if (LevelBuilder.state == 'p' && TilePalette.pressureCount != 0) {
-                        TilePalette.pressureCount -= 1;
-                        TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // decrease pressure pad count
+                        }
+                        inUse = true; // tile is in use if clicked
                     }
 
-                    setIcon(new ImageIcon(getClass().getResource("/tileset01/DEFAULT_HOVER.png"), "Default"));
-                    tileType = 'z';
-                    inUse = false;
+
+                    // If right mouse is clicked, undo
+                    // If right mouse is clicked, undo
+                    if (me.getButton() == MouseEvent.BUTTON3) {
+
+                        if (LevelBuilder.state == 'b' && TilePalette.boxCount != 0) {
+                            TilePalette.boxCount -= 1;
+                            TilePalette.boxCounter.setText("" + TilePalette.boxCount); // decrease box count
+                        }
+                        if (LevelBuilder.state == 'p' && TilePalette.pressureCount != 0) {
+                            TilePalette.pressureCount -= 1;
+                            TilePalette.pressureCounter.setText("" + TilePalette.pressureCount); // decrease pressure pad count
+                        }
+
+                        setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE_HOVER.png"), "Default"));
+                        tileType = 'z';
+                        inUse = false;
+                    }
+
                 }
 
-            }
+                //	Mouse hover
 
-            //	Mouse hover
-
-            public void mouseEntered(MouseEvent me) {
-                if (!inUse) {
-                    setIcon(new ImageIcon(getClass().getResource("/tileset01/DEFAULT_HOVER.png")));
+                public void mouseEntered(MouseEvent me) {
+                    if (!inUse) {
+                        setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE_HOVER.png")));
+                    }
                 }
-            }
 
-            public void mouseExited(MouseEvent me) {
-                if (!inUse) {
-                    setIcon(new ImageIcon(getClass().getResource("/tileset01/DEFAULT.png")));
+                public void mouseExited(MouseEvent me) {
+                    if (!inUse) {
+                        setIcon(new ImageIcon(getClass().getResource("/tileset03/SPACE.png")));
+                    }
                 }
-            }
 
 
-        });
-
+            });
+        }
     }
 
 
