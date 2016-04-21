@@ -1,14 +1,19 @@
 package team1;
-import java.awt.Toolkit;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
-// import javax.imageio.*;
-import javax.swing.*;
-// import java.io.*;
-import java.util.*;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  * TODO: put the counter back
@@ -55,7 +60,7 @@ public class SpriteMap extends JPanel {
                 for (int x = 0; x < xSize; x++) {
                     SokobanObject object = map.get(new Coordinate(x, y));
                     if(!playable && object.name().equals("SPACE")){
-                    	panelHolder[y][x].setIcon(iconMap.get("DEFAULT"));
+                        panelHolder[y][x].setIcon(iconMap.get("DEFAULT"));
                     }
                     else if(object.name().equals("WALL")) {
                         panelHolder[y][x].setIcon(randomWall());
@@ -72,13 +77,13 @@ public class SpriteMap extends JPanel {
         else {
             for (Coordinate coord : map.getChanges()) {
                 if (!coord.equals(new Coordinate(-1, -1))) {
-                    SokobanObject object = map.get(coord);     
+                    SokobanObject object = map.get(coord);
                     ImageIcon iconToSet;
                     if(!playable && object.name().equals("SPACE")){
-                    	iconToSet = iconMap.get("DEFAULT");
+                        iconToSet = iconMap.get("DEFAULT");
                     }
                     else{
-                    	iconToSet=iconMap.get(object.name());
+                        iconToSet=iconMap.get(object.name());
                     }
                     panelHolder[coord.getY()][coord.getX()].setIcon(iconToSet);
                 }

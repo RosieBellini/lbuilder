@@ -1,6 +1,8 @@
 package team1;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Represents the positions of dynamic objects (the player and boxes)
