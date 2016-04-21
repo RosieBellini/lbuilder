@@ -179,7 +179,7 @@ public class BoxTerm extends JPanel {
 		JMenuItem aboutItem = new JMenuItem("About Box Terminator");
 		aboutItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(spriteMap, "A Sokoban clone.", "Box Terminator",JOptionPane.PLAIN_MESSAGE,spriteMap.getPlayerSprite());
+				JOptionPane.showMessageDialog(spriteMap, "A Sokoban clone.", "Box Terminator",JOptionPane.PLAIN_MESSAGE,spriteMap.getBoxSprite());
 			}
 		});
 		helpMenu.add(aboutItem);

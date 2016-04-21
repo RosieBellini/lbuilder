@@ -141,8 +141,8 @@ public class SpriteMap extends JPanel {
         placeSprites();
     }
 
-    public ImageIcon getPlayerSprite(){
-    	return iconMap.get("PLAYER");
+    public ImageIcon getBoxSprite(){
+    	return iconMap.get("BOX");
     }
 
     public SokobanMap getMap() {

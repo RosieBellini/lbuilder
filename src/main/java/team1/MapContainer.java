@@ -49,7 +49,7 @@ public class MapContainer {
      * This will be used to determine a state of the map independent of the players exact position.
      * @return a SaveState which represents a state of the game for the solving algorithm to use.
      */
-    public SaveState getState(){
+    public GameState getState(){
         Set<Coordinate> accessibleSpaces = accessibleSpaces(getMyState().getWPos(),true);
         Coordinate potentialTopLeftSpace = new Coordinate(getXSize(),getYSize());
         boolean done = false;
@@ -66,7 +66,7 @@ public class MapContainer {
             }
         }
         //		System.out.println(potentialTopLeftSpace.getX()+""+potentialTopLeftSpace.getY());
-        return new SaveState(potentialTopLeftSpace, getMyState());
+        return new GameState(potentialTopLeftSpace, getMyState().getBoxPositions());
     }
 
     /**
