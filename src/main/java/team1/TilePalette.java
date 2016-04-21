@@ -44,16 +44,10 @@ public class TilePalette extends JPanel {
     }
 
     public void importImages() {
-
-        ImageIcon wall = new ImageIcon(getClass().getResource("/tileset01/WALL.png"), "Wall");
-        ImageIcon box = new ImageIcon(getClass().getResource("/tileset01/BOX.png"), "Box");
-        ImageIcon pressure = new ImageIcon(getClass().getResource("/tileset01/GOAL.png"), "Pressure Pad");
-        ImageIcon player = new ImageIcon(getClass().getResource("/tileset01/PLAYER.png"), "Player");
-
-        tiles[0] = wall;
-        tiles[1] = box;
-        tiles[2] = pressure;
-        tiles[3] = player;
+        tiles[0] = SpriteMap.getIconMap().get("SPACE");
+        tiles[1] = SpriteMap.getIconMap().get("BOX");
+        tiles[2] = SpriteMap.getIconMap().get("GOAL");
+        tiles[3] = SpriteMap.getIconMap().get("PLAYER");
     }
 
     public void setCounters() {
