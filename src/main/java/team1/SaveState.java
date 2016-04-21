@@ -28,14 +28,6 @@ public final class SaveState {
         simpleState = false;
     }
 
-    public SaveState(Coordinate wPos, SaveState stateToCopy) {
-        this.wPos = new Coordinate(wPos);
-        this.boxPositions = new HashSet<Coordinate>(stateToCopy.getBoxPositions());
-        this.wallPositions = new HashSet<Coordinate>(stateToCopy.getWallPositions());
-        this.goalPositions = new HashSet<Coordinate>(stateToCopy.getGoalPositions());
-        simpleState = false;
-    }
-
     public SaveState(Coordinate wPos, Set<Coordinate> boxPositions) {
         this.wPos = new Coordinate(wPos);
         this.boxPositions = new HashSet<Coordinate>(boxPositions);
@@ -65,47 +57,48 @@ public final class SaveState {
 
     public boolean put(SokobanObject object, Coordinate coord) {
         SokobanObject target = get(coord);
+        boolean success = false;
 
-        if (object == SokobanObject.PLAYER || object == SokobanObject.PLAYER_ON_GOAL) {
-            switch(target) {
-                case SPACE:
-                case GOAL:      wPos = coord;
-                                break;
-                default:        return false;
-            }
-            if (object == SokobanObject.PLAYER_ON_GOAL) {
-                goalPositions.add(coord);
-            }
-
-        } else if (object == SokobanObject.BOX || object == SokobanObject.BOX_ON_GOAL) {
-            switch(target) {
-                case SPACE:
-                case GOAL:  if (!boxPositions.contains(coord)) {
-                                boxPositions.add(coord);
+        switch(object) {
+            case PLAYER:
+                if (target == SokobanObject.SPACE || target == SokobanObject.GOAL) {
+                    wPos = coord;
+                    success = true;
                 }
                 break;
-                default:    return false;
-            }
-            if (object == SokobanObject.BOX_ON_GOAL) {
-                goalPositions.add(coord);
-            }
-
-        } else if (object == SokobanObject.WALL) {
-            if (wPos.equals(coord) || boxPositions.contains(coord)) {
-                return false;
-            }
-            wallPositions.add(coord);
-        } else if (object == SokobanObject.GOAL) {
-            if (wallPositions.contains(coord)) {
-                return false;
-            }
-            goalPositions.add(coord);
-        } else if (object == SokobanObject.SPACE) {
-            boxPositions.remove(coord);
-            wallPositions.remove(coord);
-            goalPositions.remove(coord);
+            case BOX:
+                if (target == SokobanObject.SPACE || target == SokobanObject.GOAL) {
+                    success = boxPositions.add(coord);
+                }
+                break;
+            case WALL:
+                if (!wPos.equals(coord) && !boxPositions.contains(coord)) {
+                    success = wallPositions.add(coord);
+                }
+                break;
+            case GOAL:
+                if (!wallPositions.contains(coord)) {
+                    success = goalPositions.add(coord);
+                }
+                break;
+            case PLAYER_ON_GOAL:
+                if (!put(SokobanObject.GOAL, coord)) {
+                    put(SokobanObject.PLAYER, coord);
+                }
+                break;
+            case BOX_ON_GOAL:
+                if (!put(SokobanObject.GOAL, coord)) {
+                    put(SokobanObject.BOX, coord);
+                }
+                break;
+            case SPACE:
+                makeEmpty(coord);
+                success = true;
+                break;
+            default:    return false;
         }
-        return true;
+
+        return success;
     }
 
     public void removeLayer(Coordinate coord) {

@@ -49,7 +49,7 @@ public class SpriteMap extends JPanel {
 
     public void placeSprites() {
         if (!mapDrawn) {
-        	resizeSprites();
+            resizeSprites();
             Set<Coordinate> grassPositions = map.growGrass();
             for (int y = 0; y < ySize; y++) {
                 for (int x = 0; x < xSize; x++) {
@@ -132,12 +132,12 @@ public class SpriteMap extends JPanel {
         noOfWalls=1;
         noOfGrass=1;
         while (getClass().getResource(tilesetpath + "WALL" + (noOfWalls + 1) + ".png") != null) {
-        	iconNames.add("WALL" + (noOfWalls + 1));
-        	noOfWalls++;
+            iconNames.add("WALL" + (noOfWalls + 1));
+            noOfWalls++;
         }
         while (getClass().getResource(tilesetpath+"GRASS"+(noOfGrass+1)+".png") != null) {
-        	iconNames.add("GRASS" + (noOfGrass + 1));
-        	noOfGrass++;
+            iconNames.add("GRASS" + (noOfGrass + 1));
+            noOfGrass++;
         }
         // try {
         for (String icon : iconNames) {
@@ -151,7 +151,7 @@ public class SpriteMap extends JPanel {
     }
 
     public ImageIcon getBoxSprite(){
-    	return iconMap.get("BOX");
+        return iconMap.get("BOX");
     }
 
     public SokobanMap getMap() {
@@ -161,17 +161,24 @@ public class SpriteMap extends JPanel {
     public Map<String, ImageIcon> getIconMap() {
         return iconMap;
     }
-        
-    public void changeMagnification(boolean getBigger){
-        if (getBigger){
-            magnification++;
+
+    public void changeMagnification(boolean getBigger) {
+        if (getBigger) {
+            if (magnification > 1) {
+                magnification++;
+            } else {
+                magnification = magnification * 2;
             }
-        else {
-            magnification=magnification/2;
+        } else {
+            if (magnification > 1) {
+                magnification--;
+            } else {
+                magnification = magnification / 2;
+            }
         }
-        mapDrawn=false;
+        mapDrawn = false;
     }
-    
+
     public void resizeSprites(){
         float iconDimension = magnification*32;
         int newIconDimension= (int)iconDimension;
@@ -179,7 +186,7 @@ public class SpriteMap extends JPanel {
             Image iconImage = iconMap.get(iconName).getImage();
             Image resizedImage = iconImage.getScaledInstance(newIconDimension,newIconDimension,Image.SCALE_DEFAULT);
             iconMap.put(iconName, new ImageIcon(resizedImage));
-        }        
+        }
     }
 
 }
