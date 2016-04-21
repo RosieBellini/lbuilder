@@ -20,10 +20,11 @@ public class SpriteMap extends JPanel {
     private JLabel[][] panelHolder;
     private Map<String, ImageIcon> iconMap;
     private boolean mapDrawn;
+    private boolean playable;
     int noOfWalls;
     int noOfGrass;
 
-    public SpriteMap(SokobanMap map) {
+    public SpriteMap(SokobanMap map, boolean playable, int tileSetNo) {
         mapDrawn = false;
         xSize = map.getXSize();
         ySize = map.getYSize();
@@ -36,8 +37,9 @@ public class SpriteMap extends JPanel {
             }
         }
         this.map = map;
+        this.playable = playable;
         iconMap = new HashMap<String, ImageIcon>();
-        loadSprites(1);
+        loadSprites(tileSetNo);
         setVisible(true);
     }
 
@@ -66,7 +68,9 @@ public class SpriteMap extends JPanel {
                 panelHolder[coord.getY()][coord.getX()].setIcon(iconMap.get(object.name()));
             }
         }
-        win();
+        if (playable) {
+            win();
+        }
         revalidate();
         repaint();
     }
@@ -129,7 +133,7 @@ public class SpriteMap extends JPanel {
         mapDrawn=false;
         placeSprites();
     }
-    
+
     public ImageIcon getPlayerSprite(){
     	return iconMap.get("PLAYER");
     }

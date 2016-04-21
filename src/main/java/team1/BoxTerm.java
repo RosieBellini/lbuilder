@@ -155,7 +155,7 @@ public class BoxTerm extends JPanel {
 					e1.printStackTrace();
 				}
 				frame.remove(spriteMap);
-				spriteMap = new SpriteMap(map);
+				spriteMap = new SpriteMap(map, true, 1);
 				redraw();
 				frame.add(spriteMap);
 				frame.pack();
@@ -168,7 +168,7 @@ public class BoxTerm extends JPanel {
 		tileItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tileSetNo++;
-				spriteMap.loadSprites(tileSetNo%3);; }
+				spriteMap.loadSprites(tileSetNo%4);; }
 		});
 		fileMenu.add(tileItem);
 
@@ -228,7 +228,7 @@ public class BoxTerm extends JPanel {
 		textArea = new JTextArea(ySize + 1, xSize + 1);
 		textArea.setFont(new Font("monospaced", Font.PLAIN, 24));
 		textArea.setEditable(false);
-		spriteMap = new SpriteMap(map);
+		spriteMap = new SpriteMap(map, true, 1);
 		redraw();
 		frame.add(boxterm);
 		frame.add(spriteMap);

@@ -23,62 +23,62 @@ import javax.swing.KeyStroke;
 
 public class LevelBuilder extends JPanel{
 
-	private static final long serialVersionUID = 1L;
-	private static JMenuBar menuBar;
-	private static JMenu file, edit, help;
-	private static JMenuItem newMap, open, save, compile, exit, undo, redo;
-	private static String fileName;
-	private static int x, y;
-	private static GridMap gridMap;
-	private static PrintWriter txtFile;
-	protected static char state = 'z';
+    private static final long serialVersionUID = 1L;
+    private static JMenuBar menuBar;
+    private static JMenu file, edit, help;
+    private static JMenuItem newMap, open, save, compile, exit, undo, redo;
+    private static String fileName;
+    private static int x, y;
+    private static SpriteMap spriteMap;
+    private static PrintWriter txtFile;
+    protected static char state = 'z';
 
-	public static void main(String args[]) {
+    public static void main(String args[]) {
         activate();
     }
 
-	public static void activate()
-	{
-		// Setup ActionListeners:
+    public static void activate()
+    {
+        // Setup ActionListeners:
         class SaveAction implements ActionListener{
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				boolean finished = false;
-				while(!finished){
-		         fileName = JOptionPane.showInputDialog("Please input a name for your map. \nIf file name already exists, it will be overwritten.");
-		         try{
-		         saveMap(gridMap.getCells(), 20, 20, fileName);
-		         finished=true;
-		         }
-		         catch(FileNotFoundException e)
-		         {
-		        	 System.out.print("FileNotFoundException found");
-		         }
-		         catch(IllegalArgumentException e)
-		         {
-		        	 JOptionPane.showMessageDialog(null,e.getMessage(),  "Warning: Save Error",JOptionPane.WARNING_MESSAGE);
-		         }
-		         catch(NullPointerException e)
-		         {
-		        	 // A NullPointerException is thrown if the user click cancel:
-		        	 finished = true;
-		         }
-			}
-			}
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                boolean finished = false;
+                // while(!finished){
+                //     fileName = JOptionPane.showInputDialog("Please input a name for your map. \nIf file name already exists, it will be overwritten.");
+                //     try{
+                //         saveMap(gridMap.getCells(), 20, 20, fileName);
+                //         finished=true;
+                //     }
+                //     catch(FileNotFoundException e)
+                //     {
+                //         System.out.print("FileNotFoundException found");
+                //     }
+                //     catch(IllegalArgumentException e)
+                //     {
+                //         JOptionPane.showMessageDialog(null,e.getMessage(),  "Warning: Save Error",JOptionPane.WARNING_MESSAGE);
+                //     }
+                //     catch(NullPointerException e)
+                //     {
+                //         // A NullPointerException is thrown if the user click cancel:
+                //         finished = true;
+                //     }
+                // }
+            }
 
         }
 
-		// Initialise GUI:
-		JFrame frame = new JFrame("Map Editor");
-		frame.setSize(new Dimension(700, 500));
-		frame.setResizable(false);
+        // Initialise GUI:
+        JFrame frame = new JFrame("Map Editor");
+        frame.setSize(new Dimension(700, 500));
+        frame.setResizable(false);
 
-		// Set up new WindowListener
-		frame.addWindowListener(new WindowListen());
+        // Set up new WindowListener
+        frame.addWindowListener(new WindowListen());
 
-		// Setup menu bar:
-		// Setup Menu Bar:
+        // Setup menu bar:
+        // Setup Menu Bar:
         menuBar = new JMenuBar();
         frame.setJMenuBar(menuBar);
 
@@ -146,7 +146,7 @@ public class LevelBuilder extends JPanel{
         // Setup GridMap
         x = 20;
         y = 20;
-        mainPanel.add(gridMap = new GridMap(x,y));
+        mainPanel.add(spriteMap = new SpriteMap(new SokobanMap(x, y), false, 3));
 
         // Setup TilePalette
         mainPanel.add(new TilePalette());
@@ -154,101 +154,101 @@ public class LevelBuilder extends JPanel{
 
         frame.add(mainPanel);
         frame.pack();
-		frame.setVisible(true);
+        frame.setVisible(true);
 
-		}
+    }
 
-	/**
-	 * Used to parse a map from the 2d Cell Array into a txt file. Throws FileNotFoundException.
-	 *
-	 * @param tile
-	 * @param rows the number of rows in the 2d Array.
-	 * @param cols the number of cols in the 2d Array.
-	 * @param fileName the user's chosen filename for the txt file.
-	 * @throws FileNotFoundException
-	 */
-	public static void saveMap(Cell[][] tile, int rows, int cols, String fileName) throws FileNotFoundException
-	{
-		// First, check if fileName is empty and throw an exception:
-		if(fileName.isEmpty())
-		{
-			throw new IllegalArgumentException("Error: File name must not be empty.");
-		}
+    /**
+     * Used to parse a map from the 2d Cell Array into a txt file. Throws FileNotFoundException.
+     *
+     * @param tile
+     * @param rows the number of rows in the 2d Array.
+     * @param cols the number of cols in the 2d Array.
+     * @param fileName the user's chosen filename for the txt file.
+     * @throws FileNotFoundException
+     */
+    public static void saveMap(Cell[][] tile, int rows, int cols, String fileName) throws FileNotFoundException
+    {
+        // First, check if fileName is empty and throw an exception:
+        if(fileName.isEmpty())
+        {
+            throw new IllegalArgumentException("Error: File name must not be empty.");
+        }
 
-		// Next, use a regular expression to ensure the fileName has no special characters and is not longer than 30 characters.
-		String pattern = "\\w+{1,30}";
-		if(!fileName.matches(pattern))
-		{
-			throw new IllegalArgumentException("Error: File name must only contain letters, numbers and underscores and be no more than 30 characters in length.");
-		}
+        // Next, use a regular expression to ensure the fileName has no special characters and is not longer than 30 characters.
+        String pattern = "\\w+{1,30}";
+        if(!fileName.matches(pattern))
+        {
+            throw new IllegalArgumentException("Error: File name must only contain letters, numbers and underscores and be no more than 30 characters in length.");
+        }
 
-		// If nothing is thrown, begin parsing the map into a text file with the user's chosen filename:
-		File fileDir = new File("src/incomplete_maps//"+fileName+".txt");
-		System.out.println(fileDir.getAbsolutePath());
-		txtFile = new PrintWriter(fileDir);
-		for(int y=0; y<rows; y++)
-		{
-			for(int x=0; x<cols; x++)
-			{
-			char tileType = tile[y][x].getTileType();
-			switch(tileType){
-				case 'z': txtFile.print(" ");
-				break;
-				case 'b': txtFile.print("$");
-				break;
-				case 's': txtFile.print("_");
-				break;
-				case 'p': txtFile.print(".");
-				break;
-				case 'q': txtFile.print("@");
-				break;
-				case 'w': txtFile.print("#");
-				break;
-			}
-			}
-			txtFile.println();
+        // If nothing is thrown, begin parsing the map into a text file with the user's chosen filename:
+        File fileDir = new File("src/incomplete_maps//"+fileName+".txt");
+        System.out.println(fileDir.getAbsolutePath());
+        txtFile = new PrintWriter(fileDir);
+        for(int y=0; y<rows; y++)
+        {
+            for(int x=0; x<cols; x++)
+            {
+                char tileType = tile[y][x].getTileType();
+                switch(tileType){
+                    case 'z': txtFile.print(" ");
+                              break;
+                    case 'b': txtFile.print("$");
+                              break;
+                    case 's': txtFile.print("_");
+                              break;
+                    case 'p': txtFile.print(".");
+                              break;
+                    case 'q': txtFile.print("@");
+                              break;
+                    case 'w': txtFile.print("#");
+                              break;
+                }
+            }
+            txtFile.println();
 
-		}
-		txtFile.flush();
-		txtFile.close();
-	}
+        }
+        txtFile.flush();
+        txtFile.close();
+    }
 
-	}
+}
 
-	// Setup Window Listener
+// Setup Window Listener
 
-	class WindowListen implements WindowListener {
+class WindowListen implements WindowListener {
 
-	@Override
-	public void windowClosed(WindowEvent e) {
-		// TODO Auto-generated method stub
-	}
+    @Override
+    public void windowClosed(WindowEvent e) {
+        // TODO Auto-generated method stub
+    }
 
-	@Override
-	public void windowClosing(WindowEvent e) {
-		final JOptionPane optionPane = new JOptionPane(
-		"Are you sure you want to quit level builder?\n",
-		JOptionPane.QUESTION_MESSAGE,
-		JOptionPane.YES_NO_OPTION);
-	}
+    @Override
+    public void windowClosing(WindowEvent e) {
+        final JOptionPane optionPane = new JOptionPane(
+                "Are you sure you want to quit level builder?\n",
+                JOptionPane.QUESTION_MESSAGE,
+                JOptionPane.YES_NO_OPTION);
+    }
 
-	@Override
-	public void windowActivated(WindowEvent e) {
-	}
+    @Override
+    public void windowActivated(WindowEvent e) {
+    }
 
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-	}
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+    }
 
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-	}
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+    }
 
-	@Override
-	public void windowIconified(WindowEvent e) {
-	}
+    @Override
+    public void windowIconified(WindowEvent e) {
+    }
 
-	@Override
-	public void windowOpened(WindowEvent e) {
-	}
+    @Override
+    public void windowOpened(WindowEvent e) {
+    }
 }
