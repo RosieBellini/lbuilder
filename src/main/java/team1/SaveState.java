@@ -102,17 +102,12 @@ public final class SaveState {
     }
 
     public void removeLayer(Coordinate coord) {
-        Coordinate wPos = getWPos();
         if (wPos.equals(coord)) {
             wPos = new Coordinate(-1, -1);
         } else if (get(coord).equals(SokobanObject.BOX_ON_GOAL)) {
             boxPositions.remove(coord);
-        } else if (get(coord).equals(SokobanObject.BOX)) {
-            boxPositions.remove(coord);
-        } else if (get(coord).equals(SokobanObject.WALL)) {
-            wallPositions.remove(coord);
-        } else if (get(coord).equals(SokobanObject.GOAL)) {
-            goalPositions.remove(coord);
+        } else if (!get(coord).equals(SokobanObject.PLAYER_ON_GOAL)) {
+            makeEmpty(coord);
         }
     }
 
