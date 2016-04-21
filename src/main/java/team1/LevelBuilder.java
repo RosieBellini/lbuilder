@@ -2,6 +2,7 @@ package team1;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -95,33 +96,36 @@ public class LevelBuilder extends JPanel{
          * Setup Sub-Menu Items:
          */
 
+        final int SHORTCUT_MASK =
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+
         // File Sub-Menu Items:
         newMap = new JMenuItem("New", KeyEvent.VK_N);
-        newMap.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+        newMap.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
         newMap.setToolTipText("Start a new map design");
 
 
         open = new JMenuItem("Open", KeyEvent.VK_O);
-        open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+        open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
         open.setToolTipText("Open a saved map design");
 
 
         save = new JMenuItem("Save", KeyEvent.VK_S);
-        save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
         save.setToolTipText("Save current map design to file");
         save.addActionListener(new SaveAction());
 
         compile = new JMenuItem("Compile Map", KeyEvent.VK_C);
-        compile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+        compile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, SHORTCUT_MASK));
         compile.setToolTipText("Compile your map");
 
         exit = new JMenuItem("Exit", KeyEvent.VK_Q);
-        exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+        exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, SHORTCUT_MASK));
         exit.setToolTipText("Exit Level Builder");
 
         // Edit Sub-Menu Items:
         undo = new JMenuItem("Undo", KeyEvent.VK_Z);
-        undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
+        undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
 		undo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 map.undo(true);
@@ -131,7 +135,7 @@ public class LevelBuilder extends JPanel{
         undo.setToolTipText("Undo block placements");
 
         redo = new JMenuItem("Redo", KeyEvent.VK_Y);
-        redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+        redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, SHORTCUT_MASK));
 		redo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 map.redo();
