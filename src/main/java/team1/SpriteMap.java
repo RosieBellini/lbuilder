@@ -20,7 +20,7 @@ public class SpriteMap extends JPanel {
     private int xSize;
     private int ySize;
     private JLabel[][] panelHolder;
-    private static Map<String, ImageIcon> iconMap;
+    private Map<String, ImageIcon> iconMap;
     private boolean mapDrawn;
     private boolean playable;
     int noOfWalls;
@@ -31,6 +31,7 @@ public class SpriteMap extends JPanel {
         mapDrawn = false;
         xSize = map.getXSize();
         ySize = map.getYSize();
+        this.playable = playable;
         panelHolder = new JLabel[ySize][xSize];
         setLayout(new GridLayout(ySize, xSize));
         for (int y = 0; y < ySize; y++) {
@@ -40,7 +41,6 @@ public class SpriteMap extends JPanel {
             }
         }
         this.map = map;
-        this.playable = playable;
         magnification = 1;
         iconMap = new HashMap<String, ImageIcon>();
         loadSprites(tileSetNo);
@@ -54,7 +54,10 @@ public class SpriteMap extends JPanel {
             for (int y = 0; y < ySize; y++) {
                 for (int x = 0; x < xSize; x++) {
                     SokobanObject object = map.get(new Coordinate(x, y));
-                    if(object.name()=="WALL") {
+                    if(!playable && object.name().equals("SPACE")){
+                    	panelHolder[y][x].setIcon(iconMap.get("DEFAULT"));
+                    }
+                    else if(object.name().equals("WALL")) {
                         panelHolder[y][x].setIcon(randomWall());
                     }
                     else if (playable && grassPositions.contains(new Coordinate(x, y))) {
@@ -62,7 +65,6 @@ public class SpriteMap extends JPanel {
                     } else {
                         panelHolder[y][x].setIcon(iconMap.get(object.name()));
                     }
-                    // panelHolder[y][x].setIcon(iconMap.get(object.name()));
                 }
             }
             mapDrawn = true;
@@ -70,8 +72,15 @@ public class SpriteMap extends JPanel {
         else {
             for (Coordinate coord : map.getChanges()) {
                 if (!coord.equals(new Coordinate(-1, -1))) {
-                    SokobanObject object = map.get(coord);
-                    panelHolder[coord.getY()][coord.getX()].setIcon(iconMap.get(object.name()));
+                    SokobanObject object = map.get(coord);     
+                    ImageIcon iconToSet;
+                    if(!playable && object.name().equals("SPACE")){
+                    	iconToSet = iconMap.get("DEFAULT");
+                    }
+                    else{
+                    	iconToSet=iconMap.get(object.name());
+                    }
+                    panelHolder[coord.getY()][coord.getX()].setIcon(iconToSet);
                 }
             }
         }
@@ -119,7 +128,7 @@ public class SpriteMap extends JPanel {
 
     public void loadSprites(int tileSetNo) {
         String tilesetpath = "/tileset0" + tileSetNo + "/";
-        ArrayList<String> iconNames = new ArrayList<String>(Arrays.asList("SPACE", "GOAL", "BOX", "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL", "GRASS", "WALL"));
+        ArrayList<String> iconNames = new ArrayList<String>(Arrays.asList("SPACE", "GOAL", "BOX", "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL", "GRASS", "WALL","DEFAULT","DEFAULT_HOVER"));
         noOfWalls=1;
         noOfGrass=1;
         while (getClass().getResource(tilesetpath + "WALL" + (noOfWalls + 1) + ".png") != null) {
@@ -149,7 +158,7 @@ public class SpriteMap extends JPanel {
         return map;
     }
 
-    public static Map<String, ImageIcon> getIconMap() {
+    public Map<String, ImageIcon> getIconMap() {
         return iconMap;
     }
         

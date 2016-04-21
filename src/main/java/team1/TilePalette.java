@@ -17,17 +17,19 @@ public class TilePalette extends JPanel {
     protected static int boxCount;
     protected static int pressureCount;
     protected static int playerCount;
+    protected final SpriteMap spriteMap;
 
-    public TilePalette()
+    public TilePalette(SpriteMap spriteMap)
     {
         super();
+        this.spriteMap=spriteMap;
         importImages();
         add(new JLabel("Palette"));
         setBackground(Color.WHITE);
         setPreferredSize(new Dimension(100, 80));
         formatList();
         setCounters();
-        list.addListSelectionListener(new ListListener());
+        list.addListSelectionListener(new ListListener());        
     }
 
     public void formatList() {
@@ -44,10 +46,10 @@ public class TilePalette extends JPanel {
     }
 
     public void importImages() {
-        tiles[0] = SpriteMap.getIconMap().get("WALL");
-        tiles[1] = SpriteMap.getIconMap().get("BOX");
-        tiles[2] = SpriteMap.getIconMap().get("GOAL");
-        tiles[3] = SpriteMap.getIconMap().get("PLAYER");
+        tiles[0] = spriteMap.getIconMap().get("WALL");
+        tiles[1] = spriteMap.getIconMap().get("BOX");
+        tiles[2] = spriteMap.getIconMap().get("GOAL");
+        tiles[3] = spriteMap.getIconMap().get("PLAYER");
     }
 
     public void setCounters() {

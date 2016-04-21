@@ -61,6 +61,10 @@ public class BoxTerm extends JPanel {
 		});
 		setFocusable(true);
 	}
+	
+	public static int getTileSetNo(){
+		return tileSetNo;
+	}
 
 	/**
 	 * Runs player movement methods when keypresses are detected, then checks
