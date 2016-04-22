@@ -46,6 +46,12 @@ public class SokobanMap {
         this.reset();
     }
 
+    public SokobanMap(SokobanMap mapToCopy, int maxUndos) {
+        this(mapToCopy.getXSize(), mapToCopy.getYSize(), maxUndos);
+        this.initialState = new SaveState(mapToCopy.getInitialState());
+        this.reset();
+    }
+
 	/*
 	 *  Is this right to do?  For a given state I want to set the map to that position so I can
 	 *  use accessibleSpaces() to work out what boxes you can push from a given SaveState.

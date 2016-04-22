@@ -173,9 +173,7 @@ public class LevelBuilder extends JPanel{
         mainPanel.setBackground(Color.RED);
 
         // Setup GridMap
-        x = 20;
-        y = 20;
-        map = new SokobanMap(x, y, 100);
+        map = new SokobanMap(BoxTerm.getSpriteMap().getMap(), 100);
         mainPanel.add(spriteMap = new SpriteMap(map, false, BoxTerm.getTileSetNo() % 3));
 //		spriteMap.placeSprites();
 

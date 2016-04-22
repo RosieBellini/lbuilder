@@ -61,6 +61,10 @@ public class BoxTerm extends JPanel {
         return tileSetNo;
     }
 
+    public static SpriteMap getSpriteMap() {
+        return spriteMap;
+    }
+
     /**
      * Runs player movement methods when keypresses are detected, then checks
      * to see if the level has been completed. If it has, displays "YOU WON!",

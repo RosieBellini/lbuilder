@@ -54,6 +54,10 @@ public class SpriteMap extends JPanel {
         this.map = map;
     }
 
+    public SokobanMap getMap() {
+        return map;
+    }
+
     public void placeSprites() {
         if (!mapDrawn) {
             resizeSprites();
@@ -148,10 +152,6 @@ public class SpriteMap extends JPanel {
 
     public ImageIcon getBoxSprite(){
         return iconMap.get("BOX");
-    }
-
-    public SokobanMap getMap() {
-        return map;
     }
 
     public Map<String, ImageIcon> getIconMap() {
