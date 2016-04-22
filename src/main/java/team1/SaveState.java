@@ -83,7 +83,7 @@ public final class SaveState {
                 }
                 break;
             case WALL:
-                if (!wPos.equals(coord) && !boxPositions.contains(coord)) {
+                if (target == SokobanObject.SPACE) {
                     success = wallPositions.add(coord);
                 }
                 break;
