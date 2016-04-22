@@ -18,40 +18,25 @@ public class Cell extends JLabel{
         this.position = position;
         this.spriteMap = spriteMap;
 
-        // Mouse listener:
         if (!this.playable) {
             addMouseListener(new MouseAdapter(){
-
-
                 public void mousePressed(MouseEvent me)
                 {
-                    // If left mouse button is clicked
-                    if (me.getButton() == MouseEvent.BUTTON1) {
-                        spriteMap.getMap().put(LevelBuilder.state, position);
-                    }
-
-                    if (me.getButton() == MouseEvent.BUTTON3) {
-                        spriteMap.getMap().removeLayer(position);
-                    }
-                    spriteMap.placeSprites();
-                    spriteMap.getMap().storeState();
-                    spriteMap.getMap().clearRedoStack();
-
-                    int boxCount = spriteMap.getMap().getMyState().getBoxPositions().size();
-                    int pressureCount = spriteMap.getMap().getMyState().getGoalPositions().size();
-                    TilePalette.updateCounters(boxCount, pressureCount);
+                    modifyCell(me);
                 }
 
-                //	Mouse hover
-
                 public void mouseEntered(MouseEvent me) {
-                    if (spriteMap.getMap().get(position) == SokobanObject.SPACE) {
-                        setIcon(spriteMap.getIconMap().get("DEFAULT_HOVER"));
+                    if (me.getButton() == MouseEvent.NOBUTTON) {
+                        if (spriteMap.getMap().get(position) == SokobanObject.SPACE) {
+                            setIcon(spriteMap.getIconMap().get("DEFAULT_HOVER"));
+                        }
+                    } else {
+                        modifyCell(me);
                     }
                 }
 
                 public void mouseExited(MouseEvent me) {
-                    if(spriteMap.getMap().get(position) == SokobanObject.SPACE){
+                    if (spriteMap.getMap().get(position) == SokobanObject.SPACE) {
                         setIcon(spriteMap.getIconMap().get("DEFAULT"));
                     } else {
                         setIcon(spriteMap.getIconMap().get(spriteMap.getMap().get(position).name()));
@@ -61,7 +46,18 @@ public class Cell extends JLabel{
         }
     }
 
-    public Coordinate getPosition() {
-        return position;
+    public void modifyCell(MouseEvent me) {
+        spriteMap.getMap().storeState();
+        if (me.getButton() == MouseEvent.BUTTON1) {
+            spriteMap.getMap().put(LevelBuilder.state, position);
+        } else if (me.getButton() == MouseEvent.BUTTON3) {
+            spriteMap.getMap().removeLayer(position);
+        }
+        spriteMap.placeSprites();
+        spriteMap.getMap().clearRedoStack();
+
+        int boxCount = spriteMap.getMap().getMyState().getBoxPositions().size();
+        int pressureCount = spriteMap.getMap().getMyState().getGoalPositions().size();
+        TilePalette.updateCounters(boxCount, pressureCount);
     }
 }
