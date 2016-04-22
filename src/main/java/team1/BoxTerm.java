@@ -5,7 +5,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,7 +13,6 @@ import java.io.InputStream;
 import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -32,8 +30,6 @@ public class BoxTerm extends JPanel {
     private static SpriteMap gameMap;
     private static SpriteMap editorMap;
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
-    private static JLabel statusBar;
-    private static SpriteMap spriteMap;
     private static int tileSetNo = 1;
     private static SokobanGame game;
     public static LevelBuilder builder;
@@ -43,7 +39,7 @@ public class BoxTerm extends JPanel {
     private static JMenuBar menubar;
     private static JMenu editMenu;
     private static JMenu gameMenu;
-
+    private static JMenuItem newMapItem;
     public BoxTerm() {
     }
     /**
@@ -83,21 +79,21 @@ public class BoxTerm extends JPanel {
 
         // File menu
 
-        JMenuItem newMap = new JMenuItem("New", KeyEvent.VK_N);
-        newMap.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
-        newMap.setToolTipText("Start a new map design");
-		newMap.addActionListener(new ActionListener() {
+        newMapItem = new JMenuItem("New", KeyEvent.VK_N);
+        newMapItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
+        newMapItem.setToolTipText("Start a new map design");
+		newMapItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-                // mainPanel.removeAll();
-                // SokobanMap map = new SokobanMap(20, 20, 100);
-                // getMySpriteMap() = new SpriteMap(map, false, BoxTerm.getTileSetNo() % 3);
-                // tilePalette = new TilePalette(getMySpriteMap());
-                // mainPanel.add(getMySpriteMap());
-                // mainPanel.add(tilePalette);
-                // frame.setSize(frame.getPreferredSize());
+                boxTerm.remove(builder);
+                SokobanMap map = new SokobanMap(20, 20, 100);
+                editorMap = new SpriteMap(map, false, tileSetNo % 3);
+                builder = new LevelBuilder(editorMap);
+                boxTerm.add(builder);
+                frame.setSize(frame.getPreferredSize());
             }
 		});
-        fileMenu.add(newMap);
+        fileMenu.add(newMapItem);
+        newMapItem.setVisible(false);
 
         JMenuItem openItem = new JMenuItem("Open");
         openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
@@ -114,12 +110,12 @@ public class BoxTerm extends JPanel {
 
                 if (!editMode) {
                     boxTerm.remove(game);
-                    gameMap = new SpriteMap(map, true, tileSetNo);
+                    gameMap = new SpriteMap(map, true, tileSetNo % 3);
                     game = new SokobanGame(gameMap);
                     boxTerm.add(game, BorderLayout.CENTER);
                 } else {
                     boxTerm.remove(builder);
-                    editorMap = new SpriteMap(map, false, tileSetNo);
+                    editorMap = new SpriteMap(map, false, tileSetNo % 3);
                     builder = new LevelBuilder(editorMap);
                     boxTerm.add(builder, BorderLayout.SOUTH);
                 }
@@ -293,8 +289,9 @@ public class BoxTerm extends JPanel {
             editMode = false;
             menubar.remove(editMenu);
             menubar.add(gameMenu, 1);
+            newMapItem.setVisible(false);
             boxTerm.remove(builder);
-            gameMap = new SpriteMap(SokobanMap.shallowCopy(editorMap.getMap(), 20), true, tileSetNo);
+            gameMap = new SpriteMap(SokobanMap.shallowCopy(editorMap.getMap(), 20), true, tileSetNo % 3);
             game = new SokobanGame(gameMap);
             boxTerm.add(game);
             game.requestFocusInWindow();
@@ -302,9 +299,10 @@ public class BoxTerm extends JPanel {
             editMode = true;
             menubar.remove(gameMenu);
             menubar.add(editMenu, 1);
+            newMapItem.setVisible(true);
             game.removeKeyListener(SokobanGame.listener);
             boxTerm.remove(game);
-            editorMap = new SpriteMap(new SokobanMap(gameMap.getMap(), 100), false, tileSetNo);
+            editorMap = new SpriteMap(new SokobanMap(gameMap.getMap(), 100), false, tileSetNo % 3);
             builder = new LevelBuilder(editorMap);
             boxTerm.add(builder);
         }
