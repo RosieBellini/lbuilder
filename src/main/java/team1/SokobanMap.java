@@ -51,6 +51,14 @@ public class SokobanMap {
         redoStack = new Stack<SaveState>();
         prevRedoStackSize = 0;
     }
+    
+    /*
+     *  Is this right to do?  For a given state i want to set the map to that position so I can
+     *  use accessibleSpaces() to work out what boxes you can push from a given SaveState.
+     */
+    public void loadState(SaveState state){
+    	history.push(state);
+    }
 
     public int getYSize() {
         return ySize;
