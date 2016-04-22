@@ -257,7 +257,9 @@ public class SokobanMap {
                     if(!ignoreBoxes){
                         if (objectInPotentialEdge != SokobanObject.WALL){
                             if(objectInPotentialEdge != SokobanObject.BOX){
+                                if(objectInPotentialEdge != SokobanObject.BOX_ON_GOAL){
                                 newEdges.add(potentialEdge);
+                                }
                             }
                         }
                     }
