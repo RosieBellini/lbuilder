@@ -1,5 +1,6 @@
 package team1;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -244,7 +245,7 @@ public class BoxTerm extends JPanel {
 
         spriteMap = new SpriteMap(map, true, 1);
         textArea = new JTextArea();
-        textArea.setFont(new Font("monospaced", Font.PLAIN, 24));
+        textArea.setPreferredSize(new Dimension(100, 80));
         textArea.setEditable(false);
         boxterm.add(spriteMap);
         boxterm.add(textArea);
