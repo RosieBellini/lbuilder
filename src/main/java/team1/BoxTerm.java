@@ -41,6 +41,8 @@ public class BoxTerm extends JPanel {
     private static JMenuItem newMapItem;
     private static JMenuItem saveItem;
     private static JMenuItem resetItem;
+    private static JMenuItem assistItem;
+    private static JMenuItem builderHelpItem;
     public BoxTerm() {
     }
     /**
@@ -226,7 +228,7 @@ public class BoxTerm extends JPanel {
 
         // Help menu
 
-        JMenuItem assistItem = new JMenuItem("Print solution");
+        assistItem = new JMenuItem("Print solution");
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SokobanMap mapToSolve = new SokobanMap(gameMap.getMap());
@@ -236,7 +238,7 @@ public class BoxTerm extends JPanel {
         });
         helpMenu.add(assistItem);
 
-        JMenuItem builderHelpItem = new JMenuItem("Builder help");
+        builderHelpItem = new JMenuItem("Builder help");
         builderHelpItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, " This map editor can be used to"
@@ -251,6 +253,7 @@ public class BoxTerm extends JPanel {
             }
         });
         helpMenu.add(builderHelpItem);
+        builderHelpItem.setVisible(false);
 
 
         JMenuItem printItem = new JMenuItem("Print topleft Accessible Area");
@@ -287,7 +290,9 @@ public class BoxTerm extends JPanel {
             gameMenu.setText("Game");
             newMapItem.setVisible(false);
             saveItem.setVisible(false);
+            builderHelpItem.setVisible(false);
             resetItem.setVisible(true);
+            assistItem.setVisible(true);
             boxTerm.remove(builder);
             gameMap = new SpriteMap(SokobanMap.shallowCopy(editorMap.getMap(), 20), true, tileSetNo);
             game = new SokobanGame(gameMap);
@@ -298,7 +303,9 @@ public class BoxTerm extends JPanel {
             gameMenu.setText("Edit");
             newMapItem.setVisible(true);
             saveItem.setVisible(true);
+            builderHelpItem.setVisible(true);
             resetItem.setVisible(false);
+            assistItem.setVisible(false);
             game.removeKeyListener(SokobanGame.listener);
             boxTerm.remove(game);
             editorMap = new SpriteMap(new SokobanMap(gameMap.getMap(), 100), false, tileSetNo);
