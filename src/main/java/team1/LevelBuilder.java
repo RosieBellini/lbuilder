@@ -25,12 +25,13 @@ import javax.swing.KeyStroke;
 public class LevelBuilder extends JPanel{
 
     private static final long serialVersionUID = 1L;
+    private static JFrame frame;
+    private static JPanel mainPanel;
+    private static TilePalette tilePalette;
     private static JMenuBar menuBar;
     private static JMenu file, edit, help;
     private static JMenuItem newMap, open, save, compile, exit, undo, redo;
     private static String fileName;
-    private static SokobanMap map;
-    private static int x, y;
     private static SpriteMap spriteMap;
     private static PrintWriter txtFile;
     protected static SokobanObject state = SokobanObject.SPACE;
@@ -72,9 +73,9 @@ public class LevelBuilder extends JPanel{
         }
 
         // Initialise GUI:
-        JFrame frame = new JFrame("Map Editor");
-        frame.setSize(new Dimension(700, 500));
-        frame.setResizable(false);
+        frame = new JFrame("Map Editor");
+        // frame.setSize(new Dimension(700, 500));
+        // frame.setResizable(false);
 
         // Set up new WindowListener
         frame.addWindowListener(new WindowListen());
@@ -105,9 +106,13 @@ public class LevelBuilder extends JPanel{
         newMap.setToolTipText("Start a new map design");
 		newMap.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-                spriteMap.setMap(new SokobanMap(20, 20, 100));
-                spriteMap.reset();
-                spriteMap.placeSprites();
+                mainPanel.removeAll();
+                SokobanMap map = new SokobanMap(20, 20, 100);
+                spriteMap = new SpriteMap(map, false, BoxTerm.getTileSetNo() % 3);
+                tilePalette = new TilePalette(spriteMap);
+                mainPanel.add(spriteMap);
+                mainPanel.add(tilePalette);
+                frame.setSize(frame.getPreferredSize());
             }
 		});
 
@@ -134,6 +139,7 @@ public class LevelBuilder extends JPanel{
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
 		undo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+                SokobanMap map = spriteMap.getMap();
                 map.undo();
                 int boxCount = map.getMyState().getBoxPositions().size();
                 int pressureCount = map.getMyState().getGoalPositions().size();
@@ -147,6 +153,7 @@ public class LevelBuilder extends JPanel{
         redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, SHORTCUT_MASK));
 		redo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+                SokobanMap map = spriteMap.getMap();
                 map.redo();
                 int boxCount = map.getMyState().getBoxPositions().size();
                 int pressureCount = map.getMyState().getGoalPositions().size();
@@ -168,16 +175,18 @@ public class LevelBuilder extends JPanel{
 
 
         // Setup Main Panel:
-        JPanel mainPanel = new JPanel();
+        mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         mainPanel.setBackground(Color.RED);
 
         // Setup GridMap
-        map = new SokobanMap(BoxTerm.getSpriteMap().getMap(), 100);
-        mainPanel.add(spriteMap = new SpriteMap(map, false, BoxTerm.getTileSetNo() % 3));
+        SokobanMap map = new SokobanMap(BoxTerm.getSpriteMap().getMap(), 100);
+        spriteMap = new SpriteMap(map, false, BoxTerm.getTileSetNo() % 3);
+        mainPanel.add(spriteMap);
 //		spriteMap.placeSprites();
 
         // Setup TilePalette
+        tilePalette = new TilePalette(spriteMap);
         mainPanel.add(new TilePalette(spriteMap));
 
 
@@ -215,7 +224,7 @@ public class LevelBuilder extends JPanel{
         File fileDir = new File(fileName+".txt");
         System.out.println(fileDir.getAbsolutePath());
         txtFile = new PrintWriter(fileDir);
-        txtFile.println(map.toString());
+        txtFile.println(spriteMap.getMap().toString());
 
         // }
         txtFile.flush();

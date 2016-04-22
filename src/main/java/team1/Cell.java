@@ -56,8 +56,6 @@ public class Cell extends JLabel{
         spriteMap.placeSprites();
         spriteMap.getMap().clearRedoStack();
 
-        int boxCount = spriteMap.getMap().getMyState().getBoxPositions().size();
-        int pressureCount = spriteMap.getMap().getMyState().getGoalPositions().size();
-        TilePalette.updateCounters(boxCount, pressureCount);
+        TilePalette.updateCounters();
     }
 }
