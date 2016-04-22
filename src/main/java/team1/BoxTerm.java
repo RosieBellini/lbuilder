@@ -32,7 +32,7 @@ public class BoxTerm extends JPanel {
     private static SokobanMap map;
     private static JLabel statusBar;
     private static SpriteMap spriteMap;
-    private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
+    private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir")+("\\src\\main\\resources\\levels"));
     private static int tileSetNo = 1;
 
     /**
