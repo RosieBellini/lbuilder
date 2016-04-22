@@ -38,6 +38,15 @@ public final class SaveState {
         simpleState = true;
     }
 
+    public SaveState() {
+        this.wPos = new Coordinate(-1, -1);
+        this.boxPositions = new HashSet<Coordinate>();
+        this.wallPositions = new HashSet<Coordinate>();
+        this.goalPositions = new HashSet<Coordinate>();
+        simpleState = false;
+    }
+
+
     public SokobanObject get(Coordinate position) {
         if (wallPositions.contains(position)) {
             return SokobanObject.WALL;

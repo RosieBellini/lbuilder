@@ -34,8 +34,8 @@ public class SokobanMap {
         this.xSize = xSize;
         this.ySize = ySize;
         history = new FixedSizeStack<SaveState>(maxUndos);
-        history.push(new SaveState(new Coordinate(-1, -1), new HashSet<Coordinate>(), new HashSet<Coordinate>(), new HashSet<Coordinate>()));
-        initialState = new SaveState(new Coordinate(-1, -1), new HashSet<Coordinate>(), new HashSet<Coordinate>(), new HashSet<Coordinate>());
+        history.push(new SaveState());
+        initialState = new SaveState();
         redoStack = new Stack<SaveState>();
         prevRedoStackSize = 0;
     }
