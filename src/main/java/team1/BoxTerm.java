@@ -29,9 +29,15 @@ import javax.swing.KeyStroke;
 @SuppressWarnings("serial")
 public class BoxTerm extends JPanel {
     private static SokobanMap map;
+<<<<<<< HEAD
     private static SpriteMap gameMap;
     private static SpriteMap editorMap;
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
+=======
+    private static JLabel statusBar;
+    private static SpriteMap spriteMap;
+    private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir")+("\\src\\main\\resources\\levels"));
+>>>>>>> 6e96d986461f207ce7ccefa69223fb1fb5b5457c
     private static int tileSetNo = 1;
     private static SokobanGame game;
     public static LevelBuilder builder;
@@ -56,10 +62,45 @@ public class BoxTerm extends JPanel {
         return getMySpriteMap();
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Runs player movement methods when keypresses are detected, then checks
+     * to see if the level has been completed. If it has, displays "YOU WON!",
+     * else redraws the level.
+     *
+     * TODO:    Only check if win conditions have been met when a box is placed
+     *          on a goal rather than every time the player moves
+     */
+    private static void moveWorker(KeyEvent e) {
+        switch (e.getKeyCode()) {
+        case KeyEvent.VK_UP:
+        case KeyEvent.VK_W:     map.move(new Coordinate(0, -1));
+        break;
+        case KeyEvent.VK_DOWN:
+        case KeyEvent.VK_S:     map.move(new Coordinate(0, 1));
+        break;
+        case KeyEvent.VK_LEFT:
+        case KeyEvent.VK_A:     map.move(new Coordinate(-1, 0));
+        break;
+        case KeyEvent.VK_RIGHT:
+        case KeyEvent.VK_D:     map.move(new Coordinate(1, 0));
+        break;
+        case KeyEvent.VK_U:     map.undo();
+        break;
+        case KeyEvent.VK_R:     map.redo();
+        break;
+        case KeyEvent.VK_H:     map.getChanges();
+        break;
+        default:                return;
+        }
+        redraw();
+    }
+>>>>>>> 6e96d986461f207ce7ccefa69223fb1fb5b5457c
 
     private static void makeMenuBar(JFrame frame) {
         final int SHORTCUT_MASK =
-            Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
         menubar = new JMenuBar();
         frame.setJMenuBar(menubar);
@@ -228,19 +269,31 @@ public class BoxTerm extends JPanel {
         });
         viewMenu.add(deMagnifyItem);
 
+<<<<<<< HEAD
 
 
         // Help menu
 
         JMenuItem assistItem = new JMenuItem("Print valid pushes");
+=======
+        JMenuItem assistItem = new JMenuItem("Print solution");
+>>>>>>> 6e96d986461f207ce7ccefa69223fb1fb5b5457c
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SokobanMap mapToSolve = new SokobanMap(map);
                 SingleThreadSolver solver = new SingleThreadSolver(mapToSolve);
-                System.out.println(solver.validPushesTestString());
+                System.out.println(solver.levelSolution());
             }
         });
         helpMenu.add(assistItem);
+        
+        JMenuItem printItem = new JMenuItem("Print topleft Accessible Area");
+        printItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(map.getState().getWPos());
+            }
+        });
+        helpMenu.add(printItem);
 
         JMenuItem aboutItem = new JMenuItem("About Box Terminator");
         aboutItem.addActionListener(new ActionListener() {
