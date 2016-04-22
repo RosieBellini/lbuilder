@@ -1,7 +1,6 @@
 package team1;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,10 +29,7 @@ import javax.swing.KeyStroke;
 @SuppressWarnings("serial")
 public class BoxTerm extends JPanel {
     private static SokobanMap map;
-    private static int xSize;
-    private static int ySize;
     private static JTextArea textArea;
-    // SpriteMap class to display the tileset.
     private static SpriteMap spriteMap;
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
     private static int tileSetNo = 1;
