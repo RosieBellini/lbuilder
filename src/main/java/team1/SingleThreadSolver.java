@@ -24,8 +24,8 @@ public class SingleThreadSolver {
         for (Coordinate box : state.getBoxPositions()) {
             for (Coordinate spaceNextToBox : map.neighbors(box))
                 if (accessibleSpaces.contains(spaceNextToBox) &&
-                        map.get(box.add(box.add(spaceNextToBox.reverse()))) == SokobanObject.SPACE ||
-                        map.get(box.add(box.add(spaceNextToBox.reverse()))) == SokobanObject.GOAL) {
+                        (map.get(box.add(spaceNextToBox.reverse())) == SokobanObject.SPACE ||
+                        map.get(box.add(spaceNextToBox.reverse())) == SokobanObject.GOAL)) {
                     Coordinate[] aPush = {spaceNextToBox, box.add(spaceNextToBox.reverse())};
                     validPushes.add(aPush);
             }
