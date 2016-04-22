@@ -337,6 +337,7 @@ public class BoxTerm extends JPanel {
 
         boxTerm.add(game, BorderLayout.CENTER);
         makeMenuBar(frame);
+        frame.setResizable(false);
         frame.add(boxTerm);
         frame.pack();
         frame.setVisible(true);
