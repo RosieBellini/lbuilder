@@ -40,6 +40,7 @@ public class BoxTerm extends JPanel {
     private static JMenu editMenu;
     private static JMenu gameMenu;
     private static JMenuItem newMapItem;
+    private static JMenuItem saveItem;
     public BoxTerm() {
     }
     /**
@@ -125,11 +126,12 @@ public class BoxTerm extends JPanel {
         });
         fileMenu.add(openItem);
 
-        JMenuItem save = new JMenuItem("Save", KeyEvent.VK_S);
-        save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
-        save.setToolTipText("Save current map design to file");
+        saveItem = new JMenuItem("Save", KeyEvent.VK_S);
+        saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
+        saveItem.setToolTipText("Save current map design to file");
         // save.addActionListener(new SaveAction());
-        fileMenu.add(save);
+        fileMenu.add(saveItem);
+        saveItem.setVisible(false);
 
         JMenuItem levelBuilderItem = new JMenuItem("Toggle mode");
         levelBuilderItem.addActionListener(new ActionListener() {
@@ -290,6 +292,7 @@ public class BoxTerm extends JPanel {
             menubar.remove(editMenu);
             menubar.add(gameMenu, 1);
             newMapItem.setVisible(false);
+            saveItem.setVisible(false);
             boxTerm.remove(builder);
             gameMap = new SpriteMap(SokobanMap.shallowCopy(editorMap.getMap(), 20), true, tileSetNo);
             game = new SokobanGame(gameMap);
@@ -300,6 +303,7 @@ public class BoxTerm extends JPanel {
             menubar.remove(gameMenu);
             menubar.add(editMenu, 1);
             newMapItem.setVisible(true);
+            saveItem.setVisible(true);
             game.removeKeyListener(SokobanGame.listener);
             boxTerm.remove(game);
             editorMap = new SpriteMap(new SokobanMap(gameMap.getMap(), 100), false, tileSetNo);
