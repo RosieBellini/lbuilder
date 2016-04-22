@@ -86,7 +86,7 @@ public class BoxTerm extends JPanel {
 			public void actionPerformed(ActionEvent e) {
                 boxTerm.remove(builder);
                 SokobanMap map = new SokobanMap(20, 20, 100);
-                editorMap = new SpriteMap(map, false, tileSetNo % 3);
+                editorMap = new SpriteMap(map, false, tileSetNo);
                 builder = new LevelBuilder(editorMap);
                 boxTerm.add(builder);
                 frame.setSize(frame.getPreferredSize());
@@ -110,12 +110,12 @@ public class BoxTerm extends JPanel {
 
                 if (!editMode) {
                     boxTerm.remove(game);
-                    gameMap = new SpriteMap(map, true, tileSetNo % 3);
+                    gameMap = new SpriteMap(map, true, tileSetNo);
                     game = new SokobanGame(gameMap);
                     boxTerm.add(game, BorderLayout.CENTER);
                 } else {
                     boxTerm.remove(builder);
-                    editorMap = new SpriteMap(map, false, tileSetNo % 3);
+                    editorMap = new SpriteMap(map, false, tileSetNo);
                     builder = new LevelBuilder(editorMap);
                     boxTerm.add(builder, BorderLayout.SOUTH);
                 }
@@ -199,8 +199,8 @@ public class BoxTerm extends JPanel {
         tileItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, SHORTCUT_MASK));
         tileItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                tileSetNo++;
-                getMySpriteMap().loadSprites(tileSetNo % 3);
+                tileSetNo = (tileSetNo + 1) % 3;
+                getMySpriteMap().loadSprites(tileSetNo);
             }
         });
         viewMenu.add(tileItem);
@@ -209,7 +209,7 @@ public class BoxTerm extends JPanel {
         magnifyItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getMySpriteMap().changeMagnification(true);
-                getMySpriteMap().loadSprites(tileSetNo % 3);
+                getMySpriteMap().loadSprites(tileSetNo);
                 frame.pack();
             }
         });
@@ -291,7 +291,7 @@ public class BoxTerm extends JPanel {
             menubar.add(gameMenu, 1);
             newMapItem.setVisible(false);
             boxTerm.remove(builder);
-            gameMap = new SpriteMap(SokobanMap.shallowCopy(editorMap.getMap(), 20), true, tileSetNo % 3);
+            gameMap = new SpriteMap(SokobanMap.shallowCopy(editorMap.getMap(), 20), true, tileSetNo);
             game = new SokobanGame(gameMap);
             boxTerm.add(game);
             game.requestFocusInWindow();
@@ -302,7 +302,7 @@ public class BoxTerm extends JPanel {
             newMapItem.setVisible(true);
             game.removeKeyListener(SokobanGame.listener);
             boxTerm.remove(game);
-            editorMap = new SpriteMap(new SokobanMap(gameMap.getMap(), 100), false, tileSetNo % 3);
+            editorMap = new SpriteMap(new SokobanMap(gameMap.getMap(), 100), false, tileSetNo);
             builder = new LevelBuilder(editorMap);
             boxTerm.add(builder);
         }
