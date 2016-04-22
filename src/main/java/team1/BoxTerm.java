@@ -37,10 +37,10 @@ public class BoxTerm extends JPanel {
     private static JFrame frame;
     private static BoxTerm boxTerm;
     private static JMenuBar menubar;
-    private static JMenu editMenu;
     private static JMenu gameMenu;
     private static JMenuItem newMapItem;
     private static JMenuItem saveItem;
+    private static JMenuItem resetItem;
     public BoxTerm() {
     }
     /**
@@ -64,19 +64,16 @@ public class BoxTerm extends JPanel {
 
         // create the File manu
         JMenu fileMenu = new JMenu("File");
-        menubar.add(fileMenu, 0);
-
-        editMenu = new JMenu("Edit");
-        // menubar.add(editMenu);
+        menubar.add(fileMenu);
 
         gameMenu = new JMenu("Game");
-        menubar.add(gameMenu, 1);
+        menubar.add(gameMenu);
 
         JMenu viewMenu = new JMenu("View");
-        menubar.add(viewMenu, 2);
+        menubar.add(viewMenu);
 
         JMenu helpMenu = new JMenu("Help");
-        menubar.add(helpMenu, 3);
+        menubar.add(helpMenu);
 
         // File menu
 
@@ -163,7 +160,6 @@ public class BoxTerm extends JPanel {
                 getMySpriteMap().placeSprites();
             }
 		});
-        editMenu.add(undo);
         gameMenu.add(undo);
 
         JMenuItem redo = new JMenuItem("Redo", KeyEvent.VK_Y);
@@ -176,14 +172,13 @@ public class BoxTerm extends JPanel {
                 getMySpriteMap().placeSprites();
             }
 		});
-        editMenu.add(redo);
         gameMenu.add(redo);
 
 
 
         // Game menu
 
-        JMenuItem resetItem = new JMenuItem("Reset level");
+        resetItem = new JMenuItem("Reset level");
         resetItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
         resetItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -289,10 +284,10 @@ public class BoxTerm extends JPanel {
     public static void toggleMode() {
         if (editMode) {
             editMode = false;
-            menubar.remove(editMenu);
-            menubar.add(gameMenu, 1);
+            gameMenu.setText("Game");
             newMapItem.setVisible(false);
             saveItem.setVisible(false);
+            resetItem.setVisible(true);
             boxTerm.remove(builder);
             gameMap = new SpriteMap(SokobanMap.shallowCopy(editorMap.getMap(), 20), true, tileSetNo);
             game = new SokobanGame(gameMap);
@@ -300,10 +295,10 @@ public class BoxTerm extends JPanel {
             game.requestFocusInWindow();
         } else {
             editMode = true;
-            menubar.remove(gameMenu);
-            menubar.add(editMenu, 1);
+            gameMenu.setText("Edit");
             newMapItem.setVisible(true);
             saveItem.setVisible(true);
+            resetItem.setVisible(false);
             game.removeKeyListener(SokobanGame.listener);
             boxTerm.remove(game);
             editorMap = new SpriteMap(new SokobanMap(gameMap.getMap(), 100), false, tileSetNo);
