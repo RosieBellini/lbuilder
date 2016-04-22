@@ -39,20 +39,17 @@ public class SokobanMap {
         this.xSize = xSize;
         this.ySize = ySize;
     }
-    
-    public SokobanMap valueOf(){
-    	SokobanMap newMap = new SokobanMap(xSize,ySize,maxUndos);
-    	for (Coordinate coord : initialState.getWallPositions()){
-    		newMap.put(SokobanObject.WALL, coord);
-    	}
-    	for (Coordinate coord : initialState.getGoalPositions()){
-    		newMap.put(SokobanObject.GOAL, coord);
-    	}
-    	for (Coordinate coord : initialState.getBoxPositions()){
-    		newMap.put(SokobanObject.BOX, coord);
-    	}
-    	newMap.put(SokobanObject.PLAYER, initialState.getWPos());
-    	return newMap;
+
+    public SokobanMap(SokobanMap mapToCopy) {
+        history = new FixedSizeStack<SaveState>(maxUndos);
+        SaveState state = mapToCopy.getInitialState();
+        history.push(new SaveState(state));
+        initialState = new SaveState(state);
+        redoStack = new Stack<SaveState>();
+        prevRedoStackSize = 0;
+        this.maxUndos = mapToCopy.getMaxUndos();
+        this.xSize = getXSize();
+        this.ySize = getYSize();
     }
 
     public int getYSize() {
@@ -61,6 +58,14 @@ public class SokobanMap {
 
     public int getXSize() {
         return xSize;
+    }
+
+    public int getMaxUndos() {
+        return maxUndos;
+    }
+
+    public SaveState getInitialState() {
+        return initialState;
     }
 
     public void storeState() {
@@ -302,7 +307,7 @@ public class SokobanMap {
 		}
 		ySize = levelLines.size();
 		SokobanMap map = new SokobanMap(xSize, ySize, 20);
-		
+
 		/*
 		 * Then convert the raw data into a SokobanMap using the static
 		 * method charToSokobanObject from the SokobanObject class
@@ -318,7 +323,7 @@ public class SokobanMap {
 			y++;
 		}
 		level.close();
-		map.initialState = map.getMyState();		
+		map.initialState = map.getMyState();
         return map;
 	}
 
