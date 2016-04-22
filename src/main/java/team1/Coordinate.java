@@ -1,8 +1,7 @@
 package team1;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Coordinate {
     private final int x;
@@ -44,8 +43,8 @@ public class Coordinate {
         return new Coordinate(x, y);
     }
 
-    public static Set<Coordinate> allValidCoordinates(int xSize, int ySize) {
-        Set<Coordinate> allValidCoordinates = new HashSet<Coordinate>();
+    public static ArrayList<Coordinate> allValidCoordinates(int xSize, int ySize) {
+        ArrayList<Coordinate> allValidCoordinates = new ArrayList<Coordinate>();
         for (int y = 0; y < ySize; y++) {
             for (int x = 0; x < xSize; x++) {
                 allValidCoordinates.add(new Coordinate(x, y));

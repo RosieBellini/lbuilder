@@ -24,7 +24,7 @@ public class SpriteMap extends JPanel {
     private SokobanMap map;
     private int xSize;
     private int ySize;
-    private JLabel[][] panelHolder;
+    private Map<Coordinate, JLabel> panelHolder;
     private Map<String, ImageIcon> iconMap;
     private boolean mapDrawn;
     private boolean playable;
@@ -37,13 +37,11 @@ public class SpriteMap extends JPanel {
         xSize = map.getXSize();
         ySize = map.getYSize();
         this.playable = playable;
-        panelHolder = new JLabel[ySize][xSize];
+        panelHolder = new HashMap<Coordinate, JLabel>();
         setLayout(new GridLayout(ySize, xSize));
-        for (int y = 0; y < ySize; y++) {
-            for (int x = 0; x < xSize; x++) {
-                panelHolder[y][x] = new Cell(new Coordinate(x, y), this, playable);
-                add(panelHolder[y][x]);
-            }
+        for (Coordinate position : Coordinate.allValidCoordinates(xSize, ySize)) {
+            panelHolder.put(position, new Cell(position, this, playable));
+            add(panelHolder.get(position));
         }
         this.map = map;
         magnification = 1;
@@ -57,31 +55,31 @@ public class SpriteMap extends JPanel {
             resizeSprites();
             Set<Coordinate> grassPositions = map.growGrass();
             for (Coordinate position : Coordinate.allValidCoordinates(xSize, ySize)) {
-                int x = position.getX();
-                int y = position.getY();
                 SokobanObject object = map.get(position);
+                ImageIcon icon;
                 if (!playable && object.name().equals("SPACE")){
-                    panelHolder[y][x].setIcon(iconMap.get("DEFAULT"));
+                    icon = iconMap.get("DEFAULT");
                 } else if (object.name().equals("WALL")) {
-                    panelHolder[y][x].setIcon(randomIcon("WALL", noOfWalls));
+                    icon = randomIcon("WALL", noOfWalls);
                 } else if (playable && grassPositions.contains(position)) {
-                    panelHolder[y][x].setIcon(randomIcon("GRASS", noOfGrass));
+                    icon = randomIcon("GRASS", noOfGrass);
                 } else {
-                    panelHolder[y][x].setIcon(iconMap.get(object.name()));
+                    icon = iconMap.get(object.name());
                 }
+                panelHolder.get(position).setIcon(icon);
             }
             mapDrawn = true;
         } else {
-            for (Coordinate coord : map.getChanges()) {
-                if (!coord.equals(new Coordinate(-1, -1))) {
-                    SokobanObject object = map.get(coord);
-                    ImageIcon iconToSet;
+            for (Coordinate position : map.getChanges()) {
+                if (!position.equals(new Coordinate(-1, -1))) {
+                    SokobanObject object = map.get(position);
+                    ImageIcon icon;
                     if(!playable && object.name().equals("SPACE")){
-                        iconToSet = iconMap.get("DEFAULT");
+                        icon = iconMap.get("DEFAULT");
                     } else {
-                        iconToSet=iconMap.get(object.name());
+                        icon=iconMap.get(object.name());
                     }
-                    panelHolder[coord.getY()][coord.getX()].setIcon(iconToSet);
+                    panelHolder.get(position).setIcon(icon);
                 }
             }
         }

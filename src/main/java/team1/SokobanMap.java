@@ -256,7 +256,7 @@ public class SokobanMap {
     }
 
     public Set<Coordinate> growGrass() {
-        Set<Coordinate> potentialGrass = Coordinate.allValidCoordinates(getXSize(), getYSize());
+        ArrayList<Coordinate> potentialGrass = Coordinate.allValidCoordinates(getXSize(), getYSize());
         Set<Coordinate> grassPositions = new HashSet<Coordinate>();
         potentialGrass.removeAll(accessibleSpaces(getMyState().getWPos(),true));
         for(Coordinate potentialGrassSpace : potentialGrass){
