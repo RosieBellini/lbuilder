@@ -20,7 +20,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
+/**
+ * LevelBuilder class. Used to create and display the LevelBuilder GUI.
+ * All of the fields & methods are static.
+ *
+ */
 
 public class LevelBuilder extends JPanel{
 
@@ -29,8 +36,8 @@ public class LevelBuilder extends JPanel{
     private static JPanel mainPanel;
     private static TilePalette tilePalette;
     private static JMenuBar menuBar;
-    private static JMenu file, edit, help;
-    private static JMenuItem newMap, open, save, compile, exit, undo, redo;
+    private static JMenu file, edit;
+    private static JMenuItem newMap, open, save, compile, exit, undo, redo, help;
     private static String fileName;
     private static SpriteMap spriteMap;
     private static PrintWriter txtFile;
@@ -88,10 +95,8 @@ public class LevelBuilder extends JPanel{
         // Setup Top Menu Items:
         file = new JMenu("File");
         edit = new JMenu("Edit");
-        help = new JMenu("Help");
         menuBar.add(file);
         menuBar.add(edit);
-        menuBar.add(help);
 
         /*
          * Setup Sub-Menu Items:
@@ -129,6 +134,11 @@ public class LevelBuilder extends JPanel{
         compile = new JMenuItem("Compile Map", KeyEvent.VK_C);
         compile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, SHORTCUT_MASK));
         compile.setToolTipText("Compile your map");
+        
+        help = new JMenuItem("Help", KeyEvent.VK_H);
+        help.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, SHORTCUT_MASK));
+        help.setToolTipText("Help information");
+
 
         exit = new JMenuItem("Exit", KeyEvent.VK_Q);
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, SHORTCUT_MASK));
@@ -167,12 +177,18 @@ public class LevelBuilder extends JPanel{
         file.add(open);
         file.add(save);
         file.add(compile);
+        file.add(help);
         file.add(exit);
         edit.add(undo);
         edit.add(redo);
 
+        help.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, " This map editor can be used to design your own Sokoban levels (maximum 20x20). \n\n1) Use the palette on the right to select either walls, pressure pad, player starting position or boxes. \n\n2) Click on the map once you have selected something on the palette to begin designing your level. \n\n3) You can save your map design at any point using File>Save. \n\n4) You must use File>Compile Map if you want to run your map in-game.", "Map Editor Help", JOptionPane.PLAIN_MESSAGE, spriteMap.getBoxSprite());				
+			}});
 
-
+        
 
         // Setup Main Panel:
         mainPanel = new JPanel();
@@ -195,6 +211,8 @@ public class LevelBuilder extends JPanel{
         frame.setVisible(true);
 
     }
+    
+       
 
     /**
      * Used to parse a map from the 2d Cell Array into a txt file. Throws FileNotFoundException.

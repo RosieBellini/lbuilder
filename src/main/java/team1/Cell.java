@@ -5,6 +5,13 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
 
+/**
+ * Cell Class. Used to represent an individual 'cell' in the grid for the Map Editor.
+ * Each cell has a mouse listener so that users can click and change the state of each cell.
+ * 
+ * @version 22/04/2016
+ */
+
 public class Cell extends JLabel{
 
     private static final long serialVersionUID = 1L;
@@ -12,6 +19,7 @@ public class Cell extends JLabel{
     private Coordinate position;
     private boolean playable;
 
+    
     public Cell(Coordinate position, SpriteMap spriteMap, boolean playable) {
         super();
         this.playable=playable;
