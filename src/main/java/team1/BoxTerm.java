@@ -121,7 +121,7 @@ public class BoxTerm extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 // GOT TO SORT THIS OUT.  Possibly put this and repeated code in main method in importLevel().
                 try {
-                    SokobanMap.importLevel(getFile());
+                    map = SokobanMap.importLevel(getFile());
                 } catch (FileNotFoundException e1) {
                     // TODO Sort out some verification here.
                     System.out.println("BAD LEVEL");
@@ -192,6 +192,15 @@ public class BoxTerm extends JPanel {
             }
         });
         viewMenu.add(deMagnifyItem);
+        
+        JMenuItem assistItem = new JMenuItem("Assistant");
+        assistItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SokobanMap mapToSolve = map.valueOf();
+                System.out.println(mapToSolve);
+            }
+        });
+        helpMenu.add(assistItem);
 
         JMenuItem aboutItem = new JMenuItem("About Box Terminator");
         aboutItem.addActionListener(new ActionListener() {
