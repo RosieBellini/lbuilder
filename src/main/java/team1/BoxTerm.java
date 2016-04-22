@@ -294,7 +294,7 @@ public class BoxTerm extends JPanel {
             menubar.remove(editMenu);
             menubar.add(gameMenu, 1);
             boxTerm.remove(builder);
-            gameMap = new SpriteMap(SokobanMap.shallowCopy(editorMap.getMap(), 20), true, 1);
+            gameMap = new SpriteMap(SokobanMap.shallowCopy(editorMap.getMap(), 20), true, tileSetNo);
             game = new SokobanGame(gameMap);
             boxTerm.add(game);
             game.requestFocusInWindow();
@@ -304,7 +304,7 @@ public class BoxTerm extends JPanel {
             menubar.add(editMenu, 1);
             game.removeKeyListener(SokobanGame.listener);
             boxTerm.remove(game);
-            editorMap = new SpriteMap(new SokobanMap(gameMap.getMap(), 100), false, 1);
+            editorMap = new SpriteMap(new SokobanMap(gameMap.getMap(), 100), false, tileSetNo);
             builder = new LevelBuilder(editorMap);
             boxTerm.add(builder);
         }
