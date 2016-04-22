@@ -1,5 +1,6 @@
 package team1;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -247,10 +248,10 @@ public class BoxTerm extends JPanel {
         textArea = new JTextArea();
         textArea.setPreferredSize(new Dimension(100, 80));
         textArea.setEditable(false);
-        boxterm.add(spriteMap);
-        boxterm.add(textArea);
+        boxterm.setLayout(new BorderLayout());
+        boxterm.add(spriteMap,BorderLayout.CENTER);
+        boxterm.add(textArea,BorderLayout.SOUTH);
         redraw();
-
         makeMenuBar(frame);
         frame.add(boxterm);
         frame.pack();
