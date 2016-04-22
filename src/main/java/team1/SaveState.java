@@ -57,6 +57,15 @@ public final class SaveState {
         }
     }
 
+    public SokobanObject getTopLayer(SokobanObject object) {
+        if (object == SokobanObject.PLAYER_ON_GOAL) {
+            object = SokobanObject.PLAYER;
+        } else if (object == SokobanObject.BOX_ON_GOAL) {
+            object = SokobanObject.BOX;
+        }
+        return object;
+    }
+
     public boolean put(SokobanObject object, Coordinate coord) {
         SokobanObject target = get(coord);
         boolean success = false;
@@ -84,13 +93,9 @@ public final class SaveState {
                 }
                 break;
             case PLAYER_ON_GOAL:
-                if (!put(SokobanObject.GOAL, coord)) {
-                    put(SokobanObject.PLAYER, coord);
-                }
-                break;
             case BOX_ON_GOAL:
-                if (!put(SokobanObject.GOAL, coord)) {
-                    put(SokobanObject.BOX, coord);
+                if (put(SokobanObject.GOAL, coord)) {
+                    success = put(getTopLayer(object), coord);
                 }
                 break;
             case SPACE:

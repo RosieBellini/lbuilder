@@ -315,24 +315,16 @@ public class SokobanMap {
      */
     public boolean teleport(Coordinate iCoord, Coordinate direction) {
         Coordinate fCoord = iCoord.add(direction);
-        SokobanObject target = get(fCoord);
-        if (target == SokobanObject.SPACE || target == SokobanObject.GOAL) {
-            SokobanObject source = get(iCoord);
-            if (source != SokobanObject.WALL && source != SokobanObject.GOAL) {
-                removeLayer(iCoord);
-                if (source == SokobanObject.PLAYER_ON_GOAL) {
-                    source = SokobanObject.PLAYER;
-                } else if (source == SokobanObject.BOX_ON_GOAL) {
-                    source = SokobanObject.BOX;
+        SokobanObject source = get(iCoord);
+        if (source != SokobanObject.WALL && source != SokobanObject.GOAL) {
+            if (put(getMyState().getTopLayer(source), fCoord)) {
+                if (source != SokobanObject.PLAYER_ON_GOAL) {
+                    removeLayer(iCoord);
                 }
-                put(source, fCoord);
                 return true;
-            } else {
-                return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
