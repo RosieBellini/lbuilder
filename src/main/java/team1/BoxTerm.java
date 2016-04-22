@@ -196,7 +196,7 @@ public class BoxTerm extends JPanel {
         JMenuItem assistItem = new JMenuItem("Assistant");
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanMap mapToSolve = new SokobanMap(map);
+                SokobanMap mapToSolve = map.valueOf();
                 System.out.println(mapToSolve);
             }
         });
