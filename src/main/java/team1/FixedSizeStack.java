@@ -33,7 +33,7 @@ public class FixedSizeStack<T> extends Stack<T> {
     }
 
     public void reset(T object) {
-        while (this.size() > 0) {
+        while (this.size() > 1) {
             super.pop();
         }
         super.push(object);

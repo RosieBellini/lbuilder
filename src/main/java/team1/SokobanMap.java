@@ -30,26 +30,26 @@ public class SokobanMap {
      * Initialises a MapContainer of the given size filled with spaces
      */
     public SokobanMap(int xSize, int ySize, int maxUndos) {
+        this.maxUndos = maxUndos;
+        this.xSize = xSize;
+        this.ySize = ySize;
         history = new FixedSizeStack<SaveState>(maxUndos);
         history.push(new SaveState(new Coordinate(-1, -1), new HashSet<Coordinate>(), new HashSet<Coordinate>(), new HashSet<Coordinate>()));
         initialState = new SaveState(new Coordinate(-1, -1), new HashSet<Coordinate>(), new HashSet<Coordinate>(), new HashSet<Coordinate>());
         redoStack = new Stack<SaveState>();
         prevRedoStackSize = 0;
-        this.maxUndos = maxUndos;
-        this.xSize = xSize;
-        this.ySize = ySize;
     }
 
     public SokobanMap(SokobanMap mapToCopy) {
+        this.maxUndos = mapToCopy.getMaxUndos();
+        this.xSize = mapToCopy.getXSize();
+        this.ySize = mapToCopy.getYSize();
         history = new FixedSizeStack<SaveState>(maxUndos);
         SaveState state = mapToCopy.getInitialState();
         history.push(new SaveState(state));
         initialState = new SaveState(state);
         redoStack = new Stack<SaveState>();
         prevRedoStackSize = 0;
-        this.maxUndos = mapToCopy.getMaxUndos();
-        this.xSize = getXSize();
-        this.ySize = getYSize();
     }
 
     public int getYSize() {
