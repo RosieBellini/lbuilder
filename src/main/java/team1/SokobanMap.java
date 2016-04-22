@@ -77,11 +77,11 @@ public class SokobanMap {
      *                          into the redo stack e.g. when the user inputs a
      *                          command
      */
-    public void undo(boolean sendToRedoStack) {
+    public void undo() {
         SaveState state = history.pop();
         if (historyLength() == 0) {
             history.push(state);
-        } else if (sendToRedoStack) {
+        } else {
             prevRedoStackSize = redoStack.size();
             redoStack.push(state);
         }
@@ -343,27 +343,23 @@ public class SokobanMap {
         storeState();
 
         /*
-         * this slightly confusing chunk of code makes use of the fact that
-         * methods are completely executed when an equality check is performed.
-         * It tries to move the player in the specified direction; if this
-         * fails, it tries to move the object in front of the player in the
-         * specified direction; if this succeeds, the player can be moved to the
+         * Try to move the player in the specified direction; if this fails,
+         * try to move the object in front of the player in the specified
+         * direction; if this succeeds, the player can be moved to the
          * coordinates that the user specified.
          */
-        if (teleport(wCoord, direction)) {
-        } else if (teleport(nCoord, direction)) {
-            teleport(wCoord, direction);
-
-        /*
-         * otherwise, if we couldn't perform the move within the boundaries of
-         * the game's rules, we have to undo the last move without sticking it
-         * in the redo stack to avoid the undo stack getting filled up with
-         * identical states
-         */
-        } else {
-            undo(false);
-            Toolkit.getDefaultToolkit().beep();
-            return false;
+        if (!teleport(wCoord, direction)) {
+            if (teleport(nCoord, direction)) {
+                teleport(wCoord, direction);
+            } else {
+                /*
+                 * otherwise, undo the last move without sticking it in the redo stack
+                 * to avoid the undo stack getting filled up with identical states
+                 */
+                history.pop();
+                Toolkit.getDefaultToolkit().beep();
+                return false;
+            }
         }
 
         /*

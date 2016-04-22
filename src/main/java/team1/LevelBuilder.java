@@ -128,7 +128,7 @@ public class LevelBuilder extends JPanel{
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
 		undo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-                map.undo(true);
+                map.undo();
                 int boxCount = map.getMyState().getBoxPositions().size();
                 int pressureCount = map.getMyState().getGoalPositions().size();
                 TilePalette.updateCounters(boxCount, pressureCount);
