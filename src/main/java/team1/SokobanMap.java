@@ -46,6 +46,22 @@ public class SokobanMap {
         this.reset();
     }
 
+<<<<<<< HEAD
+	/*
+	 *  Is this right to do?  For a given state I want to set the map to that position so I can
+	 *  use accessibleSpaces() to work out what boxes you can push from a given SaveState.
+	 */
+	public void loadSimpleState(SaveState state){
+		if (!state.isSimple()){
+			throw new IllegalArgumentException();
+		}
+		SaveState stateToLoad = new SaveState(state.getWPos(),
+				state.getBoxPositions(),
+				this.getMyState().getWallPositions(),
+				this.getMyState().getGoalPositions());
+		history.push(stateToLoad);
+	}
+=======
     /*
      *  Is this right to do?  For a given state i want to set the map to that position so I can
      *  use accessibleSpaces() to work out what boxes you can push from a given SaveState.
@@ -53,6 +69,7 @@ public class SokobanMap {
     public void loadState(SaveState state){
         history.push(state);
     }
+>>>>>>> branch 'BigMerge' of https://github.com/marcusjrc/lbuilder
 
     public int getYSize() {
         return ySize;
@@ -74,6 +91,25 @@ public class SokobanMap {
         history.push(new SaveState(getMyState()));
     }
 
+<<<<<<< HEAD
+	/**
+	 * Returns a SaveState object that contains the upper leftmost accessible square and the box positions.
+	 * This will be used to determine a state of the map independent of the players exact position.
+	 * @return a SaveState which represents a state of the game for the solving algorithm to use.
+	 */
+	public SaveState getState(){
+		Set<Coordinate> accessibleSpaces = accessibleSpaces(getMyState().getWPos(),false);
+		Coordinate potentialTopLeftSpace = new Coordinate(xSize,ySize);
+		for (Coordinate potential : Coordinate.allValidCoordinates(xSize, ySize)) {
+			potentialTopLeftSpace = potential;
+			if (accessibleSpaces.contains(potentialTopLeftSpace)){
+				break;
+			}
+		}
+		//		System.out.println(potentialTopLeftSpace.getX()+""+potentialTopLeftSpace.getY());
+		return new SaveState(potentialTopLeftSpace, getMyState().getBoxPositions());
+	}
+=======
     /**
      * Returns a SaveState object that contains the upper leftmost accessible square and the box positions.
      * This will be used to determine a state of the map independent of the players exact position.
@@ -91,6 +127,7 @@ public class SokobanMap {
         //		System.out.println(potentialTopLeftSpace.getX()+""+potentialTopLeftSpace.getY());
         return new SaveState(potentialTopLeftSpace, getMyState().getBoxPositions());
     }
+>>>>>>> branch 'BigMerge' of https://github.com/marcusjrc/lbuilder
 
     /**
      * Pops a SaveState out of the history stack. If the stack is then empty,
