@@ -16,6 +16,22 @@ public class Coordinate {
         this.x = coordToCopy.getX();
         this.y = coordToCopy.getY();
     }
+    
+    public String toString(){
+    	if(x==1 && y==0){
+    		return "Right";
+    	}
+    	if(x==-1 && y==0){
+    		return "Left";
+    	}
+    	if(x==0 && y==1){
+    		return "Down";
+    	}
+    	if(x==0 && y==-1){
+    		return "Up";
+    	}    	
+    	return(x+","+y);
+    }
 
     public int getX() {
         return x;

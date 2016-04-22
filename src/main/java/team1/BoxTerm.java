@@ -192,11 +192,12 @@ public class BoxTerm extends JPanel {
         });
         viewMenu.add(deMagnifyItem);
 
-        JMenuItem assistItem = new JMenuItem("Assistant");
+        JMenuItem assistItem = new JMenuItem("Print valid pushes");
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SokobanMap mapToSolve = new SokobanMap(map);
-                System.out.println(mapToSolve);
+                SingleThreadSolver solver = new SingleThreadSolver(mapToSolve);
+                System.out.println(solver.validPushesTestString());
             }
         });
         helpMenu.add(assistItem);
