@@ -15,6 +15,7 @@ import java.io.InputStream;
 import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -30,7 +31,7 @@ import javax.swing.KeyStroke;
 @SuppressWarnings("serial")
 public class BoxTerm extends JPanel {
     private static SokobanMap map;
-    private static JTextArea textArea;
+    private static JLabel statusBar;
     private static SpriteMap spriteMap;
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
     private static int tileSetNo = 1;
@@ -225,7 +226,7 @@ public class BoxTerm extends JPanel {
      * Updates the contents of the game window
      */
     public static void redraw() {
-        textArea.setText(Integer.toString(map.totalHistoryLength() - 1));
+        statusBar.setText(Integer.toString(map.totalHistoryLength() - 1));
         spriteMap.placeSprites();
     }
 
@@ -241,12 +242,10 @@ public class BoxTerm extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         spriteMap = new SpriteMap(map, true, 1);
-        textArea = new JTextArea();
-        textArea.setPreferredSize(new Dimension(100, 80));
-        textArea.setEditable(false);
+        statusBar = new JLabel();
         boxterm.setLayout(new BorderLayout());
         boxterm.add(spriteMap,BorderLayout.CENTER);
-        boxterm.add(textArea,BorderLayout.SOUTH);
+        boxterm.add(statusBar,BorderLayout.SOUTH);
         redraw();
         makeMenuBar(frame);
         frame.add(boxterm);
