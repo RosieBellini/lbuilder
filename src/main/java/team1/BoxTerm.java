@@ -94,7 +94,7 @@ public class BoxTerm extends JPanel {
         redraw();
     }
 
-    private static void makeMenuBar(JFrame frame) {
+    private static void makeMenuBar(JFrame frame,BoxTerm boxterm) {
         final int SHORTCUT_MASK =
             Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
@@ -126,10 +126,10 @@ public class BoxTerm extends JPanel {
                     System.out.println("BAD LEVEL");
                     e1.printStackTrace();
                 }
-                frame.remove(spriteMap);
+                boxterm.remove(spriteMap);
                 spriteMap = new SpriteMap(map, true, 1);
                 redraw();
-                frame.add(spriteMap);
+                boxterm.add(spriteMap,BorderLayout.CENTER);
                 frame.pack();
             }
         });
@@ -247,7 +247,7 @@ public class BoxTerm extends JPanel {
         boxterm.add(spriteMap,BorderLayout.CENTER);
         boxterm.add(statusBar,BorderLayout.SOUTH);
         redraw();
-        makeMenuBar(frame);
+        makeMenuBar(frame,boxterm);
         frame.add(boxterm);
         frame.pack();
         frame.setVisible(true);
