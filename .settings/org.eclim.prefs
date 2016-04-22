@@ -1,3 +1,4 @@
 eclipse.preferences.version=1
+org.eclim.java.checkstyle.config=google_checks.xml
 org.eclim.java.import.exclude=["^com.sun..*","^sunw?..*"]
 org.eclim.java.run.mainclass=team1.BoxTerm

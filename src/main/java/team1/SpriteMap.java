@@ -56,33 +56,29 @@ public class SpriteMap extends JPanel {
         if (!mapDrawn) {
             resizeSprites();
             Set<Coordinate> grassPositions = map.growGrass();
-            for (int y = 0; y < ySize; y++) {
-                for (int x = 0; x < xSize; x++) {
-                    SokobanObject object = map.get(new Coordinate(x, y));
-                    if(!playable && object.name().equals("SPACE")){
-                        panelHolder[y][x].setIcon(iconMap.get("DEFAULT"));
-                    }
-                    else if(object.name().equals("WALL")) {
-                        panelHolder[y][x].setIcon(randomWall());
-                    }
-                    else if (playable && grassPositions.contains(new Coordinate(x, y))) {
-                        panelHolder[y][x].setIcon(randomGrass());
-                    } else {
-                        panelHolder[y][x].setIcon(iconMap.get(object.name()));
-                    }
+            for (Coordinate position : Coordinate.allValidCoordinates(xSize, ySize)) {
+                int x = position.getX();
+                int y = position.getY();
+                SokobanObject object = map.get(position);
+                if (!playable && object.name().equals("SPACE")){
+                    panelHolder[y][x].setIcon(iconMap.get("DEFAULT"));
+                } else if (object.name().equals("WALL")) {
+                    panelHolder[y][x].setIcon(randomWall());
+                } else if (playable && grassPositions.contains(position)) {
+                    panelHolder[y][x].setIcon(randomGrass());
+                } else {
+                    panelHolder[y][x].setIcon(iconMap.get(object.name()));
                 }
             }
             mapDrawn = true;
-        }
-        else {
+        } else {
             for (Coordinate coord : map.getChanges()) {
                 if (!coord.equals(new Coordinate(-1, -1))) {
                     SokobanObject object = map.get(coord);
                     ImageIcon iconToSet;
                     if(!playable && object.name().equals("SPACE")){
                         iconToSet = iconMap.get("DEFAULT");
-                    }
-                    else{
+                    } else {
                         iconToSet=iconMap.get(object.name());
                     }
                     panelHolder[coord.getY()][coord.getX()].setIcon(iconToSet);
