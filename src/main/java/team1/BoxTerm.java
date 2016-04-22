@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -226,28 +227,31 @@ public class BoxTerm extends JPanel {
      * Updates the contents of the game window
      */
     public static void redraw() {
-        textArea.setText(map.toString());
-        textArea.append(Integer.toString(map.totalHistoryLength() - 1));
-        // New line here to redraw the spriteMap.
+        textArea.setText(Integer.toString(map.totalHistoryLength() - 1));
         spriteMap.placeSprites();
     }
 
     public static void main(String[] args) {
-        // importLevel(new File("src/main/resources/level"));
         InputStream level = BoxTerm.class.getClassLoader().getResourceAsStream("level");
         map = SokobanMap.importLevel(level);
         map.growGrass();
+
         BoxTerm boxterm = new BoxTerm();
+        boxterm.setLayout(new BoxLayout(boxterm, BoxLayout.X_AXIS));
+
         JFrame frame = new JFrame("Box Terminator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        textArea = new JTextArea(ySize + 1, xSize + 1);
+
+        spriteMap = new SpriteMap(map, true, 1);
+        textArea = new JTextArea();
         textArea.setFont(new Font("monospaced", Font.PLAIN, 24));
         textArea.setEditable(false);
-        spriteMap = new SpriteMap(map, true, 1);
+        boxterm.add(spriteMap);
+        boxterm.add(textArea);
         redraw();
-        frame.add(boxterm);
-        frame.add(spriteMap);
+
         makeMenuBar(frame);
+        frame.add(boxterm);
         frame.pack();
         frame.setVisible(true);
     }
