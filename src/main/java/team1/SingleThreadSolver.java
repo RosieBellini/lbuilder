@@ -42,6 +42,7 @@ public class SingleThreadSolver {
     private boolean tryPush(int stateIndex, Coordinate[] aPush){
         map.put(SokobanObject.PLAYER, aPush[0]);
         map.move(aPush[1]);
+        int triedPushes = seenStates.size();
         boolean isDone = map.isDone();
         SaveState possibleNewState = map.getState();
         if (!seenStates.contains(possibleNewState)){
@@ -50,6 +51,9 @@ public class SingleThreadSolver {
             donePushes.add(aPush);
         }
         map.undo();
+        if (triedPushes%1000==0){
+        System.out.println(seenStates.size());
+        }
         return isDone;
     }
 
