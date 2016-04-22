@@ -1,6 +1,7 @@
 package team1;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -8,14 +9,17 @@ public class SingleThreadSolver {
     private SokobanMap map;
     private List<SaveState> seenStates;
     private List<Integer> stateOrigins;
-    private List<Coordinate[]> pushes;
+    private List<Coordinate[]> donePushes;
 
     public SingleThreadSolver(SokobanMap map){
         this.map=map;
         seenStates = new ArrayList<SaveState>();
         seenStates.add(map.getState());
         stateOrigins = new ArrayList<Integer>();
-        pushes = new ArrayList<Coordinate[]>();		
+        stateOrigins.add(-1);
+        donePushes = new ArrayList<Coordinate[]>();	
+        Coordinate[] emptyPush = {new Coordinate(0,0),new Coordinate(0,0)};
+        donePushes.add(emptyPush);
     }
 
     private List<Coordinate[]> validPushes(int stateIndex){
@@ -35,6 +39,41 @@ public class SingleThreadSolver {
         return validPushes;
     }
 
+    private boolean tryPush(int stateIndex, Coordinate[] aPush){
+        map.put(SokobanObject.PLAYER, aPush[0]);
+        map.move(aPush[1]);
+        boolean isDone = map.isDone();
+        SaveState possibleNewState = map.getState();
+        if (!seenStates.contains(possibleNewState)){
+            seenStates.add(possibleNewState);
+            stateOrigins.add(stateIndex);
+            donePushes.add(aPush);
+        }
+        map.undo();
+        return isDone;
+    }
+
+    public boolean solveLevel(){
+        int currentStateIndex = 0;
+        boolean solving = true;
+        while (solving && currentStateIndex<seenStates.size()){
+            map.loadSimpleState(seenStates.get(currentStateIndex));
+            List<Coordinate[]> validPushes = validPushes(currentStateIndex);
+            for (int i=0; i<validPushes.size();i++){
+                boolean pushed = tryPush(currentStateIndex,validPushes.get(i));
+                if(pushed){
+                    solving=false;
+                    break;
+                }
+                if(!solving){
+                    break;
+                }
+            }
+            currentStateIndex++;
+        }
+        return true;
+    }
+
     public String validPushesTestString(){
         List<Coordinate[]> validPushes = validPushes(0);
         String allPushesString = "";
@@ -42,6 +81,22 @@ public class SingleThreadSolver {
             allPushesString+=(validPushes.get(i)[0]+"	 Direction: "+validPushes.get(i)[1]+"\n");
         }
         return allPushesString;
+    }
+
+    public String levelSolution(){
+        LinkedList<Coordinate[]> pushesToSolve = new LinkedList<Coordinate[]>();
+        String solution="Solution: \n";
+        if(solveLevel()){    
+            int currentStateIndex=seenStates.size()-1;
+            while (currentStateIndex>0){
+                pushesToSolve.addFirst(donePushes.get(currentStateIndex));
+                currentStateIndex=stateOrigins.get(currentStateIndex);
+            }
+        }        
+        for (int i=0;i<pushesToSolve.size();i++){
+        solution+=(pushesToSolve.get(i)[0]+"   Direction: "+pushesToSolve.get(i)[1]+"\n");
+        }
+        return solution;
     }
 
 }
