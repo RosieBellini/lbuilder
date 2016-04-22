@@ -29,6 +29,7 @@ public class TilePalette extends JPanel {
         setPreferredSize(new Dimension(100, 80));
         formatList();
         setCounters();
+        updateCounters();
         list.addListSelectionListener(new ListListener());
     }
 
