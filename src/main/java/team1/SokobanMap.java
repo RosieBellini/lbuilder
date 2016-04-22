@@ -41,15 +41,9 @@ public class SokobanMap {
     }
 
     public SokobanMap(SokobanMap mapToCopy) {
-        history = new FixedSizeStack<SaveState>(maxUndos);
-        SaveState state = mapToCopy.getInitialState();
-        history.push(new SaveState(state));
-        initialState = new SaveState(state);
-        redoStack = new Stack<SaveState>();
-        prevRedoStackSize = 0;
-        this.maxUndos = mapToCopy.getMaxUndos();
-        this.xSize = getXSize();
-        this.ySize = getYSize();
+        new SokobanMap(mapToCopy.getXSize(), mapToCopy.getYSize(), mapToCopy.getMaxUndos());
+        this.initialState = new SaveState(mapToCopy.getInitialState());
+        this.reset();
     }
 
     public int getYSize() {
