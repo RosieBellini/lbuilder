@@ -192,6 +192,15 @@ public class BoxTerm extends JPanel {
             }
         });
         viewMenu.add(deMagnifyItem);
+        
+        JMenuItem assistItem = new JMenuItem("Assistant");
+        assistItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SokobanMap mapToSolve = map.valueOf();
+                System.out.println(mapToSolve);
+            }
+        });
+        helpMenu.add(assistItem);
 
         JMenuItem aboutItem = new JMenuItem("About Box Terminator");
         aboutItem.addActionListener(new ActionListener() {
