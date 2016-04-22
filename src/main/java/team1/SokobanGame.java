@@ -119,7 +119,7 @@ public class SokobanGame extends JPanel {
      * Updates the contents of the game window
      */
     public static void redraw() {
-        // statusBar.setText(Integer.toString(map.totalHistoryLength() - 1));
+        statusBar.setText(Integer.toString(map.totalHistoryLength() - 1));
         spriteMap.placeSprites();
     }
 
