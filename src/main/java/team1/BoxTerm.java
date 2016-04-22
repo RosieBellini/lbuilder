@@ -86,6 +86,7 @@ public class BoxTerm extends JPanel {
 			public void actionPerformed(ActionEvent e) {
                 boxTerm.remove(builder);
                 SokobanMap map = new SokobanMap(20, 20, 100);
+                map.put(SokobanObject.PLAYER, new Coordinate(5, 5));
                 editorMap = new SpriteMap(map, false, tileSetNo);
                 builder = new LevelBuilder(editorMap);
                 boxTerm.add(builder);
