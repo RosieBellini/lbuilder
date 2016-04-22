@@ -53,7 +53,7 @@ public class SpriteMap extends JPanel {
     public void placeSprites() {
         if (!mapDrawn) {
             resizeSprites();
-            Set<Coordinate> grassPositions = map.growGrass();
+            Set<Coordinate> grassPositions = map.inaccessibleSpaces();
             for (Coordinate position : Coordinate.allValidCoordinates(xSize, ySize)) {
                 SokobanObject object = map.get(position);
                 ImageIcon icon;

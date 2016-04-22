@@ -269,16 +269,16 @@ public class SokobanMap {
         return neighbors;
     }
 
-    public Set<Coordinate> growGrass() {
+    public Set<Coordinate> inaccessibleSpaces() {
         ArrayList<Coordinate> potentialGrass = Coordinate.allValidCoordinates(xSize, ySize);
-        Set<Coordinate> grassPositions = new HashSet<Coordinate>();
+        Set<Coordinate> inaccessibleSpaces = new HashSet<Coordinate>();
         potentialGrass.removeAll(accessibleSpaces(getMyState().getWPos(),true));
         for(Coordinate potentialGrassSpace : potentialGrass){
             if (get(potentialGrassSpace) == SokobanObject.SPACE) {
-                grassPositions.add(potentialGrassSpace);
+                inaccessibleSpaces.add(potentialGrassSpace);
             }
         }
-        return grassPositions;
+        return inaccessibleSpaces;
     }
 
 	/**

@@ -232,7 +232,7 @@ public class BoxTerm extends JPanel {
     public static void main(String[] args) {
         InputStream level = BoxTerm.class.getClassLoader().getResourceAsStream("level");
         map = SokobanMap.importLevel(level);
-        map.growGrass();
+        map.inaccessibleSpaces();
 
         BoxTerm boxterm = new BoxTerm();
         boxterm.setLayout(new BoxLayout(boxterm, BoxLayout.X_AXIS));
