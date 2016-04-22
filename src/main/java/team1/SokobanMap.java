@@ -317,7 +317,7 @@ public class SokobanMap {
         Coordinate fCoord = iCoord.add(direction);
         SokobanObject source = get(iCoord);
         if (source != SokobanObject.WALL && source != SokobanObject.GOAL) {
-            if (put(getMyState().getTopLayer(source), fCoord)) {
+            if (put(SokobanObject.getTopLayer(source), fCoord)) {
                 if (source != SokobanObject.PLAYER_ON_GOAL) {
                     removeLayer(iCoord);
                 }

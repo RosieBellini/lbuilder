@@ -59,4 +59,14 @@ public enum SokobanObject {
         }
         return object;
     }
+
+    public static SokobanObject getTopLayer(SokobanObject object) {
+        if (object == SokobanObject.PLAYER_ON_GOAL) {
+            object = SokobanObject.PLAYER;
+        } else if (object == SokobanObject.BOX_ON_GOAL) {
+            object = SokobanObject.BOX;
+        }
+        return object;
+    }
+
 }
