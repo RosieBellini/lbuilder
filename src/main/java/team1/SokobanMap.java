@@ -47,11 +47,18 @@ public class SokobanMap {
 	}
 
 	/*
-	 *  Is this right to do?  For a given state i want to set the map to that position so I can
+	 *  Is this right to do?  For a given state I want to set the map to that position so I can
 	 *  use accessibleSpaces() to work out what boxes you can push from a given SaveState.
 	 */
-	public void loadState(SaveState state){
-		history.push(state);
+	public void loadSimpleState(SaveState state){
+		if (!state.isSimple()){
+			throw new IllegalArgumentException();
+		}
+		SaveState stateToLoad = new SaveState(state.getWPos(),
+				state.getBoxPositions(),
+				this.getMyState().getWallPositions(),
+				this.getMyState().getGoalPositions());
+		history.push(stateToLoad);
 	}
 
 	public int getYSize() {
@@ -80,7 +87,7 @@ public class SokobanMap {
 	 * @return a SaveState which represents a state of the game for the solving algorithm to use.
 	 */
 	public SaveState getState(){
-		Set<Coordinate> accessibleSpaces = accessibleSpaces(getMyState().getWPos(),true);
+		Set<Coordinate> accessibleSpaces = accessibleSpaces(getMyState().getWPos(),false);
 		Coordinate potentialTopLeftSpace = new Coordinate(xSize,ySize);
 		for (Coordinate potential : Coordinate.allValidCoordinates(xSize, ySize)) {
 			potentialTopLeftSpace = potential;

@@ -13,13 +13,15 @@ public class SingleThreadSolver {
 	public SingleThreadSolver(SokobanMap map){
 		this.map=map;
 		seenStates = new ArrayList<SaveState>();
+		seenStates.add(map.getState());
 		stateOrigins = new ArrayList<Integer>();
 		pushes = new ArrayList<Coordinate[]>();		
 	}
 
-	private List<Coordinate[]> validPushes(SaveState state){
+	private List<Coordinate[]> validPushes(int stateIndex){
+		map.loadSimpleState(seenStates.get(stateIndex));
+		SaveState state = seenStates.get(stateIndex);		
 		Set<Coordinate> accessibleSpaces = map.accessibleSpaces(state.getWPos(), false);
-		Set<Coordinate> allAccessibleSpaces = map.accessibleSpaces(state.getWPos(), true);
 		List<Coordinate[]> validPushes = new ArrayList<Coordinate[]>();
 		for (Coordinate box : state.getBoxPositions()){
 			for (Coordinate spaceNextToBox : map.neighbors(box))
@@ -34,7 +36,7 @@ public class SingleThreadSolver {
 	}
 	
 	public String validPushesTestString(){
-		List<Coordinate[]> validPushes = validPushes(map.getInitialState());
+		List<Coordinate[]> validPushes = validPushes(0);
 		String allPushesString = "";
 		for (int i=0;i<validPushes.size();i++){
 		 allPushesString+=(validPushes.get(i)[0]+"	 Direction: "+validPushes.get(i)[1]+"\n");

@@ -173,5 +173,9 @@ public final class SaveState {
     public int hashCode(){
         return Arrays.hashCode(new Object[]{wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(), goalPositions.hashCode()});
     }
+    
+    public boolean isSimple(){
+    	return simpleState;
+    }
 }
 
