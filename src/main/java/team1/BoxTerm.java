@@ -61,10 +61,6 @@ public class BoxTerm extends JPanel {
         return tileSetNo;
     }
 
-    public static SpriteMap getSpriteMap() {
-        return spriteMap;
-    }
-
     /**
      * Runs player movement methods when keypresses are detected, then checks
      * to see if the level has been completed. If it has, displays "YOU WON!",
@@ -75,32 +71,32 @@ public class BoxTerm extends JPanel {
      */
     private static void moveWorker(KeyEvent e) {
         switch (e.getKeyCode()) {
-        case KeyEvent.VK_UP:
-        case KeyEvent.VK_W:     map.move(new Coordinate(0, -1));
-        break;
-        case KeyEvent.VK_DOWN:
-        case KeyEvent.VK_S:     map.move(new Coordinate(0, 1));
-        break;
-        case KeyEvent.VK_LEFT:
-        case KeyEvent.VK_A:     map.move(new Coordinate(-1, 0));
-        break;
-        case KeyEvent.VK_RIGHT:
-        case KeyEvent.VK_D:     map.move(new Coordinate(1, 0));
-        break;
-        case KeyEvent.VK_U:     map.undo();
-        break;
-        case KeyEvent.VK_R:     map.redo();
-        break;
-        case KeyEvent.VK_H:     map.getChanges();
-        break;
-        default:                return;
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_W:     map.move(new Coordinate(0, -1));
+                                    break;
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_S:     map.move(new Coordinate(0, 1));
+                                    break;
+            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_A:     map.move(new Coordinate(-1, 0));
+                                    break;
+            case KeyEvent.VK_RIGHT:
+            case KeyEvent.VK_D:     map.move(new Coordinate(1, 0));
+                                    break;
+            case KeyEvent.VK_U:     map.undo();
+                                    break;
+            case KeyEvent.VK_R:     map.redo();
+                                    break;
+            case KeyEvent.VK_H:     map.getChanges();
+                                    break;
+            default:                return;
         }
         redraw();
     }
 
     private static void makeMenuBar(JFrame frame,BoxTerm boxterm) {
         final int SHORTCUT_MASK =
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+            Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
         JMenuBar menubar = new JMenuBar();
         frame.setJMenuBar(menubar);
