@@ -15,7 +15,7 @@ public final class SaveState {
     private final boolean simpleState;
 
     public SaveState(Coordinate wPos, Set<Coordinate> boxPositions, Set<Coordinate> wallPositions, Set<Coordinate> goalPositions) {
-        this.wPos = new Coordinate(wPos.getX(), wPos.getY());
+        this.wPos = new Coordinate(wPos.x, wPos.y);
         this.boxPositions = new HashSet<Coordinate>(boxPositions);
         this.wallPositions = new HashSet<Coordinate>(wallPositions);
         this.goalPositions = new HashSet<Coordinate>(goalPositions);

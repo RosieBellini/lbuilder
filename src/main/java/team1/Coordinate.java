@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Coordinate {
-    private final int x;
-    private final int y;
+    public final int x;
+    public final int y;
 
     public Coordinate(int x, int y) {
         this.x = x;
@@ -13,43 +13,26 @@ public class Coordinate {
     }
 
     public Coordinate(Coordinate coordToCopy) {
-        this.x = coordToCopy.getX();
-        this.y = coordToCopy.getY();
+        this.x = coordToCopy.x;
+        this.y = coordToCopy.y;
     }
-    
+
     public String toString(){
-    	if(x==1 && y==0){
+    	if (x == 1 && y == 0) {
     		return "Right";
-    	}
-    	if(x==-1 && y==0){
+    	} else if (x == -1 && y == 0) {
     		return "Left";
-    	}
-    	if(x==0 && y==1){
+    	} else if (x == 0 && y == 1) {
     		return "Down";
-    	}
-    	if(x==0 && y==-1){
+    	} else if (x == 0 && y == -1) {
     		return "Up";
-    	}    	
-    	return(x+","+y);
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
+    	}
+    	return (x + "," + y);
     }
 
     public Coordinate add(Coordinate coord) {
-        int x = this.x + coord.getX();
-        int y = this.y + coord.getY();
-        return new Coordinate(x, y);
-    }
-
-    public Coordinate mult(int multiplier) {
-        int x = this.x * 2;
-        int y = this.y * 2;
+        int x = this.x + coord.x;
+        int y = this.y + coord.y;
         return new Coordinate(x, y);
     }
 
@@ -83,7 +66,7 @@ public class Coordinate {
             return false;
         }
         Coordinate pos = (Coordinate) obj;
-        if (this.x == pos.getX() && this.y == pos.getY()) {
+        if (this.x == pos.x && this.y == pos.y) {
             return true;
         } else {
             return false;
