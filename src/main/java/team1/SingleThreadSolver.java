@@ -34,12 +34,12 @@ public class SingleThreadSolver {
 		}
 		return validPushes;
 	}
-	
+
 	public String validPushesTestString(){
 		List<Coordinate[]> validPushes = validPushes(0);
 		String allPushesString = "";
 		for (int i=0;i<validPushes.size();i++){
-		 allPushesString+=(validPushes.get(i)[0]+"	 Direction: "+validPushes.get(i)[1]+"\n");
+			allPushesString+=(validPushes.get(i)[0]+"	 Direction: "+validPushes.get(i)[1]+"\n");
 		}
 		return allPushesString;
 	}
