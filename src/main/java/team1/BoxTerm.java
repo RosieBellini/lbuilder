@@ -114,12 +114,12 @@ public class BoxTerm extends JPanel {
 
                 if (!editMode) {
                     boxTerm.remove(game);
-                    gameMap = new SpriteMap(map, true, 1);
+                    gameMap = new SpriteMap(map, true, tileSetNo);
                     game = new SokobanGame(gameMap);
                     boxTerm.add(game, BorderLayout.CENTER);
                 } else {
                     boxTerm.remove(builder);
-                    editorMap = new SpriteMap(map, false, 1);
+                    editorMap = new SpriteMap(map, false, tileSetNo);
                     builder = new LevelBuilder(editorMap);
                     boxTerm.add(builder, BorderLayout.SOUTH);
                 }
@@ -236,7 +236,7 @@ public class BoxTerm extends JPanel {
         JMenuItem assistItem = new JMenuItem("Print solution");
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanMap mapToSolve = new SokobanMap(map);
+                SokobanMap mapToSolve = new SokobanMap(gameMap.getMap());
                 SingleThreadSolver solver = new SingleThreadSolver(mapToSolve);
                 System.out.println(solver.levelSolution());
             }
