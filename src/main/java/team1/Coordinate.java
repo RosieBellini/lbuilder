@@ -66,11 +66,7 @@ public class Coordinate {
             return false;
         }
         Coordinate pos = (Coordinate) obj;
-        if (this.x == pos.x && this.y == pos.y) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.x == pos.x && this.y == pos.y;
     }
 
     @Override
