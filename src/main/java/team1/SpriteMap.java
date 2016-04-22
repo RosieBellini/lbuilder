@@ -50,6 +50,10 @@ public class SpriteMap extends JPanel {
         setVisible(true);
     }
 
+    public void setMap(SokobanMap map) {
+        this.map = map;
+    }
+
     public void placeSprites() {
         if (!mapDrawn) {
             resizeSprites();

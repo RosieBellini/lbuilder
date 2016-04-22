@@ -103,7 +103,13 @@ public class LevelBuilder extends JPanel{
         newMap = new JMenuItem("New", KeyEvent.VK_N);
         newMap.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
         newMap.setToolTipText("Start a new map design");
-
+		newMap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                spriteMap.setMap(new SokobanMap(20, 20, 100));
+                spriteMap.reset();
+                spriteMap.placeSprites();
+            }
+		});
 
         open = new JMenuItem("Open", KeyEvent.VK_O);
         open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
@@ -170,7 +176,7 @@ public class LevelBuilder extends JPanel{
         x = 20;
         y = 20;
         map = new SokobanMap(x, y, 100);
-        mainPanel.add(spriteMap = new SpriteMap(map, false, BoxTerm.getTileSetNo()%3));
+        mainPanel.add(spriteMap = new SpriteMap(map, false, BoxTerm.getTileSetNo() % 3));
 //		spriteMap.placeSprites();
 
         // Setup TilePalette
