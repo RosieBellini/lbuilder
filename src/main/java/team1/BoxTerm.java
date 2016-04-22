@@ -1,7 +1,6 @@
 package team1;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,93 +29,74 @@ import javax.swing.KeyStroke;
 @SuppressWarnings("serial")
 public class BoxTerm extends JPanel {
     private static SokobanMap map;
-    private static JLabel statusBar;
-    private static SpriteMap spriteMap;
+    private static SpriteMap gameMap;
+    private static SpriteMap editorMap;
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
     private static int tileSetNo = 1;
+    private static SokobanGame game;
+    public static LevelBuilder builder;
+    private static boolean editMode = false;
+    private static JFrame frame;
+    private static BoxTerm boxTerm;
+    private static JMenuBar menubar;
+    private static JMenu editMenu;
+    private static JMenu gameMenu;
 
+    public BoxTerm() {
+    }
     /**
      * A constructor to initialise the key listener which allows methods to be
      * run when key presses are detected
      */
-    public BoxTerm() {
-        addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                moveWorker(e);
-            }
-        });
-        setFocusable(true);
-    }
-
     public static int getTileSetNo() {
         return tileSetNo;
     }
 
     public static SpriteMap getSpriteMap() {
-        return spriteMap;
+        return getMySpriteMap();
     }
 
-    /**
-     * Runs player movement methods when keypresses are detected, then checks
-     * to see if the level has been completed. If it has, displays "YOU WON!",
-     * else redraws the level.
-     *
-     * TODO:    Only check if win conditions have been met when a box is placed
-     *          on a goal rather than every time the player moves
-     */
-    private static void moveWorker(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP:
-            case KeyEvent.VK_W:     map.move(new Coordinate(0, -1));
-                                    break;
-            case KeyEvent.VK_DOWN:
-            case KeyEvent.VK_S:     map.move(new Coordinate(0, 1));
-                                    break;
-            case KeyEvent.VK_LEFT:
-            case KeyEvent.VK_A:     map.move(new Coordinate(-1, 0));
-                                    break;
-            case KeyEvent.VK_RIGHT:
-            case KeyEvent.VK_D:     map.move(new Coordinate(1, 0));
-                                    break;
-            case KeyEvent.VK_U:     map.undo();
-                                    break;
-            case KeyEvent.VK_R:     map.redo();
-                                    break;
-            case KeyEvent.VK_H:     map.getChanges();
-                                    break;
-            default:                return;
-        }
-        redraw();
-    }
 
-    private static void makeMenuBar(JFrame frame,BoxTerm boxterm) {
+    private static void makeMenuBar(JFrame frame) {
         final int SHORTCUT_MASK =
             Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
-        JMenuBar menubar = new JMenuBar();
+        menubar = new JMenuBar();
         frame.setJMenuBar(menubar);
 
         // create the File manu
         JMenu fileMenu = new JMenu("File");
-        menubar.add(fileMenu);
+        menubar.add(fileMenu, 0);
 
-        JMenu gameMenu = new JMenu("Game");
-        menubar.add(gameMenu);
+        editMenu = new JMenu("Edit");
+        // menubar.add(editMenu);
+
+        gameMenu = new JMenu("Game");
+        menubar.add(gameMenu, 1);
 
         JMenu viewMenu = new JMenu("View");
-        menubar.add(viewMenu);
+        menubar.add(viewMenu, 2);
 
         JMenu helpMenu = new JMenu("Help");
-        menubar.add(helpMenu);
+        menubar.add(helpMenu, 3);
+
+        // File menu
+
+        JMenuItem newMap = new JMenuItem("New", KeyEvent.VK_N);
+        newMap.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
+        newMap.setToolTipText("Start a new map design");
+		newMap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                // mainPanel.removeAll();
+                // SokobanMap map = new SokobanMap(20, 20, 100);
+                // getMySpriteMap() = new SpriteMap(map, false, BoxTerm.getTileSetNo() % 3);
+                // tilePalette = new TilePalette(getMySpriteMap());
+                // mainPanel.add(getMySpriteMap());
+                // mainPanel.add(tilePalette);
+                // frame.setSize(frame.getPreferredSize());
+            }
+		});
+        fileMenu.add(newMap);
 
         JMenuItem openItem = new JMenuItem("Open");
         openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
@@ -130,19 +110,34 @@ public class BoxTerm extends JPanel {
                     System.out.println("BAD LEVEL");
                     e1.printStackTrace();
                 }
-                boxterm.remove(spriteMap);
-                spriteMap = new SpriteMap(map, true, 1);
-                redraw();
-                boxterm.add(spriteMap,BorderLayout.CENTER);
+
+                if (!editMode) {
+                    boxTerm.remove(game);
+                    gameMap = new SpriteMap(map, true, 1);
+                    game = new SokobanGame(gameMap);
+                    boxTerm.add(game, BorderLayout.CENTER);
+                } else {
+                    boxTerm.remove(builder);
+                    editorMap = new SpriteMap(map, false, 1);
+                    builder = new LevelBuilder(editorMap);
+                    boxTerm.add(builder, BorderLayout.SOUTH);
+                }
+
                 frame.pack();
             }
         });
         fileMenu.add(openItem);
 
-        JMenuItem levelBuilderItem = new JMenuItem("Start level builder");
+        JMenuItem save = new JMenuItem("Save", KeyEvent.VK_S);
+        save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
+        save.setToolTipText("Save current map design to file");
+        // save.addActionListener(new SaveAction());
+        fileMenu.add(save);
+
+        JMenuItem levelBuilderItem = new JMenuItem("Toggle mode");
         levelBuilderItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                LevelBuilder.activate();
+                toggleMode();
             }
         });
         fileMenu.add(levelBuilderItem);
@@ -156,22 +151,59 @@ public class BoxTerm extends JPanel {
         });
         fileMenu.add(quitItem);
 
+
+        // Edit menu
+
+        JMenuItem undo = new JMenuItem("Undo", KeyEvent.VK_Z);
+        undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
+		undo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                SokobanMap map = getMySpriteMap().getMap();
+                map.undo();
+                TilePalette.updateCounters();
+                getMySpriteMap().placeSprites();
+            }
+		});
+        editMenu.add(undo);
+        gameMenu.add(undo);
+
+        JMenuItem redo = new JMenuItem("Redo", KeyEvent.VK_Y);
+        redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, SHORTCUT_MASK));
+		redo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                SokobanMap map = getMySpriteMap().getMap();
+                map.redo();
+                TilePalette.updateCounters();
+                getMySpriteMap().placeSprites();
+            }
+		});
+        editMenu.add(redo);
+        gameMenu.add(redo);
+
+
+
+        // Game menu
+
         JMenuItem resetItem = new JMenuItem("Reset level");
         resetItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
         resetItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                spriteMap.reset();
-                redraw();
+                getMySpriteMap().reset();
+                SokobanGame.redraw();
             }
         });
         gameMenu.add(resetItem);
+
+
+
+        // View menu
 
         JMenuItem tileItem = new JMenuItem("Change Tileset");
         tileItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, SHORTCUT_MASK));
         tileItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 tileSetNo++;
-                spriteMap.loadSprites(tileSetNo % 3);
+                getMySpriteMap().loadSprites(tileSetNo % 3);
             }
         });
         viewMenu.add(tileItem);
@@ -179,8 +211,8 @@ public class BoxTerm extends JPanel {
         JMenuItem magnifyItem = new JMenuItem("Increase Magnification");
         magnifyItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                spriteMap.changeMagnification(true);
-                spriteMap.loadSprites(tileSetNo % 3);
+                getMySpriteMap().changeMagnification(true);
+                getMySpriteMap().loadSprites(tileSetNo % 3);
                 frame.pack();
             }
         });
@@ -189,12 +221,16 @@ public class BoxTerm extends JPanel {
         JMenuItem deMagnifyItem = new JMenuItem("Decrease Magnification");
         deMagnifyItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                spriteMap.changeMagnification(false);
-                spriteMap.placeSprites();
+                getMySpriteMap().changeMagnification(false);
+                getMySpriteMap().placeSprites();
                 frame.pack();
             }
         });
         viewMenu.add(deMagnifyItem);
+
+
+
+        // Help menu
 
         JMenuItem assistItem = new JMenuItem("Print valid pushes");
         assistItem.addActionListener(new ActionListener() {
@@ -209,7 +245,7 @@ public class BoxTerm extends JPanel {
         JMenuItem aboutItem = new JMenuItem("About Box Terminator");
         aboutItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(spriteMap, "A Sokoban clone.", "Box Terminator",JOptionPane.PLAIN_MESSAGE,spriteMap.getBoxSprite());
+                JOptionPane.showMessageDialog(getMySpriteMap(), "A Sokoban clone.", "Box Terminator",JOptionPane.PLAIN_MESSAGE,getMySpriteMap().getBoxSprite());
             }
         });
         helpMenu.add(aboutItem);
@@ -226,34 +262,55 @@ public class BoxTerm extends JPanel {
         return streamToReturn;
     }
 
-    /**
-     * Updates the contents of the game window
-     */
-    public static void redraw() {
-        statusBar.setText(Integer.toString(map.totalHistoryLength() - 1));
-        spriteMap.placeSprites();
+    public static void toggleMode() {
+        if (editMode) {
+            editMode = false;
+            menubar.remove(editMenu);
+            menubar.add(gameMenu, 1);
+            boxTerm.remove(builder);
+            gameMap = new SpriteMap(SokobanMap.shallowCopy(editorMap.getMap(), 20), true, 1);
+            game = new SokobanGame(gameMap);
+            boxTerm.add(game);
+            game.requestFocusInWindow();
+            System.out.println(gameMap.getMap().getMaxUndos());
+        } else {
+            editMode = true;
+            menubar.remove(gameMenu);
+            menubar.add(editMenu, 1);
+            game.removeKeyListener(SokobanGame.listener);
+            boxTerm.remove(game);
+            editorMap = new SpriteMap(new SokobanMap(gameMap.getMap(), 100), false, 1);
+            builder = new LevelBuilder(editorMap);
+            boxTerm.add(builder);
+        }
+        frame.setSize(frame.getPreferredSize());
+    }
+
+    public static SpriteMap getMySpriteMap() {
+        if (!editMode) {
+            return gameMap;
+        } else {
+            return editorMap;
+        }
     }
 
     public static void main(String[] args) {
         InputStream level = BoxTerm.class.getClassLoader().getResourceAsStream("level");
         map = SokobanMap.importLevel(level);
-        map.inaccessibleSpaces();
+        gameMap = new SpriteMap(map, true, 1);
+        editorMap = new SpriteMap(map, false, 1);
+        game = new SokobanGame(gameMap);
+        builder = new LevelBuilder(editorMap);
 
-        BoxTerm boxterm = new BoxTerm();
-        boxterm.setLayout(new BoxLayout(boxterm, BoxLayout.X_AXIS));
+        boxTerm = new BoxTerm();
+        boxTerm.setLayout(new BoxLayout(boxTerm, BoxLayout.X_AXIS));
 
-        JFrame frame = new JFrame("Box Terminator");
+        frame = new JFrame("Box Terminator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        spriteMap = new SpriteMap(map, true, 1);
-        statusBar = new JLabel();
-        statusBar.setFont(new Font("Helvetica",Font.PLAIN , 24));
-        boxterm.setLayout(new BorderLayout());
-        boxterm.add(spriteMap,BorderLayout.CENTER);
-        boxterm.add(statusBar,BorderLayout.SOUTH);
-        redraw();
-        makeMenuBar(frame,boxterm);
-        frame.add(boxterm);
+        boxTerm.add(game, BorderLayout.CENTER);
+        makeMenuBar(frame);
+        frame.add(boxTerm);
         frame.pack();
         frame.setVisible(true);
     }

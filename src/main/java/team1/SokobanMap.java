@@ -52,6 +52,13 @@ public class SokobanMap {
         this.reset();
     }
 
+    public static SokobanMap shallowCopy(SokobanMap mapToCopy, int maxUndos) {
+        SokobanMap newMap = new SokobanMap(mapToCopy, maxUndos);
+        newMap.setInitialState(mapToCopy.getMyState());
+        newMap.reset();
+        return newMap;
+    }
+
 	/*
 	 *  Is this right to do?  For a given state I want to set the map to that position so I can
 	 *  use accessibleSpaces() to work out what boxes you can push from a given SaveState.
@@ -81,6 +88,10 @@ public class SokobanMap {
 
     public SaveState getInitialState() {
         return initialState;
+    }
+
+    public void setInitialState(SaveState initialState) {
+        this.initialState = initialState;
     }
 
     public void storeState() {

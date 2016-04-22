@@ -24,6 +24,7 @@ public class TilePalette extends JPanel {
     protected static int pressureCount;
     protected static int playerCount;
     protected static SpriteMap spriteMap;
+    private static LevelBuilder builder = BoxTerm.builder;
 
     public TilePalette(SpriteMap spriteMap)
     {
@@ -74,13 +75,13 @@ public class TilePalette extends JPanel {
 
         int selection = list.getSelectedIndex();
         switch(selection) {
-            case 0: LevelBuilder.state = SokobanObject.WALL;
+            case 0: LevelBuilder.setState(SokobanObject.WALL);
                     break;
-            case 1: LevelBuilder.state = SokobanObject.BOX;
+            case 1: LevelBuilder.setState(SokobanObject.BOX);
                     break;
-            case 2: LevelBuilder.state = SokobanObject.GOAL;
+            case 2: LevelBuilder.setState(SokobanObject.GOAL);
                     break;
-            case 3: LevelBuilder.state = SokobanObject.PLAYER;
+            case 3: LevelBuilder.setState(SokobanObject.PLAYER);
                     break;
         }
     }
