@@ -124,7 +124,7 @@ public class SokobanMap {
     }
 
     public void reset() {
-        history.reset();
+        history.reset(initialState);
         clearRedoStack();
     }
 
