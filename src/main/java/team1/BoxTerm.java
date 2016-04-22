@@ -1,7 +1,7 @@
 package team1;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +21,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
 /** Box Terminator main method. This class handles importing the level, drawing
@@ -243,6 +242,7 @@ public class BoxTerm extends JPanel {
 
         spriteMap = new SpriteMap(map, true, 1);
         statusBar = new JLabel();
+        statusBar.setFont(new Font("Helvetica",Font.PLAIN , 24));
         boxterm.setLayout(new BorderLayout());
         boxterm.add(spriteMap,BorderLayout.CENTER);
         boxterm.add(statusBar,BorderLayout.SOUTH);
