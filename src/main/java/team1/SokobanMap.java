@@ -51,10 +51,6 @@ public class SokobanMap {
         redoStack = new Stack<SaveState>();
         prevRedoStackSize = 0;
     }
-    
-    public SokobanMap valueOf(){
-    	return new SokobanMap(this);
-    }
 
     public int getYSize() {
         return ySize;
