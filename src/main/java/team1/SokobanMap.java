@@ -301,7 +301,6 @@ public class SokobanMap {
 			levelLines.add(line);
 		}
 		ySize = levelLines.size();
-
 		SokobanMap map = new SokobanMap(xSize, ySize, 20);
 		
 		/*

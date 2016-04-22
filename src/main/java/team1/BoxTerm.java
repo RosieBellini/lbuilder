@@ -121,7 +121,7 @@ public class BoxTerm extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 // GOT TO SORT THIS OUT.  Possibly put this and repeated code in main method in importLevel().
                 try {
-                    SokobanMap.importLevel(getFile());
+                    map = SokobanMap.importLevel(getFile());
                 } catch (FileNotFoundException e1) {
                     // TODO Sort out some verification here.
                     System.out.println("BAD LEVEL");
