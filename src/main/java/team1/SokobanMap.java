@@ -57,17 +57,10 @@ public class SokobanMap {
      */
     public SaveState getState(){
         Set<Coordinate> accessibleSpaces = accessibleSpaces(getMyState().getWPos(),true);
-        Coordinate potentialTopLeftSpace = new Coordinate(getXSize(),getYSize());
-        boolean done = false;
-        for(int y=0;y<getYSize();y++){
-            for(int x=0;x<getXSize();x++){
-                potentialTopLeftSpace = new Coordinate(x,y);
-                if (accessibleSpaces.contains(potentialTopLeftSpace)){
-                    done=true;
-                    break;
-                }
-            }
-            if (done){
+        Coordinate potentialTopLeftSpace = new Coordinate(xSize,ySize);
+        for (Coordinate potential : Coordinate.allValidCoordinates(xSize, ySize)) {
+            potentialTopLeftSpace = potential;
+            if (accessibleSpaces.contains(potentialTopLeftSpace)){
                 break;
             }
         }
@@ -173,8 +166,8 @@ public class SokobanMap {
 
     public String toString() {
         String mapLine = "";
-        for (int y = 0; y < getYSize(); y++) {
-            for (int x = 0; x < getXSize(); x++) {
+        for (int y = 0; y < ySize; y++) {
+            for (int x = 0; x < xSize; x++) {
                 Coordinate coord = new Coordinate(x, y);
                 mapLine = mapLine + get(coord).toString();
             }
@@ -247,16 +240,15 @@ public class SokobanMap {
         potentialNeighbors.add(origin.add(new Coordinate(0,1)));
         potentialNeighbors.add(origin.add(new Coordinate(0,-1)));
         for(Coordinate potentialNeighbor : potentialNeighbors){
-            if (potentialNeighbor.getX()>=0&&potentialNeighbor.getX()<=this.getXSize()&&
-                    potentialNeighbor.getY()>=0&&potentialNeighbor.getY()<=this.getYSize()){
+            if (potentialNeighbor.inRange(0, 0, xSize, ySize)) {
                 neighbors.add(potentialNeighbor);
-                    }
+            }
         }
         return neighbors;
     }
 
     public Set<Coordinate> growGrass() {
-        ArrayList<Coordinate> potentialGrass = Coordinate.allValidCoordinates(getXSize(), getYSize());
+        ArrayList<Coordinate> potentialGrass = Coordinate.allValidCoordinates(xSize, ySize);
         Set<Coordinate> grassPositions = new HashSet<Coordinate>();
         potentialGrass.removeAll(accessibleSpaces(getMyState().getWPos(),true));
         for(Coordinate potentialGrassSpace : potentialGrass){
@@ -313,25 +305,6 @@ public class SokobanMap {
 	}
 
     /**
-     * Evaluates if it's possible to move a BOX or PLAYER to the given
-     * coordinate.
-     *
-     * TODO:    Currently doesn't check to see if there are walls or boxes
-     *          blocking the player from reaching this spot. Need to implement
-     *          algorithm to calculate this for the solver
-     *
-     * @return  true if a BOX or PLAYER can be moved here, false otherwise
-     */
-    public boolean canMoveHere(Coordinate coord) {
-        SokobanObject target = get(coord);
-        if (target == SokobanObject.SPACE || target == SokobanObject.GOAL) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Moves the object at a given position in the direction specified,
      * respecting the rules of the game.
      *
@@ -342,7 +315,8 @@ public class SokobanMap {
      */
     public boolean teleport(Coordinate iCoord, Coordinate direction) {
         Coordinate fCoord = iCoord.add(direction);
-        if (canMoveHere(fCoord)) {
+        SokobanObject target = get(fCoord);
+        if (target == SokobanObject.SPACE || target == SokobanObject.GOAL) {
             SokobanObject source = get(iCoord);
             if (source != SokobanObject.WALL && source != SokobanObject.GOAL) {
                 removeLayer(iCoord);

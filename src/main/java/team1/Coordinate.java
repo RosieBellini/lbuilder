@@ -53,6 +53,11 @@ public class Coordinate {
         return allValidCoordinates;
     }
 
+    public boolean inRange(int xLowerBound, int yLowerBound, int xUpperBound, int yUpperBound) {
+        return this.x >= xLowerBound && this.x <= xUpperBound
+                && this.y >= yLowerBound && this.y <= yUpperBound;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
