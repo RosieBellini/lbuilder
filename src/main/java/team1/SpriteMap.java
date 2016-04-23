@@ -26,6 +26,7 @@ public class SpriteMap extends JPanel {
     private int ySize;
     private Map<Coordinate, JLabel> panelHolder;
     private Map<String, ImageIcon> iconMap;
+    private Map<String, ImageIcon> unscaledIconMap;
     private boolean mapDrawn;
     private boolean playable;
     private boolean initialised = false;
@@ -155,7 +156,8 @@ public class SpriteMap extends JPanel {
         // } catch (IOException e) {
         // 	e.printStackTrace();
         // }
-        mapDrawn=false;
+        unscaledIconMap = new HashMap<String, ImageIcon>(iconMap);
+        mapDrawn = false;
         placeSprites();
     }
 
@@ -165,6 +167,10 @@ public class SpriteMap extends JPanel {
 
     public Map<String, ImageIcon> getIconMap() {
         return iconMap;
+    }
+
+    public Map<String, ImageIcon> getUnscaledIconMap() {
+        return unscaledIconMap;
     }
 
     public void update() {
