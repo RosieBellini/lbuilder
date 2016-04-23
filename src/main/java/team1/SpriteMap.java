@@ -32,20 +32,35 @@ public class SpriteMap extends JPanel {
     int noOfGrass;
 
     public SpriteMap(SokobanMap map, boolean playable, int tileSetNo) {
-        mapDrawn = false;
-        xSize = map.getXSize();
-        ySize = map.getYSize();
-        this.playable = playable;
         panelHolder = new HashMap<Coordinate, JLabel>();
-        setLayout(new GridLayout(ySize, xSize));
-        for (Coordinate position : Coordinate.allValidCoordinates(xSize, ySize)) {
-            panelHolder.put(position, new Cell(position, this, playable));
-            add(panelHolder.get(position));
-        }
-        this.map = map;
         iconMap = new HashMap<String, ImageIcon>();
+        this.playable = playable;
+        this.updateMap(map, false);
         loadSprites(tileSetNo);
         setVisible(true);
+    }
+
+    public void updateMap(SokobanMap map, boolean test) {
+        if (test) {
+            map.put(SokobanObject.PLAYER, new Coordinate(5, 5));
+            map.put(SokobanObject.BOX, new Coordinate(5, 3));
+            map.put(SokobanObject.GOAL, new Coordinate(5, 7));
+        }
+        mapDrawn = false;
+        this.map = map;
+        xSize = map.getXSize();
+        ySize = map.getYSize();
+        setLayout(new GridLayout(ySize, xSize));
+        panelHolder.clear();
+        this.removeAll();
+        for (Coordinate position : Coordinate.allValidCoordinates(xSize, ySize)) {
+            panelHolder.put(position, new Cell(position, this, this.playable));
+            add(panelHolder.get(position));
+        }
+        if (test) {
+            placeSprites();
+        }
+        BoxTerm.getFrame().setSize(BoxTerm.getFrame().getPreferredSize());
     }
 
     public void setMap(SokobanMap map) {

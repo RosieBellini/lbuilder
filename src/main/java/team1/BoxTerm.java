@@ -51,6 +51,10 @@ public class BoxTerm extends JPanel {
         return magnification;
     }
 
+    public static JFrame getFrame() {
+        return frame;
+    }
+
     private static void makeMenuBar(JFrame frame) {
         final int SHORTCUT_MASK =
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -339,6 +343,9 @@ public class BoxTerm extends JPanel {
     }
 
     public static void main(String[] args) {
+        frame = new JFrame("Box Terminator");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         InputStream level = BoxTerm.class.getClassLoader().getResourceAsStream("level");
         SokobanMap map = SokobanMap.importLevel(level);
         gameMap = new SpriteMap(map, true, 1);
@@ -346,9 +353,6 @@ public class BoxTerm extends JPanel {
 
         boxTerm = new BoxTerm();
         boxTerm.setLayout(new BoxLayout(boxTerm, BoxLayout.X_AXIS));
-
-        frame = new JFrame("Box Terminator");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         boxTerm.add(game, BorderLayout.CENTER);
         makeMenuBar(frame);

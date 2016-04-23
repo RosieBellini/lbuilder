@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class SokobanGame extends JPanel {
-    private static SokobanMap map;
+    // private static SokobanMap map;
     private static JLabel statusBar;
     private static SpriteMap spriteMap;
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
@@ -52,7 +52,7 @@ public class SokobanGame extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         SokobanGame.spriteMap = spriteMap;
-        SokobanGame.map = spriteMap.getMap();
+        // SokobanGame.map = spriteMap.getMap();
 
         statusBar = new JLabel();
         statusBar.setFont(new Font("Helvetica",Font.PLAIN , 24));
@@ -80,6 +80,8 @@ public class SokobanGame extends JPanel {
      *          on a goal rather than every time the player moves
      */
     public static void moveWorker(KeyEvent e) {
+        SokobanMap map = spriteMap.getMap();
+
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
             case KeyEvent.VK_W:     map.move(new Coordinate(0, -1));
@@ -93,6 +95,7 @@ public class SokobanGame extends JPanel {
             case KeyEvent.VK_RIGHT:
             case KeyEvent.VK_D:     map.move(new Coordinate(1, 0));
                                     break;
+            case KeyEvent.VK_H:     spriteMap.updateMap(new SokobanMap(10, 10, 20), true);
             default:                return;
         }
         redraw();
@@ -113,6 +116,7 @@ public class SokobanGame extends JPanel {
      * Updates the contents of the game window
      */
     public static void redraw() {
+        SokobanMap map = spriteMap.getMap();
         statusBar.setText(Integer.toString(map.totalHistoryLength() - 1));
         spriteMap.placeSprites();
     }
