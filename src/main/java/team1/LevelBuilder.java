@@ -69,8 +69,8 @@ public class LevelBuilder extends JPanel{
         tiles[1] = spriteMap.getIconMap().get("BOX");
         tiles[2] = spriteMap.getIconMap().get("GOAL");
         tiles[3] = spriteMap.getIconMap().get("PLAYER");
-        list.setFixedCellHeight((int) BoxTerm.getMagnification() * 36);
-        list.setFixedCellWidth((int) BoxTerm.getMagnification() * 34); // rather than 32 to allow border
+        list.setFixedCellHeight((int) (BoxTerm.getMagnification() * 36));
+        list.setFixedCellWidth((int) (BoxTerm.getMagnification() * 34)); // rather than 32 to allow border
         list.repaint();
     }
 
