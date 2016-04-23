@@ -28,6 +28,7 @@ public class SpriteMap extends JPanel {
     private Map<String, ImageIcon> iconMap;
     private boolean mapDrawn;
     private boolean playable;
+    private boolean initialised = false;
     int noOfWalls;
     int noOfGrass;
 
@@ -35,17 +36,13 @@ public class SpriteMap extends JPanel {
         panelHolder = new HashMap<Coordinate, JLabel>();
         iconMap = new HashMap<String, ImageIcon>();
         this.playable = playable;
-        this.updateMap(map, false);
+        this.updateMap(map);
         loadSprites(tileSetNo);
         setVisible(true);
+        initialised = true;
     }
 
-    public void updateMap(SokobanMap map, boolean test) {
-        if (test) {
-            map.put(SokobanObject.PLAYER, new Coordinate(5, 5));
-            map.put(SokobanObject.BOX, new Coordinate(5, 3));
-            map.put(SokobanObject.GOAL, new Coordinate(5, 7));
-        }
+    public void updateMap(SokobanMap map) {
         mapDrawn = false;
         this.map = map;
         xSize = map.getXSize();
@@ -57,10 +54,9 @@ public class SpriteMap extends JPanel {
             panelHolder.put(position, new Cell(position, this, this.playable));
             add(panelHolder.get(position));
         }
-        if (test) {
+        if (initialised) {
             placeSprites();
         }
-        BoxTerm.getFrame().setSize(BoxTerm.getFrame().getPreferredSize());
     }
 
     public void setMap(SokobanMap map) {

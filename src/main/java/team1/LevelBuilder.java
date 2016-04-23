@@ -89,6 +89,10 @@ public class LevelBuilder extends JPanel{
         }
     }
 
+    public static SpriteMap getSpriteMap() {
+        return spriteMap;
+    }
+
     public static void updateCounters() {
         int boxCount = spriteMap.getMap().getMyState().getBoxPositions().size();
         int pressureCount = spriteMap.getMap().getMyState().getGoalPositions().size();

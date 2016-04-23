@@ -95,7 +95,6 @@ public class SokobanGame extends JPanel {
             case KeyEvent.VK_RIGHT:
             case KeyEvent.VK_D:     map.move(new Coordinate(1, 0));
                                     break;
-            case KeyEvent.VK_H:     spriteMap.updateMap(new SokobanMap(10, 10, 20), true);
             default:                return;
         }
         redraw();
