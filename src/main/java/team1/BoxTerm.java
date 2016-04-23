@@ -1,8 +1,6 @@
 package team1;
 
-import java.awt.CardLayout;
-import java.awt.Dimension;
-import java.awt.Insets;
+import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -40,7 +39,7 @@ public class BoxTerm extends JPanel {
     private static float magnification = 1;
     private static SokobanGame game;
     private static LevelBuilder builder;
-    private static boolean editMode = true;
+    private static boolean editMode = false;
     private static JFrame frame;
     private static BoxTerm boxTerm;
     private static JMenuBar menubar;
@@ -356,33 +355,34 @@ public class BoxTerm extends JPanel {
 
     public static void toggleMode() {
         editMode = !editMode;
-        Dimension size;
 
         if (!editMode) {
             if (LevelBuilder.getSpriteMap().getMap().validate()) {
                 gameMenu.setText("Game");
-                CardLayout cl = (CardLayout) (boxTerm.getLayout());
-                cl.show(boxTerm, "Game");
+                builder.setVisible(false);
                 SokobanGame.getSpriteMap().updateMap(SokobanMap.shallowCopy(LevelBuilder.getSpriteMap().getMap(), 20));
+                game.setVisible(true);
                 game.requestFocusInWindow();
                 SokobanGame.redraw();
-                size = game.getPreferredSize();
             } else {
                 editMode = true;
                 JOptionPane.showMessageDialog(frame, "This level cannot be won"
                         + ".\nMake sure that there are at least as many boxes"
                         + " as goals.", "Incomplete level",
                         JOptionPane.WARNING_MESSAGE);
-                return;
             }
         } else {
             gameMenu.setText("Edit");
-            CardLayout cl = (CardLayout) (boxTerm.getLayout());
-            cl.show(boxTerm, "Editor");
+            game.setVisible(false);
             LevelBuilder.getSpriteMap().updateMap(new SokobanMap(SokobanGame.getSpriteMap().getMap(), 100));
-            size = builder.getPreferredSize();
+            builder.setVisible(true);
         }
 
+        updateContextMenu();
+        frame.setSize(frame.getPreferredSize());
+    }
+
+    public static void updateContextMenu() {
         for (JMenuItem item : gameMenuItems) {
             item.setVisible(!editMode);
         }
@@ -390,11 +390,6 @@ public class BoxTerm extends JPanel {
         for (JMenuItem item : editMenuItems) {
             item.setVisible(editMode);
         }
-
-        Insets insets = frame.getInsets();
-        size.height += insets.top + insets.bottom;
-        size.width += insets.left + insets.right;
-        frame.setSize(size);
     }
 
     public static SpriteMap getMySpriteMap() {
@@ -415,15 +410,16 @@ public class BoxTerm extends JPanel {
         builder = new LevelBuilder(new SpriteMap(map, false, 1));
 
         boxTerm = new BoxTerm();
-        boxTerm.setLayout(new CardLayout());
-        boxTerm.add(game, "Game");
-        boxTerm.add(builder, "Editor");
+        boxTerm.setLayout(new BoxLayout(boxTerm, BoxLayout.X_AXIS));
+        boxTerm.add(game, BorderLayout.CENTER);
+        boxTerm.add(builder, BorderLayout.SOUTH);
+        builder.setVisible(false);
 
         makeMenuBar(frame);
+        updateContextMenu();
         frame.setResizable(false);
         frame.add(boxTerm);
         frame.pack();
-        toggleMode();
         frame.setVisible(true);
     }
 }
