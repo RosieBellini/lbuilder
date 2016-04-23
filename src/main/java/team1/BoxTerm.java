@@ -28,14 +28,13 @@ import javax.swing.KeyStroke;
 
 @SuppressWarnings("serial")
 public class BoxTerm extends JPanel {
-    private static SokobanMap map;
     private static SpriteMap gameMap;
     private static SpriteMap editorMap;
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
     private static int tileSetNo = 1;
     private static float magnification = 1;
     private static SokobanGame game;
-    public static LevelBuilder builder;
+    private static LevelBuilder builder;
     private static boolean editMode = false;
     private static JFrame frame;
     private static BoxTerm boxTerm;
@@ -43,22 +42,13 @@ public class BoxTerm extends JPanel {
     private static JMenu gameMenu;
     private static Set<JMenuItem> editMenuItems = new HashSet<JMenuItem>();
     private static Set<JMenuItem> gameMenuItems = new HashSet<JMenuItem>();
-    public BoxTerm() {
-    }
-    /**
-     * A constructor to initialise the key listener which allows methods to be
-     * run when key presses are detected
-     */
+
     public static int getTileSetNo() {
         return tileSetNo;
     }
 
     public static float getMagnification() {
         return magnification;
-    }
-
-    public static SpriteMap getSpriteMap() {
-        return getMySpriteMap();
     }
 
     private static void makeMenuBar(JFrame frame) {
@@ -81,6 +71,8 @@ public class BoxTerm extends JPanel {
         JMenu helpMenu = new JMenu("Help");
         menubar.add(helpMenu);
 
+
+
         // File menu
 
         JMenuItem newMapItem = new JMenuItem("New", KeyEvent.VK_N);
@@ -97,32 +89,30 @@ public class BoxTerm extends JPanel {
                 frame.setSize(frame.getPreferredSize());
             }
 		});
-        gameMenuItems.add(newMapItem);
+        editMenuItems.add(newMapItem);
         fileMenu.add(newMapItem);
 
         JMenuItem openItem = new JMenuItem("Open");
         openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
         openItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // GOT TO SORT THIS OUT.  Possibly put this and repeated code in main method in importLevel().
                 try {
-                    map = SokobanMap.importLevel(getFile());
+                    SokobanMap map = SokobanMap.importLevel(getFile());
+                    if (!editMode) {
+                        boxTerm.remove(game);
+                        gameMap = new SpriteMap(map, true, tileSetNo);
+                        game = new SokobanGame(gameMap);
+                        boxTerm.add(game, BorderLayout.CENTER);
+                    } else {
+                        boxTerm.remove(builder);
+                        editorMap = new SpriteMap(map, false, tileSetNo);
+                        builder = new LevelBuilder(editorMap);
+                        boxTerm.add(builder, BorderLayout.SOUTH);
+                    }
                 } catch (FileNotFoundException e1) {
                     // TODO Sort out some verification here.
                     System.out.println("BAD LEVEL");
                     e1.printStackTrace();
-                }
-
-                if (!editMode) {
-                    boxTerm.remove(game);
-                    gameMap = new SpriteMap(map, true, tileSetNo);
-                    game = new SokobanGame(gameMap);
-                    boxTerm.add(game, BorderLayout.CENTER);
-                } else {
-                    boxTerm.remove(builder);
-                    editorMap = new SpriteMap(map, false, tileSetNo);
-                    builder = new LevelBuilder(editorMap);
-                    boxTerm.add(builder, BorderLayout.SOUTH);
                 }
 
                 frame.pack();
@@ -155,30 +145,31 @@ public class BoxTerm extends JPanel {
         fileMenu.add(quitItem);
 
 
+
         // Edit menu
 
         JMenuItem undo = new JMenuItem("Undo", KeyEvent.VK_Z);
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
-		undo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+        undo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 SokobanMap map = getMySpriteMap().getMap();
                 map.undo();
                 LevelBuilder.updateCounters();
                 getMySpriteMap().placeSprites();
             }
-		});
+        });
         gameMenu.add(undo);
 
         JMenuItem redo = new JMenuItem("Redo", KeyEvent.VK_Y);
         redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, SHORTCUT_MASK));
-		redo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+        redo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 SokobanMap map = getMySpriteMap().getMap();
                 map.redo();
                 LevelBuilder.updateCounters();
                 getMySpriteMap().placeSprites();
             }
-		});
+        });
         gameMenu.add(redo);
 
 
@@ -250,14 +241,14 @@ public class BoxTerm extends JPanel {
         builderHelpItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, " This map editor can be used to"
-                   + " design your own Sokoban levels (maximum 20x20). \n\n1) Use the"
-                   + " palette on the right to select either walls, pressure pad, player"
-                   + " starting position or boxes. \n\n2) Click on the map once you have"
-                   + " selected something on the palette to begin designing your level."
-                   + " \n\n3) You can save your map design at any point using File>Save."
-                   + " \n\n4) You must use File>Compile Map if you want to run your map"
-                   + " in-game.", "Map Editor Help", JOptionPane.PLAIN_MESSAGE,
-                    getMySpriteMap().getBoxSprite());
+                        + " design your own Sokoban levels (maximum 20x20). \n\n1) Use the"
+                        + " palette on the right to select either walls, pressure pad, player"
+                        + " starting position or boxes. \n\n2) Click on the map once you have"
+                        + " selected something on the palette to begin designing your level."
+                        + " \n\n3) You can save your map design at any point using File>Save."
+                        + " \n\n4) You must use File>Compile Map if you want to run your map"
+                        + " in-game.", "Map Editor Help", JOptionPane.PLAIN_MESSAGE,
+                        getMySpriteMap().getBoxSprite());
             }
         });
         editMenuItems.add(builderHelpItem);
@@ -321,6 +312,11 @@ public class BoxTerm extends JPanel {
             boxTerm.add(builder);
         }
 
+        updateContextMenu();
+        frame.setSize(frame.getPreferredSize());
+    }
+
+    public static void updateContextMenu() {
         for (JMenuItem item : gameMenuItems) {
             item.setVisible(!editMode);
         }
@@ -328,8 +324,6 @@ public class BoxTerm extends JPanel {
         for (JMenuItem item : editMenuItems) {
             item.setVisible(editMode);
         }
-
-        frame.setSize(frame.getPreferredSize());
     }
 
     public static SpriteMap getMySpriteMap() {
@@ -342,11 +336,9 @@ public class BoxTerm extends JPanel {
 
     public static void main(String[] args) {
         InputStream level = BoxTerm.class.getClassLoader().getResourceAsStream("level");
-        map = SokobanMap.importLevel(level);
+        SokobanMap map = SokobanMap.importLevel(level);
         gameMap = new SpriteMap(map, true, 1);
-        editorMap = new SpriteMap(map, false, 1);
         game = new SokobanGame(gameMap);
-        builder = new LevelBuilder(editorMap);
 
         boxTerm = new BoxTerm();
         boxTerm.setLayout(new BoxLayout(boxTerm, BoxLayout.X_AXIS));
@@ -356,6 +348,7 @@ public class BoxTerm extends JPanel {
 
         boxTerm.add(game, BorderLayout.CENTER);
         makeMenuBar(frame);
+        updateContextMenu();
         frame.setResizable(false);
         frame.add(boxTerm);
         frame.pack();
