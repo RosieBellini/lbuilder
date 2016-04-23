@@ -154,7 +154,11 @@ public class BoxTerm extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 SokobanMap map = getMySpriteMap().getMap();
                 map.undo();
-                LevelBuilder.updateCounters();
+                if (editMode) {
+                    LevelBuilder.updateCounters();
+                } else {
+                    SokobanGame.redraw();
+                }
                 getMySpriteMap().placeSprites();
             }
         });
