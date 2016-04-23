@@ -172,9 +172,8 @@ public final class SaveState {
 
     @Override public int hashCode(){ 
         if (simpleState){
-            int result = 17;
-            int numberOfFields=getBoxPositions().size()*2+2;
             int[] fields;
+            int numberOfFields=getBoxPositions().size()*2+2;
             fields = new int[numberOfFields];
             fields[0] = getWPos().getX();
             fields[1] = getWPos().getY();
@@ -185,14 +184,11 @@ public final class SaveState {
                 fields[i]=box.getY();
                 i++;
             }
-            for (int p=0; p<i; p++){
-                result = 31 * result + fields[p];
-            }
-            return result;
+            return Arrays.hashCode(fields);
         }
         else return Arrays.hashCode(new Object[]{wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(), goalPositions.hashCode()});
     }
-
+    
     public boolean isSimple(){
         return simpleState;
     }
