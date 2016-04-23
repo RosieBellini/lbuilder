@@ -259,15 +259,6 @@ public class BoxTerm extends JPanel {
         helpMenu.add(builderHelpItem);
         builderHelpItem.setVisible(false);
 
-
-        JMenuItem printItem = new JMenuItem("Print topleft Accessible Area");
-        printItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println(map.getState().getWPos());
-            }
-        });
-        helpMenu.add(printItem);
-
         JMenuItem aboutItem = new JMenuItem("About Box Terminator");
         aboutItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
