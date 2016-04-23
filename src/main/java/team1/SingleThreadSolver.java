@@ -1,6 +1,7 @@
 package team1;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -8,7 +9,7 @@ import java.util.Set;
 public class SingleThreadSolver {
     private SokobanMap map;
     private List<SaveState> seenStates;
-    private List<String> seenStatesValues;
+    private Set<Integer> seenStatesValues;
     private List<Integer> stateOrigins;
     private List<Coordinate[]> donePushes;
 
@@ -16,8 +17,8 @@ public class SingleThreadSolver {
         this.map=map;
         seenStates = new ArrayList<SaveState>();
         seenStates.add(map.getState());
-        seenStatesValues = new ArrayList<String>();
-        seenStatesValues.add(map.toString());
+        seenStatesValues = new HashSet<Integer>();
+        seenStatesValues.add(map.getState().hashCode());
         stateOrigins = new ArrayList<Integer>();
         stateOrigins.add(-1);
         donePushes = new ArrayList<Coordinate[]>(); 
@@ -48,10 +49,10 @@ public class SingleThreadSolver {
         map.move(aPush[1]);     
         boolean isDone = map.isDone();
         SaveState possibleNewState = map.getState();
-        String theMap = map.toString();
-        if (!seenStatesValues.contains(theMap)){
+        int newStateHashCode = possibleNewState.hashCode();
+        if (!seenStatesValues.contains(newStateHashCode)){
             seenStates.add(possibleNewState);
-            seenStatesValues.add(theMap);
+            seenStatesValues.add(newStateHashCode);
             stateOrigins.add(stateIndex);
             donePushes.add(aPush);
         }
