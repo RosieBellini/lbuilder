@@ -171,24 +171,29 @@ public final class SaveState {
     }
 
     @Override public int hashCode(){ 
-        if (simpleState){
-            int[] fields;
-            int numberOfFields=getBoxPositions().size()*2+2;
-            fields = new int[numberOfFields];
-            fields[0] = getWPos().getX();
-            fields[1] = getWPos().getY();
-            int i = 2;
-            for (Coordinate box : getBoxPositions()){
-                fields[i]=box.getX();
-                i++;
-                fields[i]=box.getY();
-                i++;
-            }
-            return Arrays.hashCode(fields);
-        }
-        else return Arrays.hashCode(new Object[]{wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(), goalPositions.hashCode()});
+        return Arrays.hashCode(new Object[]{wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(), goalPositions.hashCode()});
     }
-    
+
+    public long uniqueID(){
+        int[] fieldsx;
+        int[] fieldsy;
+        int numberOfFields=getBoxPositions().size()+1;
+        fieldsx = new int[numberOfFields];
+        fieldsy = new int[numberOfFields];
+        fieldsx[0] = getWPos().getX();
+        fieldsy[0] = getWPos().getY();
+        int i = 1;
+        for (Coordinate box : getBoxPositions()){
+            fieldsx[i]=box.getX();
+            fieldsy[i]=box.getY();
+            i++;
+        }
+        long hashCodex = (long) Arrays.hashCode(fieldsx);
+        long hashCodey = (long) Arrays.hashCode(fieldsy);
+        long uniqueID= hashCodex+hashCodey*10^10;
+        return uniqueID;
+    }
+
     public boolean isSimple(){
         return simpleState;
     }
