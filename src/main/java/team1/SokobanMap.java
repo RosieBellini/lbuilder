@@ -358,6 +358,12 @@ public class SokobanMap {
         return map;
     }
 
+    public boolean validate() {
+        int boxCount = getMyState().getBoxPositions().size();
+        int goalCount = getMyState().getGoalPositions().size();
+        return boxCount >= goalCount;
+    }
+
     /**
      * Moves the object at a given position in the direction specified,
      * respecting the rules of the game.

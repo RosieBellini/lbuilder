@@ -104,6 +104,14 @@ public class BoxTerm extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     SokobanMap map = SokobanMap.importLevel(getFile());
+                    if (!map.validate()) {
+                        JOptionPane.showMessageDialog(frame,
+                                "This level cannot be beaten.\n You may want "
+                                + "to load it in the level editor and correct "
+                                + "it.", "Invalid level",
+                                JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
                     if (!editMode) {
                         SokobanGame.getSpriteMap().updateMap(map);
                     } else {
@@ -126,18 +134,30 @@ public class BoxTerm extends JPanel {
         saveItem.setToolTipText("Save current map design to file");
         saveItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if (!LevelBuilder.getSpriteMap().getMap().validate()) {
+                    int result = JOptionPane.showConfirmDialog(frame, "This "
+                            + "level is incomplete.\nYou may save it and "
+                            + "resume editing later,\nbut it won't be "
+                            + "playable.\nContinue?", "Save level",
+                            JOptionPane.YES_NO_OPTION);
+                    switch (result) {
+                        case JOptionPane.NO_OPTION:
+                        case JOptionPane.CLOSED_OPTION:
+                            return;
+                    }
+                }
+
                 JFileChooser fileChooser = new JFileChooser() {
                     @Override
                     public void approveSelection(){
                         File file = getSelectedFile();
-                        if( file.exists() && getDialogType() == SAVE_DIALOG){
+                        if (file.exists() && getDialogType() == SAVE_DIALOG) {
                             int result = JOptionPane.showConfirmDialog(this, file + " already exists. Overwrite it?", "Overwrite file", JOptionPane.YES_NO_OPTION);
-                            switch(result){
+                            switch (result) {
                                 case JOptionPane.YES_OPTION:
                                     super.approveSelection();
                                     return;
                                 case JOptionPane.NO_OPTION:
-                                    return;
                                 case JOptionPane.CLOSED_OPTION:
                                     return;
                             }
@@ -337,12 +357,20 @@ public class BoxTerm extends JPanel {
         editMode = !editMode;
 
         if (!editMode) {
-            gameMenu.setText("Game");
-            builder.setVisible(false);
-            SokobanGame.getSpriteMap().updateMap(SokobanMap.shallowCopy(LevelBuilder.getSpriteMap().getMap(), 20));
-            game.setVisible(true);
-            game.requestFocusInWindow();
-            SokobanGame.redraw();
+            if (LevelBuilder.getSpriteMap().getMap().validate()) {
+                gameMenu.setText("Game");
+                builder.setVisible(false);
+                SokobanGame.getSpriteMap().updateMap(SokobanMap.shallowCopy(LevelBuilder.getSpriteMap().getMap(), 20));
+                game.setVisible(true);
+                game.requestFocusInWindow();
+                SokobanGame.redraw();
+            } else {
+                editMode = true;
+                JOptionPane.showMessageDialog(frame, "This level cannot be won"
+                        + ".\nMake sure that there are at least as many boxes"
+                        + " as goals.", "Incomplete level",
+                        JOptionPane.WARNING_MESSAGE);
+            }
         } else {
             gameMenu.setText("Edit");
             game.setVisible(false);
