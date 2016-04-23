@@ -30,7 +30,6 @@ public class SpriteMap extends JPanel {
     private boolean playable;
     int noOfWalls;
     int noOfGrass;
-    float magnification;
 
     public SpriteMap(SokobanMap map, boolean playable, int tileSetNo) {
         mapDrawn = false;
@@ -44,7 +43,6 @@ public class SpriteMap extends JPanel {
             add(panelHolder.get(position));
         }
         this.map = map;
-        magnification = 1;
         iconMap = new HashMap<String, ImageIcon>();
         loadSprites(tileSetNo);
         setVisible(true);
@@ -158,29 +156,17 @@ public class SpriteMap extends JPanel {
         return iconMap;
     }
 
-    public void changeMagnification(boolean getBigger) {
-        if (getBigger) {
-            if (magnification > 1) {
-                magnification++;
-            } else {
-                magnification = magnification * 2;
-            }
-        } else {
-            if (magnification > 1) {
-                magnification--;
-            } else {
-                magnification = magnification / 2;
-            }
-        }
+    public void update() {
         mapDrawn = false;
+        loadSprites(BoxTerm.getTileSetNo());
     }
 
     public void resizeSprites(){
-        float iconDimension = magnification*32;
-        int newIconDimension= (int)iconDimension;
-        for(String iconName:iconMap.keySet()){
+        float iconDimension = BoxTerm.getMagnification() * 32;
+        int newIconDimension = (int) iconDimension;
+        for(String iconName : iconMap.keySet()) {
             Image iconImage = iconMap.get(iconName).getImage();
-            Image resizedImage = iconImage.getScaledInstance(newIconDimension,newIconDimension,Image.SCALE_DEFAULT);
+            Image resizedImage = iconImage.getScaledInstance(newIconDimension, newIconDimension, Image.SCALE_DEFAULT);
             iconMap.put(iconName, new ImageIcon(resizedImage));
         }
     }

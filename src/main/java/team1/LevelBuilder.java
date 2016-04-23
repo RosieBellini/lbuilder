@@ -42,8 +42,6 @@ public class LevelBuilder extends JPanel{
         tilePalette.setPreferredSize(new Dimension(100, 80));
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         list.setLayoutOrientation(JList.VERTICAL_WRAP);
-        list.setFixedCellHeight(36);
-        list.setFixedCellWidth(34); // rather than 32 to allow border
         list.setVisibleRowCount(4);
         list.setBackground(Color.GRAY);
         list.setForeground(Color.BLACK);
@@ -71,6 +69,8 @@ public class LevelBuilder extends JPanel{
         tiles[1] = spriteMap.getIconMap().get("BOX");
         tiles[2] = spriteMap.getIconMap().get("GOAL");
         tiles[3] = spriteMap.getIconMap().get("PLAYER");
+        list.setFixedCellHeight((int) BoxTerm.getMagnification() * 36);
+        list.setFixedCellWidth((int) BoxTerm.getMagnification() * 34); // rather than 32 to allow border
         list.repaint();
     }
 

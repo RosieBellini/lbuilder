@@ -31,6 +31,7 @@ public class BoxTerm extends JPanel {
     private static SpriteMap editorMap;
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
     private static int tileSetNo = 1;
+    private static float magnification = 1;
     private static SokobanGame game;
     public static LevelBuilder builder;
     private static boolean editMode = false;
@@ -51,6 +52,10 @@ public class BoxTerm extends JPanel {
      */
     public static int getTileSetNo() {
         return tileSetNo;
+    }
+
+    public static float getMagnification() {
+        return magnification;
     }
 
     public static SpriteMap getSpriteMap() {
@@ -211,8 +216,7 @@ public class BoxTerm extends JPanel {
         JMenuItem magnifyItem = new JMenuItem("Increase Magnification");
         magnifyItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                getMySpriteMap().changeMagnification(true);
-                getMySpriteMap().loadSprites(tileSetNo);
+                changeMagnification(true);
                 frame.pack();
             }
         });
@@ -221,8 +225,7 @@ public class BoxTerm extends JPanel {
         JMenuItem deMagnifyItem = new JMenuItem("Decrease Magnification");
         deMagnifyItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                getMySpriteMap().changeMagnification(false);
-                getMySpriteMap().placeSprites();
+                changeMagnification(false);
                 frame.pack();
             }
         });
@@ -277,6 +280,26 @@ public class BoxTerm extends JPanel {
         File selectedFile = fileChooser.getSelectedFile();
         InputStream streamToReturn = new FileInputStream(selectedFile);
         return streamToReturn;
+    }
+
+    public static void changeMagnification(boolean getBigger) {
+        if (getBigger) {
+            if (magnification > 1) {
+                magnification++;
+            } else {
+                magnification = magnification * 2;
+            }
+        } else {
+            if (magnification > 1) {
+                magnification--;
+            } else {
+                magnification = magnification / 2;
+            }
+        }
+        getMySpriteMap().update();
+        if (editMode) {
+            LevelBuilder.importImages();
+        }
     }
 
     public static void toggleMode() {
