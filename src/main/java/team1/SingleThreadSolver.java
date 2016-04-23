@@ -9,7 +9,7 @@ import java.util.Set;
 public class SingleThreadSolver {
     private SokobanMap map;
     private List<SaveState> seenStates;
-    private Set<Integer> seenStatesValues;
+    private Set<Long> seenStatesValues;
     private List<Integer> stateOrigins;
     private List<Coordinate[]> donePushes;
 
@@ -17,8 +17,8 @@ public class SingleThreadSolver {
         this.map=map;
         seenStates = new ArrayList<SaveState>();
         seenStates.add(map.getState());
-        seenStatesValues = new HashSet<Integer>();
-        seenStatesValues.add(map.getState().hashCode());
+        seenStatesValues = new HashSet<Long>();
+        seenStatesValues.add(map.getState().uniqueID());
         stateOrigins = new ArrayList<Integer>();
         stateOrigins.add(-1);
         donePushes = new ArrayList<Coordinate[]>(); 
@@ -49,7 +49,7 @@ public class SingleThreadSolver {
         map.move(aPush[1]);     
         boolean isDone = map.isDone();
         SaveState possibleNewState = map.getState();
-        int newStateHashCode = possibleNewState.hashCode();
+        long newStateHashCode = possibleNewState.uniqueID();
         if (!seenStatesValues.contains(newStateHashCode)){
             seenStates.add(possibleNewState);
             seenStatesValues.add(newStateHashCode);
