@@ -8,8 +8,14 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
@@ -120,10 +126,37 @@ public class BoxTerm extends JPanel {
         saveItem.setToolTipText("Save current map design to file");
         saveItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
+                JFileChooser fileChooser = new JFileChooser() {
+                    @Override
+                    public void approveSelection(){
+                        File file = getSelectedFile();
+                        if( file.exists() && getDialogType() == SAVE_DIALOG){
+                            int result = JOptionPane.showConfirmDialog(this, file + " already exists. Overwrite it?", "Overwrite file", JOptionPane.YES_NO_OPTION);
+                            switch(result){
+                                case JOptionPane.YES_OPTION:
+                                    super.approveSelection();
+                                    return;
+                                case JOptionPane.NO_OPTION:
+                                    return;
+                                case JOptionPane.CLOSED_OPTION:
+                                    return;
+                            }
+                        }
+                        super.approveSelection();
+                    }
+                };
+
                 if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
-                    System.out.println(file);
+                    if (file != null) {
+                        Path newFile = Paths.get(file.getPath());
+                        List<String> contents = Arrays.asList(LevelBuilder.getSpriteMap().getMap().toString().split("\\n"));
+                        try {
+                            Files.write(newFile, contents);
+                        } catch (IOException io) {
+                            System.out.println("Couldn't save");
+                        }
+                    }
                 }
             }
         });
