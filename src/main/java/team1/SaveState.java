@@ -71,38 +71,38 @@ public final class SaveState {
         boolean success = false;
 
         switch(object) {
-            case PLAYER:
-                if (target == SokobanObject.SPACE || target == SokobanObject.GOAL) {
-                    wPos = coord;
-                    success = true;
-                }
-                break;
-            case BOX:
-                if (target == SokobanObject.SPACE || target == SokobanObject.GOAL) {
-                    success = boxPositions.add(coord);
-                }
-                break;
-            case WALL:
-                if (target == SokobanObject.SPACE) {
-                    success = wallPositions.add(coord);
-                }
-                break;
-            case GOAL:
-                if (!wallPositions.contains(coord)) {
-                    success = goalPositions.add(coord);
-                }
-                break;
-            case PLAYER_ON_GOAL:
-            case BOX_ON_GOAL:
-                if (put(SokobanObject.GOAL, coord)) {
-                    success = put(SokobanObject.getTopLayer(object), coord);
-                }
-                break;
-            case SPACE:
-                makeEmpty(coord);
+        case PLAYER:
+            if (target == SokobanObject.SPACE || target == SokobanObject.GOAL) {
+                wPos = coord;
                 success = true;
-                break;
-            default:    return false;
+            }
+            break;
+        case BOX:
+            if (target == SokobanObject.SPACE || target == SokobanObject.GOAL) {
+                success = boxPositions.add(coord);
+            }
+            break;
+        case WALL:
+            if (target == SokobanObject.SPACE) {
+                success = wallPositions.add(coord);
+            }
+            break;
+        case GOAL:
+            if (!wallPositions.contains(coord)) {
+                success = goalPositions.add(coord);
+            }
+            break;
+        case PLAYER_ON_GOAL:
+        case BOX_ON_GOAL:
+            if (put(SokobanObject.GOAL, coord)) {
+                success = put(SokobanObject.getTopLayer(object), coord);
+            }
+            break;
+        case SPACE:
+            makeEmpty(coord);
+            success = true;
+            break;
+        default:    return false;
         }
 
         return success;
@@ -165,17 +165,36 @@ public final class SaveState {
 
     public boolean equals(SaveState someState) {
         return wPos.equals(someState.getWPos())
-            && boxPositions.equals(someState.getBoxPositions())
-            && wallPositions.equals(someState.getWallPositions())
-            && goalPositions.equals(someState.getGoalPositions());
+                && boxPositions.equals(someState.getBoxPositions())
+                && wallPositions.equals(someState.getWallPositions())
+                && goalPositions.equals(someState.getGoalPositions());
     }
 
-    public int hashCode(){
-        return Arrays.hashCode(new Object[]{wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(), goalPositions.hashCode()});
+    @Override public int hashCode(){ 
+        if (simpleState){
+            int result = 17;
+            int numberOfFields=getBoxPositions().size()*2+2;
+            int[] fields;
+            fields = new int[numberOfFields];
+            fields[0] = getWPos().getX();
+            fields[1] = getWPos().getY();
+            int i = 2;
+            for (Coordinate box : getBoxPositions()){
+                fields[i]=box.getX();
+                i++;
+                fields[i]=box.getY();
+                i++;
+            }
+            for (int p=0; p<i; p++){
+                result = 31 * result + fields[p];
+            }
+            return result;
+        }
+        else return Arrays.hashCode(new Object[]{wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(), goalPositions.hashCode()});
     }
-    
+
     public boolean isSimple(){
-    	return simpleState;
+        return simpleState;
     }
 }
 
