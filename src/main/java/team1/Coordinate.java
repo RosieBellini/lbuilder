@@ -75,12 +75,12 @@ public class Coordinate {
 
 	@Override
 	public boolean equals(Object obj) {
-//		if (this == obj) {
-//			return true;
-//		}
-//		if (!(obj instanceof Coordinate)) {
-//			return false;
-//		}
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Coordinate)) {
+			return false;
+		}
 		Coordinate pos = (Coordinate) obj;
 		if (this.x == pos.getX() && this.y == pos.getY()) {
 			return true;
