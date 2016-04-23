@@ -93,12 +93,6 @@ public class SokobanGame extends JPanel {
             case KeyEvent.VK_RIGHT:
             case KeyEvent.VK_D:     map.move(new Coordinate(1, 0));
                                     break;
-            case KeyEvent.VK_U:     map.undo();
-                                    break;
-            case KeyEvent.VK_R:     map.redo();
-                                    break;
-            case KeyEvent.VK_H:     map.getChanges();
-                                    break;
             default:                return;
         }
         redraw();
