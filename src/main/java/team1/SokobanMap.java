@@ -191,7 +191,11 @@ public class SokobanMap {
      * @return          true if successful, false otherwise
      */
     public boolean put(SokobanObject object, Coordinate coord) {
-        return getMyState().put(object, coord);
+        if (coord.x >= 0 && coord.x < xSize && coord.y >= 0 && coord.y < ySize){
+            return getMyState().put(object, coord);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -210,7 +214,11 @@ public class SokobanMap {
      * and returned.
      */
     public SokobanObject get(Coordinate coord) {
-        return getMyState().get(coord);
+        if (coord.x >= 0 && coord.x < xSize && coord.y >= 0 && coord.y < ySize){
+            return getMyState().get(coord);
+        } else {
+            return SokobanObject.WALL;
+        }
     }
 
     public String toString() {
@@ -362,6 +370,83 @@ public class SokobanMap {
         int boxCount = getMyState().getBoxPositions().size();
         int goalCount = getMyState().getGoalPositions().size();
         return boxCount >= goalCount;
+    }
+
+    public static SokobanMap crop(SokobanMap mapToCrop) {
+        int xStart = 0;
+        int xEnd = mapToCrop.getXSize() - 1;
+        int yStart = 0;
+        int yEnd = mapToCrop.getYSize() - 1;
+
+        boolean xStartFound = false;
+        boolean xEndFound = false;
+        boolean yStartFound = false;
+        boolean yEndFound = false;
+
+        while (!xStartFound) {
+            for (int j = 0; j < mapToCrop.getYSize(); j++) {
+                System.out.println(xStart + ", " + j);
+                if (mapToCrop.get(new Coordinate(xStart, j)).equals(SokobanObject.WALL)) {
+                    System.out.println("found xStart");
+                    xStartFound = true;
+                    break;
+                }
+            }
+            if (!xStartFound) {
+                xStart++;
+            }
+        }
+
+        while (!xEndFound) {
+            for (int j = 0; j < mapToCrop.getYSize(); j++) {
+                System.out.println(xEnd + ", " + j);
+                if (mapToCrop.get(new Coordinate(xEnd, j)).equals(SokobanObject.WALL)) {
+                    System.out.println("found xEnd");
+                    xEndFound = true;
+                    break;
+                }
+            }
+            if (!xEndFound) {
+                xEnd--;
+            }
+        }
+
+        while (!yStartFound) {
+            for (int i = 0; i < mapToCrop.getXSize(); i++) {
+                System.out.println(i + ", " + yStart);
+                if (mapToCrop.get(new Coordinate(i, yStart)).equals(SokobanObject.WALL)) {
+                    System.out.println("found yStart");
+                    yStartFound = true;
+                    break;
+                }
+            }
+            if (!yStartFound) {
+                yStart++;
+            }
+        }
+
+        while (!yEndFound) {
+            for (int i = 0; i < mapToCrop.getXSize(); i++) {
+                System.out.println(i + ", " + yEnd);
+                if (mapToCrop.get(new Coordinate(i, yEnd)).equals(SokobanObject.WALL)) {
+                    System.out.println("found yEnd");
+                    yEndFound = true;
+                    break;
+                }
+            }
+            if (!yEndFound) {
+                yEnd--;
+            }
+        }
+
+        SokobanMap croppedMap = new SokobanMap(xEnd + 1, yEnd + 1, mapToCrop.getMaxUndos());
+        for (int y = yStart; y <= yEnd; y++) {
+            for (int x = xStart; x <= xEnd; x++) {
+                croppedMap.put(mapToCrop.get(new Coordinate(x, y)), new Coordinate(x - xStart, y - yStart));
+            }
+        }
+
+        return croppedMap;
     }
 
     /**

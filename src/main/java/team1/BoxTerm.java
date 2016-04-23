@@ -232,6 +232,25 @@ public class BoxTerm extends JPanel {
         });
         gameMenu.add(redo);
 
+        JMenuItem cropItem = new JMenuItem("Crop");
+        cropItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int result = JOptionPane.showConfirmDialog(frame, "This is a "
+                        + "potentially destructive\noperation.\n\nAre you sure"
+                        + " you want to crop?", "Crop",
+                        JOptionPane.YES_NO_OPTION);
+                switch (result) {
+                    case JOptionPane.NO_OPTION:
+                    case JOptionPane.CLOSED_OPTION:
+                        return;
+                }
+                LevelBuilder.getSpriteMap().updateMap(SokobanMap.crop(LevelBuilder.getSpriteMap().getMap()));
+                frame.setSize(frame.getPreferredSize());
+            }
+        });
+        editMenuItems.add(cropItem);
+        gameMenu.add(cropItem);
+
 
 
         // Game menu
