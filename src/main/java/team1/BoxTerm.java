@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
@@ -39,11 +41,8 @@ public class BoxTerm extends JPanel {
     private static BoxTerm boxTerm;
     private static JMenuBar menubar;
     private static JMenu gameMenu;
-    private static JMenuItem newMapItem;
-    private static JMenuItem saveItem;
-    private static JMenuItem resetItem;
-    private static JMenuItem assistItem;
-    private static JMenuItem builderHelpItem;
+    private static Set<JMenuItem> editMenuItems = new HashSet<JMenuItem>();
+    private static Set<JMenuItem> gameMenuItems = new HashSet<JMenuItem>();
     public BoxTerm() {
     }
     /**
@@ -84,7 +83,7 @@ public class BoxTerm extends JPanel {
 
         // File menu
 
-        newMapItem = new JMenuItem("New", KeyEvent.VK_N);
+        JMenuItem newMapItem = new JMenuItem("New", KeyEvent.VK_N);
         newMapItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
         newMapItem.setToolTipText("Start a new map design");
 		newMapItem.addActionListener(new ActionListener() {
@@ -98,8 +97,8 @@ public class BoxTerm extends JPanel {
                 frame.setSize(frame.getPreferredSize());
             }
 		});
+        gameMenuItems.add(newMapItem);
         fileMenu.add(newMapItem);
-        newMapItem.setVisible(false);
 
         JMenuItem openItem = new JMenuItem("Open");
         openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
@@ -131,12 +130,12 @@ public class BoxTerm extends JPanel {
         });
         fileMenu.add(openItem);
 
-        saveItem = new JMenuItem("Save", KeyEvent.VK_S);
+        JMenuItem saveItem = new JMenuItem("Save", KeyEvent.VK_S);
         saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
         saveItem.setToolTipText("Save current map design to file");
         // save.addActionListener(new SaveAction());
+        editMenuItems.add(saveItem);
         fileMenu.add(saveItem);
-        saveItem.setVisible(false);
 
         JMenuItem levelBuilderItem = new JMenuItem("Toggle mode");
         levelBuilderItem.addActionListener(new ActionListener() {
@@ -186,7 +185,7 @@ public class BoxTerm extends JPanel {
 
         // Game menu
 
-        resetItem = new JMenuItem("Reset level");
+        JMenuItem resetItem = new JMenuItem("Reset level");
         resetItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
         resetItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -194,6 +193,7 @@ public class BoxTerm extends JPanel {
                 SokobanGame.redraw();
             }
         });
+        gameMenuItems.add(resetItem);
         gameMenu.add(resetItem);
 
 
@@ -235,7 +235,7 @@ public class BoxTerm extends JPanel {
 
         // Help menu
 
-        assistItem = new JMenuItem("Print solution");
+        JMenuItem assistItem = new JMenuItem("Print solution");
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SokobanMap mapToSolve = new SokobanMap(gameMap.getMap());
@@ -243,9 +243,10 @@ public class BoxTerm extends JPanel {
                 System.out.println(solver.levelSolution());
             }
         });
+        gameMenuItems.add(assistItem);
         helpMenu.add(assistItem);
 
-        builderHelpItem = new JMenuItem("Builder help");
+        JMenuItem builderHelpItem = new JMenuItem("Builder help");
         builderHelpItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, " This map editor can be used to"
@@ -259,8 +260,8 @@ public class BoxTerm extends JPanel {
                     getMySpriteMap().getBoxSprite());
             }
         });
+        editMenuItems.add(builderHelpItem);
         helpMenu.add(builderHelpItem);
-        builderHelpItem.setVisible(false);
 
         JMenuItem aboutItem = new JMenuItem("About Box Terminator");
         aboutItem.addActionListener(new ActionListener() {
@@ -303,33 +304,31 @@ public class BoxTerm extends JPanel {
     }
 
     public static void toggleMode() {
-        if (editMode) {
-            editMode = false;
+        editMode = !editMode;
+
+        if (!editMode) {
             gameMenu.setText("Game");
-            newMapItem.setVisible(false);
-            saveItem.setVisible(false);
-            builderHelpItem.setVisible(false);
-            resetItem.setVisible(true);
-            assistItem.setVisible(true);
             boxTerm.remove(builder);
             gameMap = new SpriteMap(SokobanMap.shallowCopy(editorMap.getMap(), 20), true, tileSetNo);
             game = new SokobanGame(gameMap);
             boxTerm.add(game);
             game.requestFocusInWindow();
         } else {
-            editMode = true;
             gameMenu.setText("Edit");
-            newMapItem.setVisible(true);
-            saveItem.setVisible(true);
-            builderHelpItem.setVisible(true);
-            resetItem.setVisible(false);
-            assistItem.setVisible(false);
-            game.removeKeyListener(SokobanGame.listener);
             boxTerm.remove(game);
             editorMap = new SpriteMap(new SokobanMap(gameMap.getMap(), 100), false, tileSetNo);
             builder = new LevelBuilder(editorMap);
             boxTerm.add(builder);
         }
+
+        for (JMenuItem item : gameMenuItems) {
+            item.setVisible(!editMode);
+        }
+
+        for (JMenuItem item : editMenuItems) {
+            item.setVisible(editMode);
+        }
+
         frame.setSize(frame.getPreferredSize());
     }
 
