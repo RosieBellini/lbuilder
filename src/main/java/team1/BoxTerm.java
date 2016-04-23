@@ -159,7 +159,7 @@ public class BoxTerm extends JPanel {
 			public void actionPerformed(ActionEvent e) {
                 SokobanMap map = getMySpriteMap().getMap();
                 map.undo();
-                TilePalette.updateCounters();
+                LevelBuilder.updateCounters();
                 getMySpriteMap().placeSprites();
             }
 		});
@@ -171,7 +171,7 @@ public class BoxTerm extends JPanel {
 			public void actionPerformed(ActionEvent e) {
                 SokobanMap map = getMySpriteMap().getMap();
                 map.redo();
-                TilePalette.updateCounters();
+                LevelBuilder.updateCounters();
                 getMySpriteMap().placeSprites();
             }
 		});

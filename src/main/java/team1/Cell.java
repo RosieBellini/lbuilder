@@ -66,6 +66,6 @@ public class Cell extends JLabel{
         spriteMap.placeSprites();
         spriteMap.getMap().clearRedoStack();
 
-        TilePalette.updateCounters();
+        LevelBuilder.updateCounters();
     }
 }
