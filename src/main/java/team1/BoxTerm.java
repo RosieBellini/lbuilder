@@ -347,10 +347,9 @@ public class BoxTerm extends JPanel {
                 magnification = magnification / 2;
             }
         }
-        getMySpriteMap().update();
-        if (editMode) {
-            LevelBuilder.importImages();
-        }
+        LevelBuilder.getSpriteMap().update();
+        SokobanGame.getSpriteMap().update();
+        LevelBuilder.importImages();
     }
 
     public static void toggleMode() {
