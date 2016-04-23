@@ -118,7 +118,15 @@ public class BoxTerm extends JPanel {
         JMenuItem saveItem = new JMenuItem("Save", KeyEvent.VK_S);
         saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
         saveItem.setToolTipText("Save current map design to file");
-        // save.addActionListener(new SaveAction());
+        saveItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    System.out.println(file);
+                }
+            }
+        });
         editMenuItems.add(saveItem);
         fileMenu.add(saveItem);
 
