@@ -201,6 +201,9 @@ public class BoxTerm extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 tileSetNo = (tileSetNo + 1) % 3;
                 getMySpriteMap().loadSprites(tileSetNo);
+                if (editMode) {
+                    LevelBuilder.importImages();
+                }
             }
         });
         viewMenu.add(tileItem);

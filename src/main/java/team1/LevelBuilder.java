@@ -50,13 +50,13 @@ public class LevelBuilder extends JPanel{
         tilePalette.add(list);
         list.setSelectedIndex(0);
         selectTile();
-        tilePalette.add(new Label("Boxes:"));
-        tilePalette.add(new Label("Pressure Pads:"));
         boxCounter.setText("" + boxCount);
         pressureCounter.setText("" + pressureCount);
         boxCounter.setEditable(false);
         pressureCounter.setEditable(false);
+        tilePalette.add(new Label("Boxes:"));
         tilePalette.add(boxCounter);
+        tilePalette.add(new Label("Pressure Pads:"));
         tilePalette.add(pressureCounter);
         updateCounters();
         list.addListSelectionListener(new ListListener());
@@ -66,14 +66,15 @@ public class LevelBuilder extends JPanel{
         add(tilePalette);
     }
 
-    public void importImages() {
+    public static void importImages() {
         tiles[0] = spriteMap.getIconMap().get("WALL");
         tiles[1] = spriteMap.getIconMap().get("BOX");
         tiles[2] = spriteMap.getIconMap().get("GOAL");
         tiles[3] = spriteMap.getIconMap().get("PLAYER");
+        list.repaint();
     }
 
-    public void selectTile() {
+    public static void selectTile() {
 
         int selection = list.getSelectedIndex();
         switch(selection) {
