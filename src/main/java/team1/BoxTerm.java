@@ -36,7 +36,7 @@ import javax.swing.KeyStroke;
 public class BoxTerm extends JPanel {
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
     private static int tileSetNo = 1;
-    private static float magnification = 1;
+    private static int magnification = 1;
     private static SokobanGame game;
     private static LevelBuilder builder;
     private static boolean editMode = false;
@@ -51,7 +51,7 @@ public class BoxTerm extends JPanel {
         return tileSetNo;
     }
 
-    public static float getMagnification() {
+    public static int getMagnification() {
         return magnification;
     }
 
@@ -335,16 +335,11 @@ public class BoxTerm extends JPanel {
 
     public static void changeMagnification(boolean getBigger) {
         if (getBigger) {
-            if (magnification > 1) {
-                magnification++;
-            } else {
-                magnification = magnification * 2;
-            }
+            magnification++;
         } else {
-            if (magnification > 1) {
-                magnification--;
-            } else {
-                magnification = magnification / 2;
+            magnification--;
+            if (magnification < 1) {
+                magnification = 1;
             }
         }
         LevelBuilder.getSpriteMap().update();
