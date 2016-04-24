@@ -1,6 +1,7 @@
 package team1;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -9,10 +10,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 /** Box Terminator main method. This class handles importing the level, drawing
  * the game screen and interpreting key presses.
@@ -57,9 +60,9 @@ public class SokobanGame extends JPanel {
 
         statusBar = new JLabel();
         statusBar.setFont(new Font("Helvetica",Font.PLAIN , 24));
-        setLayout(new BorderLayout());
-        add(spriteMap,BorderLayout.CENTER);
-        add(statusBar,BorderLayout.SOUTH);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        add(spriteMap);
+        add(statusBar);
         redraw();
         setVisible(true);
     }

@@ -1,13 +1,11 @@
 package team1;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Label;
-import java.awt.TextField;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
@@ -25,42 +23,46 @@ public class LevelEditor extends JPanel{
     private static final long serialVersionUID = 1L;
     private static SpriteMap spriteMap;
     private static final ImageIcon[] tiles = new ImageIcon[4];
-    private static final JList<ImageIcon> list = new JList<ImageIcon>(tiles);
-    private static TextField boxCounter = new TextField(10);
-    private static TextField pressureCounter = new TextField(10);
+    private static JList<ImageIcon> list;
     private static SokobanObject state = SokobanObject.SPACE;
-    private static int boxCount;
-    private static int pressureCount;
+    private static Label boxLabel;
+    private static Label goalLabel;
     private static LevelEditor instance;
+    private static JPanel tilePalette;
 
     private LevelEditor(SpriteMap spriteMap) {
         LevelEditor.spriteMap = spriteMap;
 
-        JPanel tilePalette = new JPanel();
-        importImages();
-        tilePalette.add(new JLabel("Palette"));
+        tilePalette = new JPanel();
+        tilePalette.setLayout(new BoxLayout(tilePalette, BoxLayout.X_AXIS));
         tilePalette.setBackground(Color.WHITE);
-        tilePalette.setPreferredSize(new Dimension(100, 80));
+
+        list = new JList<ImageIcon>(tiles);
+        list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        importImages();
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        list.setLayoutOrientation(JList.VERTICAL_WRAP);
-        list.setVisibleRowCount(4);
-        list.setBackground(Color.GRAY);
+        list.setVisibleRowCount(1);
+        list.setBackground(Color.WHITE);
         list.setForeground(Color.BLACK);
-        tilePalette.add(list);
         list.setSelectedIndex(0);
-        selectTile();
-        boxCounter.setText("" + boxCount);
-        pressureCounter.setText("" + pressureCount);
-        boxCounter.setEditable(false);
-        pressureCounter.setEditable(false);
-        tilePalette.add(new Label("Boxes:"));
-        tilePalette.add(boxCounter);
-        tilePalette.add(new Label("Pressure Pads:"));
-        tilePalette.add(pressureCounter);
-        updateCounters();
         list.addListSelectionListener(new ListListener());
 
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        JPanel counters = new JPanel();
+        JPanel padding = new JPanel();
+        counters.setLayout(new BoxLayout(counters, BoxLayout.Y_AXIS));
+        boxLabel = new Label();
+        goalLabel = new Label();
+
+        counters.add(boxLabel);
+        counters.add(goalLabel);
+        tilePalette.add(counters, BorderLayout.WEST);
+        tilePalette.add(list, BorderLayout.CENTER);
+        tilePalette.add(padding, BorderLayout.EAST);
+        // tilePalette.setSize(tilePalette.getPreferredSize());
+        selectTile();
+        updateCounters();
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(spriteMap);
         add(tilePalette);
     }
@@ -78,7 +80,7 @@ public class LevelEditor extends JPanel{
         tiles[2] = spriteMap.getUnscaledIconMap().get("GOAL");
         tiles[3] = spriteMap.getUnscaledIconMap().get("PLAYER");
         list.setFixedCellHeight(36);
-        list.setFixedCellWidth(34); // rather than 32 to allow border
+        list.setFixedCellWidth(36);
         list.repaint();
     }
 
@@ -109,11 +111,15 @@ public class LevelEditor extends JPanel{
         return state;
     }
 
+    public static double getTilePaletteHeight() {
+        return tilePalette.getPreferredSize().getHeight();
+    }
+
     public static void updateCounters() {
         int boxCount = getSokobanMap().getMyState().getBoxPositions().size();
-        int pressureCount = getSokobanMap().getMyState().getGoalPositions().size();
-        boxCounter.setText("" + boxCount);
-        pressureCounter.setText("" + pressureCount);
+        int goalCount = getSokobanMap().getMyState().getGoalPositions().size();
+        boxLabel.setText("Boxes: " + boxCount);
+        goalLabel.setText("Goals: " + goalCount);
     }
 
     class ListListener implements ListSelectionListener {
