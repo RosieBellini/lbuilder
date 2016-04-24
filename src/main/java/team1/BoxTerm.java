@@ -120,9 +120,13 @@ public class BoxTerm extends JPanel {
                         LevelEditor.updateCounters();
                     }
                 } catch (FileNotFoundException e1) {
-                    // TODO Sort out some verification here.
                     System.out.println("BAD LEVEL");
                     e1.printStackTrace();
+                } catch (IllegalArgumentException e2) {
+                    JOptionPane.showMessageDialog(frame, "Invalid level."
+                            + "\nMake sure that the file you have selected "
+                            + "uses the standard format.", "Invalid level",
+                            JOptionPane.WARNING_MESSAGE);
                 }
 
                 frame.pack();

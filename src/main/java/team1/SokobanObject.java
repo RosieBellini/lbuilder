@@ -56,6 +56,7 @@ public enum SokobanObject {
                         break;
             case ' ':   object = SokobanObject.SPACE;
                         break;
+            default:    throw new IllegalArgumentException("Invalid character");
         }
         return object;
     }

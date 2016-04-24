@@ -324,9 +324,6 @@ public class SokobanMap {
      * Interprets the contents of the "level" file and stores it as a SokobanMap
      */
     public static SokobanMap importLevel(InputStream levelFile) {
-        // if (levelFile == null) { //If Getfile is cancelled.
-        // 	return;
-        // }
         int x = 0;
         int y = 0;
         int xSize = 0;
