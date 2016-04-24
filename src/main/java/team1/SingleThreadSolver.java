@@ -6,12 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-public class SingleThreadSolver {
+public class SingleThreadSolver implements Runnable {
     private SokobanMap map;
     private List<SaveState> seenStates;
     private Set<Long> seenStatesValues;
+    private Set<String> seenStateStrings;
     private List<Integer> stateOrigins;
     private List<Coordinate[]> donePushes;
+    private boolean solving;
 
     public SingleThreadSolver(SokobanMap map){
         this.map=map;
@@ -19,11 +21,21 @@ public class SingleThreadSolver {
         seenStates.add(map.getState());
         seenStatesValues = new HashSet<Long>();
         seenStatesValues.add(map.getState().uniqueID());
+        seenStateStrings = new HashSet<String>();
+        seenStateStrings.add(map.toString());
         stateOrigins = new ArrayList<Integer>();
         stateOrigins.add(-1);
         donePushes = new ArrayList<Coordinate[]>(); 
         Coordinate[] emptyPush = {new Coordinate(0,0),new Coordinate(0,0)};
         donePushes.add(emptyPush);
+    }
+    
+    public void run(){
+        System.out.println(levelSolution());
+    }
+    
+    public void stopSolving(){
+        solving = false;
     }
 
     private List<Coordinate[]> validPushes(int stateIndex){
@@ -50,9 +62,11 @@ public class SingleThreadSolver {
         boolean isDone = map.isDone();
         SaveState possibleNewState = map.getState();
         long newStateHashCode = possibleNewState.uniqueID();
-        if (!seenStatesValues.contains(newStateHashCode)){
+        String newStateString = map.toString();
+        if (!(seenStatesValues.contains(newStateHashCode)||seenStateStrings.contains(map.toString()))){
             seenStates.add(possibleNewState);
             seenStatesValues.add(newStateHashCode);
+            seenStateStrings.add(newStateString);
             stateOrigins.add(stateIndex);
             donePushes.add(aPush);
         }
@@ -66,7 +80,7 @@ public class SingleThreadSolver {
 
     public boolean solveLevel(){
         int currentStateIndex = 0;
-        boolean solving = true;
+        solving = true;
         boolean solved = false;
         while (solving && currentStateIndex<seenStates.size()){
             map.loadSimpleState(seenStates.get(currentStateIndex));

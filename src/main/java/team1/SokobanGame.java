@@ -26,6 +26,7 @@ public class SokobanGame extends JPanel {
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
     private static int tileSetNo = 1;
     public static KeyListener listener;
+    private static boolean solverRunning;
 
     /**
      * A constructor to initialise the key listener which allows methods to be
@@ -110,13 +111,21 @@ public class SokobanGame extends JPanel {
         InputStream streamToReturn = new FileInputStream(selectedFile);
         return streamToReturn;
     }
+    
+    /**
+     * Set a boolean on whether to display to the user that the solver is running.
+     */
+    public static void setSolving(boolean currentlySolving){
+        solverRunning=currentlySolving;
+        redraw();
+    }
 
     /**
      * Updates the contents of the game window
      */
     public static void redraw() {
         SokobanMap map = spriteMap.getMap();
-        statusBar.setText(Integer.toString(map.totalHistoryLength() - 1));
+        statusBar.setText(Integer.toString(map.totalHistoryLength() - 1)+"        Solving:"+solverRunning);
         spriteMap.placeSprites();
     }
 

@@ -46,6 +46,7 @@ public class BoxTerm extends JPanel {
     private static JMenu gameMenu;
     private static Set<JMenuItem> editMenuItems = new HashSet<JMenuItem>();
     private static Set<JMenuItem> gameMenuItems = new HashSet<JMenuItem>();
+    private static SingleThreadSolver solver;
 
     public static int getTileSetNo() {
         return tileSetNo;
@@ -308,12 +309,24 @@ public class BoxTerm extends JPanel {
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SokobanMap mapToSolve = new SokobanMap(SokobanGame.getSpriteMap().getMap());
-                SingleThreadSolver solver = new SingleThreadSolver(mapToSolve);
-                System.out.println(solver.levelSolution());
+                solver = new SingleThreadSolver(mapToSolve);
+                Thread t = new Thread(solver);
+                t.start();
+                SokobanGame.setSolving(true);
             }
         });
         gameMenuItems.add(assistItem);
         helpMenu.add(assistItem);
+        
+        JMenuItem stopItem = new JMenuItem("Stop computing solution");
+        stopItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                solver.stopSolving();
+                SokobanGame.setSolving(false);
+            }
+        });
+        gameMenuItems.add(stopItem);
+        helpMenu.add(stopItem);
 
         JMenuItem builderHelpItem = new JMenuItem("Builder help");
         builderHelpItem.addActionListener(new ActionListener() {
@@ -426,6 +439,7 @@ public class BoxTerm extends JPanel {
         SokobanMap map = SokobanMap.importLevel(level);
         game = new SokobanGame(new SpriteMap(map, true, 1));
         builder = new LevelBuilder(new SpriteMap(map, false, 1));
+        solver = new SingleThreadSolver(map);
 
         boxTerm = new BoxTerm();
         boxTerm.setLayout(new BoxLayout(boxTerm, BoxLayout.X_AXIS));
