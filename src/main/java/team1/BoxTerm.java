@@ -135,7 +135,7 @@ public class BoxTerm extends JPanel {
         saveItem.setToolTipText("Save current map design to file");
         saveItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (!LevelBuilder.getSpriteMap().getMap().validate()) {
+                if (!LevelBuilder.getSokobanMap().validate()) {
                     int result = JOptionPane.showConfirmDialog(frame, "This "
                             + "level is incomplete.\nYou may save it and "
                             + "resume editing later,\nbut it won't be "
@@ -171,7 +171,7 @@ public class BoxTerm extends JPanel {
                     File file = fileChooser.getSelectedFile();
                     if (file != null) {
                         Path newFile = Paths.get(file.getPath());
-                        List<String> contents = Arrays.asList(LevelBuilder.getSpriteMap().getMap().toString().split("\\n"));
+                        List<String> contents = Arrays.asList(LevelBuilder.getSokobanMap().toString().split("\\n"));
                         try {
                             Files.write(newFile, contents);
                         } catch (IOException io) {
@@ -209,7 +209,7 @@ public class BoxTerm extends JPanel {
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
         undo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanMap map = getMySpriteMap().getMap();
+                SokobanMap map = getMySpriteMap().getSokobanMap();
                 map.undo();
                 if (editMode) {
                     LevelBuilder.updateCounters();
@@ -225,7 +225,7 @@ public class BoxTerm extends JPanel {
         redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, SHORTCUT_MASK));
         redo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanMap map = getMySpriteMap().getMap();
+                SokobanMap map = getMySpriteMap().getSokobanMap();
                 map.redo();
                 LevelBuilder.updateCounters();
                 getMySpriteMap().placeSprites();
@@ -245,7 +245,7 @@ public class BoxTerm extends JPanel {
                     case JOptionPane.CLOSED_OPTION:
                         return;
                 }
-                LevelBuilder.getSpriteMap().updateMap(SokobanMap.crop(LevelBuilder.getSpriteMap().getMap()));
+                LevelBuilder.getSpriteMap().updateMap(SokobanMap.crop(LevelBuilder.getSokobanMap()));
                 frame.setSize(frame.getPreferredSize());
             }
         });
@@ -308,7 +308,7 @@ public class BoxTerm extends JPanel {
         JMenuItem assistItem = new JMenuItem("Print solution");
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanMap mapToSolve = new SokobanMap(SokobanGame.getSpriteMap().getMap());
+                SokobanMap mapToSolve = new SokobanMap(SokobanGame.getSokobanMap());
                 solver = new SingleThreadSolver(mapToSolve);
                 Thread t = new Thread(solver);
                 t.start();
@@ -317,7 +317,7 @@ public class BoxTerm extends JPanel {
         });
         gameMenuItems.add(assistItem);
         helpMenu.add(assistItem);
-        
+
         JMenuItem stopItem = new JMenuItem("Stop computing solution");
         stopItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -388,10 +388,10 @@ public class BoxTerm extends JPanel {
         editMode = !editMode;
 
         if (!editMode) {
-            if (LevelBuilder.getSpriteMap().getMap().validate()) {
+            if (LevelBuilder.getSokobanMap().validate()) {
                 gameMenu.setText("Game");
                 builder.setVisible(false);
-                SokobanGame.getSpriteMap().updateMap(SokobanMap.shallowCopy(LevelBuilder.getSpriteMap().getMap(), 20));
+                SokobanGame.getSpriteMap().updateMap(SokobanMap.shallowCopy(LevelBuilder.getSokobanMap(), 20));
                 game.setVisible(true);
                 game.requestFocusInWindow();
                 SokobanGame.redraw();
@@ -405,7 +405,7 @@ public class BoxTerm extends JPanel {
         } else {
             gameMenu.setText("Edit");
             game.setVisible(false);
-            LevelBuilder.getSpriteMap().updateMap(new SokobanMap(SokobanGame.getSpriteMap().getMap(), 100));
+            LevelBuilder.getSpriteMap().updateMap(new SokobanMap(SokobanGame.getSokobanMap(), 100));
             builder.setVisible(true);
         }
 

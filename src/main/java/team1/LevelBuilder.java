@@ -93,9 +93,13 @@ public class LevelBuilder extends JPanel{
         return spriteMap;
     }
 
+    public static SokobanMap getSokobanMap() {
+        return spriteMap.getSokobanMap();
+    }
+
     public static void updateCounters() {
-        int boxCount = spriteMap.getMap().getMyState().getBoxPositions().size();
-        int pressureCount = spriteMap.getMap().getMyState().getGoalPositions().size();
+        int boxCount = getSokobanMap().getMyState().getBoxPositions().size();
+        int pressureCount = getSokobanMap().getMyState().getGoalPositions().size();
         boxCounter.setText("" + boxCount);
         pressureCounter.setText("" + pressureCount);
     }

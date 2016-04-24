@@ -35,7 +35,7 @@ public class Cell extends JLabel{
 
                 public void mouseEntered(MouseEvent me) {
                     if (me.getButton() == MouseEvent.NOBUTTON) {
-                        if (spriteMap.getMap().get(position) == SokobanObject.SPACE) {
+                        if (spriteMap.getSokobanMap().get(position) == SokobanObject.SPACE) {
                             setIcon(spriteMap.getIconMap().get("DEFAULT_HOVER"));
                         }
                     } else {
@@ -44,10 +44,10 @@ public class Cell extends JLabel{
                 }
 
                 public void mouseExited(MouseEvent me) {
-                    if (spriteMap.getMap().get(position) == SokobanObject.SPACE) {
+                    if (spriteMap.getSokobanMap().get(position) == SokobanObject.SPACE) {
                         setIcon(spriteMap.getIconMap().get("DEFAULT"));
                     } else {
-                        setIcon(spriteMap.getIconMap().get(spriteMap.getMap().get(position).name()));
+                        setIcon(spriteMap.getIconMap().get(spriteMap.getSokobanMap().get(position).name()));
                     }
                 }
             });
@@ -55,16 +55,16 @@ public class Cell extends JLabel{
     }
 
     public void modifyCell(MouseEvent me) {
-        spriteMap.getMap().storeState();
+        spriteMap.getSokobanMap().storeState();
         if (me.getButton() == MouseEvent.BUTTON1) {
-            spriteMap.getMap().put(LevelBuilder.state, position);
+            spriteMap.getSokobanMap().put(LevelBuilder.state, position);
         } else if (me.getButton() == MouseEvent.BUTTON3) {
-            if (spriteMap.getMap().get(position) != SokobanObject.PLAYER) {
-                spriteMap.getMap().removeLayer(position);
+            if (spriteMap.getSokobanMap().get(position) != SokobanObject.PLAYER) {
+                spriteMap.getSokobanMap().removeLayer(position);
             }
         }
         spriteMap.placeSprites();
-        spriteMap.getMap().clearRedoStack();
+        spriteMap.getSokobanMap().clearRedoStack();
 
         LevelBuilder.updateCounters();
     }

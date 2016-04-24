@@ -72,6 +72,10 @@ public class SokobanGame extends JPanel {
         return spriteMap;
     }
 
+    public static SokobanMap getSokobanMap() {
+        return spriteMap.getSokobanMap();
+    }
+
     /**
      * Runs player movement methods when keypresses are detected, then checks
      * to see if the level has been completed. If it has, displays "YOU WON!",
@@ -81,7 +85,7 @@ public class SokobanGame extends JPanel {
      *          on a goal rather than every time the player moves
      */
     public static void moveWorker(KeyEvent e) {
-        SokobanMap map = spriteMap.getMap();
+        SokobanMap map = getSokobanMap();
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
@@ -111,7 +115,7 @@ public class SokobanGame extends JPanel {
         InputStream streamToReturn = new FileInputStream(selectedFile);
         return streamToReturn;
     }
-    
+
     /**
      * Set a boolean on whether to display to the user that the solver is running.
      */
@@ -124,7 +128,7 @@ public class SokobanGame extends JPanel {
      * Updates the contents of the game window
      */
     public static void redraw() {
-        SokobanMap map = spriteMap.getMap();
+        SokobanMap map = getSokobanMap();
         statusBar.setText(Integer.toString(map.totalHistoryLength() - 1)+"        Solving:"+solverRunning);
         spriteMap.placeSprites();
     }

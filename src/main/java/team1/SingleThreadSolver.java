@@ -25,22 +25,22 @@ public class SingleThreadSolver implements Runnable {
         seenStateStrings.add(map.toString());
         stateOrigins = new ArrayList<Integer>();
         stateOrigins.add(-1);
-        donePushes = new ArrayList<Coordinate[]>(); 
+        donePushes = new ArrayList<Coordinate[]>();
         Coordinate[] emptyPush = {new Coordinate(0,0),new Coordinate(0,0)};
         donePushes.add(emptyPush);
     }
-    
+
     public void run(){
         System.out.println(levelSolution());
     }
-    
+
     public void stopSolving(){
         solving = false;
     }
 
     private List<Coordinate[]> validPushes(int stateIndex){
         map.loadSimpleState(seenStates.get(stateIndex));
-        SaveState state = seenStates.get(stateIndex);       
+        SaveState state = seenStates.get(stateIndex);
         Set<Coordinate> accessibleSpaces = map.accessibleSpaces(state.getWPos(), false);
         List<Coordinate[]> validPushes = new ArrayList<Coordinate[]>();
         for (Coordinate box : state.getBoxPositions()){
@@ -58,7 +58,7 @@ public class SingleThreadSolver implements Runnable {
 
     private boolean tryPush(int stateIndex, Coordinate[] aPush){
         map.put(SokobanObject.PLAYER, aPush[0]);
-        map.move(aPush[1]);     
+        map.move(aPush[1]);
         boolean isDone = map.isDone();
         SaveState possibleNewState = map.getState();
         long newStateHashCode = possibleNewState.uniqueID();
@@ -113,7 +113,7 @@ public class SingleThreadSolver implements Runnable {
     public String levelSolution(){
         LinkedList<Coordinate[]> pushesToSolve = new LinkedList<Coordinate[]>();
         String solution="NO SOLUTION!";
-        if(solveLevel()){    
+        if(solveLevel()){
             int currentStateIndex=seenStates.size()-1;
             solution="Solution: \n";
             while (currentStateIndex>0){

@@ -64,7 +64,7 @@ public class SpriteMap extends JPanel {
         this.map = map;
     }
 
-    public SokobanMap getMap() {
+    public SokobanMap getSokobanMap() {
         return map;
     }
 
