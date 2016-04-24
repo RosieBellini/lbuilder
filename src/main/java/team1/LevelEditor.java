@@ -15,12 +15,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 /**
- * LevelBuilder class. Used to create and display the LevelBuilder GUI.
+ * LevelEditor class. Used to create and display the LevelEditor GUI.
  * All of the fields & methods are static.
  *
  */
 
-public class LevelBuilder extends JPanel{
+public class LevelEditor extends JPanel{
 
     private static final long serialVersionUID = 1L;
     private static SpriteMap spriteMap;
@@ -32,8 +32,8 @@ public class LevelBuilder extends JPanel{
     protected static int boxCount;
     protected static int pressureCount;
 
-    public LevelBuilder(SpriteMap spriteMap) {
-        LevelBuilder.spriteMap = spriteMap;
+    public LevelEditor(SpriteMap spriteMap) {
+        LevelEditor.spriteMap = spriteMap;
 
         JPanel tilePalette = new JPanel();
         importImages();
