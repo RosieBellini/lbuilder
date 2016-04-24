@@ -16,7 +16,7 @@ public class SingleThreadSolver implements Runnable {
     private boolean solving;
 
     public SingleThreadSolver(SokobanMap map){
-        this.map=map;
+        this.map=new SokobanMap(map);
         seenStates = new ArrayList<SaveState>();
         seenStates.add(map.getState());
         seenStatesValues = new HashSet<Long>();
