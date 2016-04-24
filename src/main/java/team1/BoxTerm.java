@@ -104,7 +104,13 @@ public class BoxTerm extends JPanel {
         openItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    SokobanMap map = SokobanMap.importLevel(getFile());
+                    int returnVal = fileChooser.showOpenDialog(null);
+                    if (returnVal != JFileChooser.APPROVE_OPTION) {
+                        return;  // cancelled
+                    }
+                    File selectedFile = fileChooser.getSelectedFile();
+                    InputStream stream = new FileInputStream(selectedFile);
+                    SokobanMap map = SokobanMap.importLevel(stream);
                     if (!map.validate()) {
                         JOptionPane.showMessageDialog(frame,
                                 "This level cannot be beaten.\n You may want "
@@ -356,17 +362,6 @@ public class BoxTerm extends JPanel {
             }
         });
         helpMenu.add(aboutItem);
-    }
-
-    //TODO The getFile method should check for a valid Sokoban level file and force the user to choose another level
-    public static InputStream getFile() throws FileNotFoundException {
-        int returnVal = fileChooser.showOpenDialog(null);
-        if (returnVal != JFileChooser.APPROVE_OPTION) {
-            return null;  // cancelled
-        }
-        File selectedFile = fileChooser.getSelectedFile();
-        InputStream streamToReturn = new FileInputStream(selectedFile);
-        return streamToReturn;
     }
 
     public static void changeMagnification(boolean getBigger) {
