@@ -44,6 +44,7 @@ public class BoxTerm extends JPanel {
     private static BoxTerm boxTerm;
     private static JMenuBar menubar;
     private static JMenu gameMenu;
+    private static JMenuItem toggleItem;
     private static Set<JMenuItem> editMenuItems = new HashSet<JMenuItem>();
     private static Set<JMenuItem> gameMenuItems = new HashSet<JMenuItem>();
     private static SingleThreadSolver solver;
@@ -194,13 +195,14 @@ public class BoxTerm extends JPanel {
         editMenuItems.add(saveItem);
         fileMenu.add(saveItem);
 
-        JMenuItem levelBuilderItem = new JMenuItem("Toggle mode");
-        levelBuilderItem.addActionListener(new ActionListener() {
+        toggleItem = new JMenuItem("Start editor");
+        toggleItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, SHORTCUT_MASK));
+        toggleItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 toggleMode();
             }
         });
-        fileMenu.add(levelBuilderItem);
+        fileMenu.add(toggleItem);
 
         JMenuItem quitItem = new JMenuItem("Quit");
         quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, SHORTCUT_MASK));
@@ -389,6 +391,7 @@ public class BoxTerm extends JPanel {
         if (!editMode) {
             if (LevelEditor.getSokobanMap().validate()) {
                 gameMenu.setText("Game");
+                toggleItem.setText("Start editor");
                 editor.setVisible(false);
                 SokobanGame.getSpriteMap().updateMap(SokobanMap.shallowCopy(LevelEditor.getSokobanMap(), 20));
                 game.setVisible(true);
@@ -403,6 +406,7 @@ public class BoxTerm extends JPanel {
             }
         } else {
             gameMenu.setText("Edit");
+            toggleItem.setText("Start game");
             game.setVisible(false);
             LevelEditor.getSpriteMap().updateMap(new SokobanMap(SokobanGame.getSokobanMap(), 100));
             editor.setVisible(true);
