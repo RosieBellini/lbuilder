@@ -25,14 +25,15 @@ public class SokobanGame extends JPanel {
     private static SpriteMap spriteMap;
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
     private static int tileSetNo = 1;
-    public static KeyListener listener;
+    private static KeyListener listener;
     private static boolean solverRunning;
+    private static SokobanGame instance;
 
     /**
      * A constructor to initialise the key listener which allows methods to be
      * run when key presses are detected
      */
-    public SokobanGame(SpriteMap spriteMap) {
+    private SokobanGame(SpriteMap spriteMap) {
         listener = new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -53,7 +54,6 @@ public class SokobanGame extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         SokobanGame.spriteMap = spriteMap;
-        // SokobanGame.map = spriteMap.getMap();
 
         statusBar = new JLabel();
         statusBar.setFont(new Font("Helvetica",Font.PLAIN , 24));
@@ -62,6 +62,13 @@ public class SokobanGame extends JPanel {
         add(statusBar,BorderLayout.SOUTH);
         redraw();
         setVisible(true);
+    }
+
+    public static SokobanGame getInstance(SpriteMap spriteMap) {
+        if (instance == null) {
+            instance = new SokobanGame(spriteMap);
+        }
+        return instance;
     }
 
     public static int getTileSetNo() {
@@ -119,8 +126,8 @@ public class SokobanGame extends JPanel {
     /**
      * Set a boolean on whether to display to the user that the solver is running.
      */
-    public static void setSolving(boolean currentlySolving){
-        solverRunning=currentlySolving;
+    public static void setSolving(boolean currentlySolving) {
+        solverRunning = currentlySolving;
         redraw();
     }
 

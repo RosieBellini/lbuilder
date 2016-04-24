@@ -26,13 +26,14 @@ public class LevelEditor extends JPanel{
     private static SpriteMap spriteMap;
     private static final ImageIcon[] tiles = new ImageIcon[4];
     private static final JList<ImageIcon> list = new JList<ImageIcon>(tiles);
-    protected static TextField boxCounter = new TextField(10);
-    protected static TextField pressureCounter = new TextField(10);
-    public static SokobanObject state = SokobanObject.SPACE;
-    protected static int boxCount;
-    protected static int pressureCount;
+    private static TextField boxCounter = new TextField(10);
+    private static TextField pressureCounter = new TextField(10);
+    private static SokobanObject state = SokobanObject.SPACE;
+    private static int boxCount;
+    private static int pressureCount;
+    private static LevelEditor instance;
 
-    public LevelEditor(SpriteMap spriteMap) {
+    private LevelEditor(SpriteMap spriteMap) {
         LevelEditor.spriteMap = spriteMap;
 
         JPanel tilePalette = new JPanel();
@@ -62,6 +63,13 @@ public class LevelEditor extends JPanel{
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         add(spriteMap);
         add(tilePalette);
+    }
+
+    public static LevelEditor getInstance(SpriteMap spriteMap) {
+        if (instance == null) {
+            instance = new LevelEditor(spriteMap);
+        }
+        return instance;
     }
 
     public static void importImages() {
@@ -95,6 +103,10 @@ public class LevelEditor extends JPanel{
 
     public static SokobanMap getSokobanMap() {
         return spriteMap.getSokobanMap();
+    }
+
+    public static SokobanObject getState() {
+        return state;
     }
 
     public static void updateCounters() {

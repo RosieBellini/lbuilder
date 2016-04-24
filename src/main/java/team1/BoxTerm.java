@@ -437,8 +437,8 @@ public class BoxTerm extends JPanel {
 
         InputStream level = BoxTerm.class.getClassLoader().getResourceAsStream("level");
         SokobanMap map = SokobanMap.importLevel(level);
-        game = new SokobanGame(new SpriteMap(map, true, 1));
-        editor = new LevelEditor(new SpriteMap(map, false, 1));
+        game = SokobanGame.getInstance(new SpriteMap(map, true, 1));
+        editor = LevelEditor.getInstance(new SpriteMap(map, false, 1));
         solver = new SingleThreadSolver(map);
 
         boxTerm = new BoxTerm();

@@ -57,7 +57,7 @@ public class Cell extends JLabel{
     public void modifyCell(MouseEvent me) {
         spriteMap.getSokobanMap().storeState();
         if (me.getButton() == MouseEvent.BUTTON1) {
-            spriteMap.getSokobanMap().put(LevelEditor.state, position);
+            spriteMap.getSokobanMap().put(LevelEditor.getState(), position);
         } else if (me.getButton() == MouseEvent.BUTTON3) {
             if (spriteMap.getSokobanMap().get(position) != SokobanObject.PLAYER) {
                 spriteMap.getSokobanMap().removeLayer(position);
