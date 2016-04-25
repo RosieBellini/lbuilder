@@ -31,7 +31,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingWorker;
 
@@ -108,8 +107,6 @@ public class BoxTerm extends JPanel {
 
         ImageIcon spinnyCube = new ImageIcon(Toolkit.getDefaultToolkit().getImage(BoxTerm.class.getResource("/tileset01/cube.gif")));
         JLabel loadingCube = new JLabel(spinnyCube);
-        JProgressBar progressBar = new JProgressBar();
-        progressBar.setIndeterminate(true);
         JLabel msgLabel = new JLabel("Calculating...");
         JButton b1 = new JButton("Cancel");
 
@@ -131,6 +128,7 @@ public class BoxTerm extends JPanel {
         dialog.setResizable(false);
         dialog.pack();
         dialog.setSize(200, dialog.getHeight());
+        dialog.setLocationRelativeTo(frame);
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         dialog.setVisible(true);
 
@@ -144,7 +142,6 @@ public class BoxTerm extends JPanel {
         menubar = new JMenuBar();
         frame.setJMenuBar(menubar);
 
-        // create the File manu
         JMenu fileMenu = new JMenu("File");
         menubar.add(fileMenu);
 
@@ -393,7 +390,7 @@ public class BoxTerm extends JPanel {
 
         // Help menu
 
-        JMenuItem assistItem = new JMenuItem("Print solution");
+        JMenuItem assistItem = new JMenuItem("Solver");
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 startSolver();
@@ -475,7 +472,6 @@ public class BoxTerm extends JPanel {
         }
 
         updateContextMenu();
-        // frame.setSize(frame.getPreferredSize());
     }
 
     public static void updateContextMenu() {
@@ -517,6 +513,7 @@ public class BoxTerm extends JPanel {
         frame.setResizable(false);
         frame.add(boxTerm);
         frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 }
