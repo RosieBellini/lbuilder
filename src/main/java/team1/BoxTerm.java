@@ -81,7 +81,7 @@ public class BoxTerm extends JPanel {
 
         b2.addActionListener(listen2);
 
-        SwingWorker worker = new SwingWorker() {
+        class solverWorker extends SwingWorker<Void, Object> {
             String solution;
 
             @Override
@@ -132,7 +132,7 @@ public class BoxTerm extends JPanel {
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         dialog.setVisible(true);
 
-        worker.execute();
+        (new solverWorker()).execute();
     }
 
     private static void makeMenuBar(JFrame frame) {
