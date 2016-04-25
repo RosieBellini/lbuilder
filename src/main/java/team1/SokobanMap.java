@@ -366,7 +366,7 @@ public class SokobanMap {
     public boolean validate() {
         int boxCount = getMyState().getBoxPositions().size();
         int goalCount = getMyState().getGoalPositions().size();
-        return boxCount >= goalCount && goalCount > 0;
+        return boxCount >= goalCount && !isDone();
     }
 
     public static SokobanMap crop(SokobanMap mapToCrop) {
