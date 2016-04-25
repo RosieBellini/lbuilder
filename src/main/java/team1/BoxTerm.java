@@ -20,6 +20,7 @@ import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -54,7 +55,8 @@ public class BoxTerm extends JPanel {
     private static Set<JMenuItem> editMenuItems = new HashSet<JMenuItem>();
     private static Set<JMenuItem> gameMenuItems = new HashSet<JMenuItem>();
     private static SingleThreadSolver solver;
-
+    
+    
     public static int getTileSetNo() {
         return tileSetNo;
     }
@@ -105,6 +107,8 @@ public class BoxTerm extends JPanel {
             }
         };
 
+        ImageIcon spinnyCube = new ImageIcon(Toolkit.getDefaultToolkit().getImage(BoxTerm.class.getResource("/tileset01/PLAYER.png")));
+        JLabel loadingCube = new JLabel(spinnyCube);
         JProgressBar progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
         JLabel msgLabel = new JLabel("Calculating...");
@@ -119,7 +123,7 @@ public class BoxTerm extends JPanel {
         b1.addActionListener(listen);
 
         panel.add(msgLabel, BorderLayout.PAGE_START);
-        panel.add(progressBar, BorderLayout.CENTER);
+        panel.add(loadingCube, BorderLayout.CENTER);
         panel.add(b1, BorderLayout.SOUTH);
         panel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 
