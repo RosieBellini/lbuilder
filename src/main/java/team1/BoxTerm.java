@@ -69,22 +69,38 @@ public class BoxTerm extends JPanel {
 
     public static void startSolver() {
         final JDialog dialog = new JDialog();
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+
+        JButton b2 = new JButton("Close");
+
+        ActionListener listen2 = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
+        };
+
+        b2.addActionListener(listen2);
+
         SwingWorker worker = new SwingWorker() {
+            String solution;
 
             @Override
             protected void done() {
-                dialog.dispose();
+                if (solution == "NO_SOLUTION") {
+                    dialog.dispose();
+                } else {
+                    panel.removeAll();
+                    panel.add(new JLabel("<html>" + solution.replaceAll("\n", "<br>") + "</html>"), BorderLayout.PAGE_START);
+                    panel.add(b2, BorderLayout.SOUTH);
+                    dialog.pack();
+                }
             }
 
-            // @Override
-            // protected void process(List chunks) {
-            // }
-
             @Override
-            protected Object doInBackground() throws Exception {
+            protected Void doInBackground() throws Exception {
                 SokobanMap mapToSolve = new SokobanMap(SokobanGame.getSokobanMap());
                 solver = new SingleThreadSolver(mapToSolve);
-                solver.run();
+                solution = solver.levelSolution();
                 return null;
             }
         };
@@ -93,19 +109,15 @@ public class BoxTerm extends JPanel {
         progressBar.setIndeterminate(true);
         JLabel msgLabel = new JLabel("Calculating...");
         JButton b1 = new JButton("Cancel");
-        b1.setActionCommand("CANCEL_SOLVER");
 
         ActionListener listen = new ActionListener() {
             public void actionPerformed(ActionEvent e2) {
-                if ("CANCEL_SOLVER".equals(e2.getActionCommand())) {
-                    solver.stopSolving();
-                }
+                solver.stopSolving();
             }
         };
 
         b1.addActionListener(listen);
 
-        JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.add(msgLabel, BorderLayout.PAGE_START);
         panel.add(progressBar, BorderLayout.CENTER);
         panel.add(b1, BorderLayout.SOUTH);

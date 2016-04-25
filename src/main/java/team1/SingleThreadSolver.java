@@ -116,7 +116,7 @@ public class SingleThreadSolver implements Runnable {
 
     public String levelSolution(){
         LinkedList<Coordinate[]> pushesToSolve = new LinkedList<Coordinate[]>();
-        String solution="NO SOLUTION!";
+        String solution="NO_SOLUTION";
         if(solveLevel()){
             int currentStateIndex=seenStates.size()-1;
             solution="Solution: \n";
