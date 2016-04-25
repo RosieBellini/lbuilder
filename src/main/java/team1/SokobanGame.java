@@ -1,7 +1,5 @@
 package team1;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -10,12 +8,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 /** Box Terminator main method. This class handles importing the level, drawing
  * the game screen and interpreting key presses.
@@ -29,7 +25,6 @@ public class SokobanGame extends JPanel {
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
     private static int tileSetNo = 1;
     private static KeyListener listener;
-    private static boolean solverRunning;
     private static SokobanGame instance;
 
     /**
@@ -127,19 +122,11 @@ public class SokobanGame extends JPanel {
     }
 
     /**
-     * Set a boolean on whether to display to the user that the solver is running.
-     */
-    public static void setSolving(boolean currentlySolving) {
-        solverRunning = currentlySolving;
-        redraw();
-    }
-
-    /**
      * Updates the contents of the game window
      */
     public static void redraw() {
         SokobanMap map = getSokobanMap();
-        statusBar.setText(Integer.toString(map.totalHistoryLength() - 1)+"        Solving:"+solverRunning);
+        statusBar.setText(Integer.toString(map.totalHistoryLength() - 1));
         spriteMap.placeSprites();
     }
 

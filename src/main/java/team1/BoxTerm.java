@@ -18,15 +18,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.KeyStroke;
+import javax.swing.SwingWorker;
 
 /** Box Terminator main method. This class handles importing the level, drawing
  * the game screen and interpreting key presses.
@@ -59,6 +65,61 @@ public class BoxTerm extends JPanel {
 
     public static JFrame getFrame() {
         return frame;
+    }
+
+    public static void startSolver() {
+        final JDialog dialog = new JDialog();
+        SwingWorker worker = new SwingWorker() {
+
+            @Override
+            protected void done() {
+                dialog.dispose();
+            }
+
+            // @Override
+            // protected void process(List chunks) {
+            // }
+
+            @Override
+            protected Object doInBackground() throws Exception {
+                SokobanMap mapToSolve = new SokobanMap(SokobanGame.getSokobanMap());
+                solver = new SingleThreadSolver(mapToSolve);
+                solver.run();
+                return null;
+            }
+        };
+
+        JProgressBar progressBar = new JProgressBar();
+        progressBar.setIndeterminate(true);
+        JLabel msgLabel = new JLabel("Calculating...");
+        JButton b1 = new JButton("Cancel");
+        b1.setActionCommand("CANCEL_SOLVER");
+
+        ActionListener listen = new ActionListener() {
+            public void actionPerformed(ActionEvent e2) {
+                if ("CANCEL_SOLVER".equals(e2.getActionCommand())) {
+                    solver.stopSolving();
+                }
+            }
+        };
+
+        b1.addActionListener(listen);
+
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+        panel.add(msgLabel, BorderLayout.PAGE_START);
+        panel.add(progressBar, BorderLayout.CENTER);
+        panel.add(b1, BorderLayout.SOUTH);
+        panel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+
+        dialog.getContentPane().add(panel);
+        dialog.setTitle("Solver");
+        dialog.setResizable(false);
+        dialog.pack();
+        dialog.setSize(200, dialog.getHeight());
+        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        dialog.setVisible(true);
+
+        worker.execute();
     }
 
     private static void makeMenuBar(JFrame frame) {
@@ -320,25 +381,11 @@ public class BoxTerm extends JPanel {
         JMenuItem assistItem = new JMenuItem("Print solution");
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanMap mapToSolve = new SokobanMap(SokobanGame.getSokobanMap());
-                solver = new SingleThreadSolver(mapToSolve);
-                Thread t = new Thread(solver);
-                t.start();
-                SokobanGame.setSolving(true);
+                startSolver();
             }
         });
         gameMenuItems.add(assistItem);
         helpMenu.add(assistItem);
-
-        JMenuItem stopItem = new JMenuItem("Stop computing solution");
-        stopItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                solver.stopSolving();
-                SokobanGame.setSolving(false);
-            }
-        });
-        gameMenuItems.add(stopItem);
-        helpMenu.add(stopItem);
 
         JMenuItem editorHelpItem = new JMenuItem("Builder help");
         editorHelpItem.addActionListener(new ActionListener() {

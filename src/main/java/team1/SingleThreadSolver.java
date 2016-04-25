@@ -38,6 +38,10 @@ public class SingleThreadSolver implements Runnable {
         solving = false;
     }
 
+    public boolean isSolving() {
+        return solving;
+    }
+
     private List<Coordinate[]> validPushes(int stateIndex){
         map.loadSimpleState(seenStates.get(stateIndex));
         SaveState state = seenStates.get(stateIndex);
