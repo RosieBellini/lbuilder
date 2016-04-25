@@ -475,7 +475,7 @@ public class BoxTerm extends JPanel {
         }
 
         updateContextMenu();
-        frame.setSize(frame.getPreferredSize());
+        // frame.setSize(frame.getPreferredSize());
     }
 
     public static void updateContextMenu() {

@@ -2,6 +2,7 @@ package team1;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Label;
 
 import javax.swing.BoxLayout;
@@ -58,7 +59,7 @@ public class LevelEditor extends JPanel{
         tilePalette.add(counters, BorderLayout.WEST);
         tilePalette.add(list, BorderLayout.CENTER);
         tilePalette.add(padding, BorderLayout.EAST);
-        // tilePalette.setSize(tilePalette.getPreferredSize());
+        tilePalette.setPreferredSize(new Dimension(tilePalette.getSize().width, 48));
         selectTile();
         updateCounters();
 

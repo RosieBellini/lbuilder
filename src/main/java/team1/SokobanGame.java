@@ -1,5 +1,6 @@
 package team1;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -49,15 +50,18 @@ public class SokobanGame extends JPanel {
         addKeyListener(listener);
         setFocusable(true);
 
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        // setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         SokobanGame.spriteMap = spriteMap;
 
+        JPanel statusBarContainer = new JPanel();
         statusBar = new JLabel();
         statusBar.setFont(new Font("Helvetica",Font.PLAIN , 24));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        statusBarContainer.add(statusBar);
+        statusBarContainer.setPreferredSize(new Dimension(statusBarContainer.getSize().width, 48));
         add(spriteMap);
-        add(statusBar);
+        add(statusBarContainer);
         redraw();
         setVisible(true);
     }
