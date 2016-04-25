@@ -15,10 +15,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-/**
- * TODO: put the counter back
- */
-
 public class SpriteMap extends JPanel {
     private static final long serialVersionUID = 1L;
     private SokobanMap map;
@@ -75,14 +71,20 @@ public class SpriteMap extends JPanel {
             for (Coordinate position : Coordinate.allValidCoordinates(xSize, ySize)) {
                 SokobanObject object = map.get(position);
                 ImageIcon icon;
-                if (!playable && object.name().equals("SPACE")){
-                    icon = iconMap.get("DEFAULT");
-                } else if (object.name().equals("WALL")) {
-                    icon = randomIcon("WALL", noOfWalls);
-                } else if (playable && grassPositions.contains(position)) {
-                    icon = randomIcon("GRASS", noOfGrass);
+                if (!playable) {
+                    if (object == SokobanObject.SPACE) {
+                        icon = iconMap.get("DEFAULT");
+                    } else {
+                        icon = iconMap.get(object.name());
+                    }
                 } else {
-                    icon = iconMap.get(object.name());
+                    if (object.name().equals("WALL")) {
+                        icon = randomIcon("WALL", noOfWalls);
+                    } else if (playable && grassPositions.contains(position)) {
+                        icon = randomIcon("GRASS", noOfGrass);
+                    } else {
+                        icon = iconMap.get(object.name());
+                    }
                 }
                 panelHolder.get(position).setIcon(icon);
             }
