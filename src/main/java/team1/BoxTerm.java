@@ -55,8 +55,7 @@ public class BoxTerm extends JPanel {
     private static Set<JMenuItem> editMenuItems = new HashSet<JMenuItem>();
     private static Set<JMenuItem> gameMenuItems = new HashSet<JMenuItem>();
     private static SingleThreadSolver solver;
-    
-    
+
     public static int getTileSetNo() {
         return tileSetNo;
     }
@@ -107,7 +106,7 @@ public class BoxTerm extends JPanel {
             }
         };
 
-        ImageIcon spinnyCube = new ImageIcon(Toolkit.getDefaultToolkit().getImage(BoxTerm.class.getResource("/tileset01/PLAYER.png")));
+        ImageIcon spinnyCube = new ImageIcon(Toolkit.getDefaultToolkit().getImage(BoxTerm.class.getResource("/tileset01/cube.gif")));
         JLabel loadingCube = new JLabel(spinnyCube);
         JProgressBar progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
