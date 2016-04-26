@@ -436,7 +436,8 @@ public class BoxTerm extends JPanel {
                 editMode = true;
                 JOptionPane.showMessageDialog(frame, "This level cannot be won"
                         + ".\nMake sure that there are at least as many boxes"
-                        + " as goals\nand that there is at least one uncovered goal.",
+                        + " as goals\nand that there is at least one uncovered goal,\n"
+                        + "and that all goals are accessible to the player.",
                         "Incomplete level", JOptionPane.WARNING_MESSAGE);
             }
         } else {

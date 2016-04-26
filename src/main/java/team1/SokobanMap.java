@@ -313,7 +313,7 @@ public class SokobanMap {
         Set<Coordinate> inaccessibleSpaces = new HashSet<Coordinate>();
         potentialGrass.removeAll(accessibleSpaces(getMyState().getWPos(),true));
         for(Coordinate potentialGrassSpace : potentialGrass){
-            if (get(potentialGrassSpace) == SokobanObject.SPACE) {
+            if (get(potentialGrassSpace) == SokobanObject.SPACE || get(potentialGrassSpace) == SokobanObject.GOAL) {
                 inaccessibleSpaces.add(potentialGrassSpace);
             }
         }
@@ -364,9 +364,27 @@ public class SokobanMap {
     }
 
     public boolean validate() {
-        int boxCount = getMyState().getBoxPositions().size();
-        int goalCount = getMyState().getGoalPositions().size();
-        return boxCount >= goalCount && !isDone();
+        int boxCount = 0;
+        int goalCount = 0;
+        boolean inaccessibleGoal = false;
+
+        for (Coordinate position : inaccessibleSpaces()) {
+            if (get(position) == SokobanObject.GOAL) {
+                inaccessibleGoal = true;
+                break;
+            }
+        }
+
+        for (Coordinate position : accessibleSpaces(getMyState().getWPos(), true)) {
+            if (get(position) == SokobanObject.BOX) {
+                boxCount++;
+            }
+
+            if (get(position) == SokobanObject.GOAL) {
+                goalCount++;
+            }
+        }
+        return boxCount >= goalCount && !isDone() && !inaccessibleGoal && goalCount > 0;
     }
 
     public static SokobanMap crop(SokobanMap mapToCrop) {
