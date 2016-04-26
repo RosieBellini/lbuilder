@@ -14,6 +14,7 @@ public class SingleThreadSolver implements Runnable {
     private List<Integer> stateOrigins;
     private List<Coordinate[]> donePushes;
     private boolean solving;
+    private int triedPushes;
 
     public SingleThreadSolver(SokobanMap map){
         this.map=new SokobanMap(map);
@@ -28,6 +29,7 @@ public class SingleThreadSolver implements Runnable {
         donePushes = new ArrayList<Coordinate[]>();
         Coordinate[] emptyPush = {new Coordinate(0,0),new Coordinate(0,0)};
         donePushes.add(emptyPush);
+        triedPushes=0;
     }
 
     public void run(){
@@ -48,16 +50,45 @@ public class SingleThreadSolver implements Runnable {
         Set<Coordinate> accessibleSpaces = map.accessibleSpaces(state.getWPos(), false);
         List<Coordinate[]> validPushes = new ArrayList<Coordinate[]>();
         for (Coordinate box : state.getBoxPositions()){
-            for (Coordinate spaceNextToBox : map.neighbors(box))
+            for (Coordinate spaceNextToBox : map.neighbors(box)){
+                SokobanObject thingOppositeBox = map.get(box.add(box.add(spaceNextToBox.reverse())));
                 if (accessibleSpaces.contains(spaceNextToBox)&&
-                        (map.get(box.add(box.add(spaceNextToBox.reverse()))).name().equals("SPACE") ||
-                                (map.get(box.add(box.add(spaceNextToBox.reverse()))).name().contains("PLAYER")) ||
-                                map.get(box.add(box.add(spaceNextToBox.reverse()))).name().equals("GOAL"))){
+                        (thingOppositeBox==SokobanObject.SPACE ||
+                        thingOppositeBox==SokobanObject.PLAYER ||
+                        thingOppositeBox==SokobanObject.GOAL ||
+                        thingOppositeBox==SokobanObject.PLAYER_ON_GOAL)){
                     Coordinate[] aPush = {spaceNextToBox,box.add(spaceNextToBox.reverse())};
-                    validPushes.add(aPush);
+                    if(isSafePush(aPush)){
+                        validPushes.add(aPush);
+                    }                    
                 }
+            }
         }
         return validPushes;
+    }
+
+    private boolean isSafePush(Coordinate[] aPush){
+        Coordinate spaceBehindPush = (aPush[0].add(aPush[1].mult(3)));
+        SokobanObject objectBehindPush = map.get(spaceBehindPush);
+        Coordinate spaceToPushInto = (aPush[0].add(aPush[1]));
+        SokobanObject objectToPushInto = map.get(spaceToPushInto);
+        if (objectToPushInto==SokobanObject.GOAL || objectBehindPush!=SokobanObject.WALL){
+            return true;
+        }
+        Coordinate spaceLeftOfPush = new Coordinate(-1,-1);
+        Coordinate spaceRightOfPush= new Coordinate (-1,-1);
+        if(aPush[1].getX()!=0){
+            spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0,1));
+            spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0,-1));
+        }
+        else if (aPush[1].getY()!=0){
+            spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(1,0));
+            spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(-1,0));    		
+        }
+        if (map.get(spaceRightOfPush)==SokobanObject.WALL||map.get(spaceLeftOfPush)==SokobanObject.WALL){
+            return false;    		    		
+        }
+        else return true;
     }
 
     private boolean tryPush(int stateIndex, Coordinate[] aPush){
@@ -66,16 +97,18 @@ public class SingleThreadSolver implements Runnable {
         boolean isDone = map.isDone();
         SaveState possibleNewState = map.getState();
         long newStateHashCode = possibleNewState.uniqueID();
-        String newStateString = map.toString();
-        if (!(seenStatesValues.contains(newStateHashCode)||seenStateStrings.contains(map.toString()))){
+        //		String newStateString = map.toString();
+        if (!(seenStatesValues.contains(newStateHashCode)
+                //				||seenStateStrings.contains(map.toString())
+                )){
             seenStates.add(possibleNewState);
             seenStatesValues.add(newStateHashCode);
-            seenStateStrings.add(newStateString);
+            //			seenStateStrings.add(newStateString);
             stateOrigins.add(stateIndex);
             donePushes.add(aPush);
         }
         map.undo();
-        int triedPushes = seenStates.size();
+        triedPushes++;
         if (triedPushes%1000==0){
             System.out.println(triedPushes);
         }

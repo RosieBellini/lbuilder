@@ -256,7 +256,7 @@ public class SokobanMap {
      * Takes a coordinate and returns the set of coordinates which are accessible from there.
      * Accessible meaning not blocked by a WALL.
      * @param origin The coordinate space from which to start the search for accessible spaces.
-     * @param doBoxesBlock true if you want to ignore boxes in the search.
+     * @param ignoreBoxes true if you want to ignore boxes in the search.
      */
     public Set<Coordinate> accessibleSpaces(Coordinate origin,boolean ignoreBoxes) {
         Set<Coordinate> edges = new HashSet<Coordinate>();
@@ -313,7 +313,7 @@ public class SokobanMap {
         Set<Coordinate> inaccessibleSpaces = new HashSet<Coordinate>();
         potentialGrass.removeAll(accessibleSpaces(getMyState().getWPos(),true));
         for(Coordinate potentialGrassSpace : potentialGrass){
-            if (get(potentialGrassSpace) == SokobanObject.SPACE) {
+            if (get(potentialGrassSpace) == SokobanObject.SPACE || get(potentialGrassSpace) == SokobanObject.GOAL) {
                 inaccessibleSpaces.add(potentialGrassSpace);
             }
         }
@@ -364,9 +364,27 @@ public class SokobanMap {
     }
 
     public boolean validate() {
-        int boxCount = getMyState().getBoxPositions().size();
-        int goalCount = getMyState().getGoalPositions().size();
-        return boxCount >= goalCount && !isDone();
+        int boxCount = 0;
+        int goalCount = 0;
+        boolean inaccessibleGoal = false;
+
+        for (Coordinate position : inaccessibleSpaces()) {
+            if (get(position) == SokobanObject.GOAL) {
+                inaccessibleGoal = true;
+                break;
+            }
+        }
+
+        for (Coordinate position : accessibleSpaces(getMyState().getWPos(), true)) {
+            if (get(position) == SokobanObject.BOX) {
+                boxCount++;
+            }
+
+            if (get(position) == SokobanObject.GOAL) {
+                goalCount++;
+            }
+        }
+        return boxCount >= goalCount && !isDone() && !inaccessibleGoal && goalCount > 0;
     }
 
     public static SokobanMap crop(SokobanMap mapToCrop) {
@@ -436,7 +454,7 @@ public class SokobanMap {
             }
         }
 
-        SokobanMap croppedMap = new SokobanMap(xEnd + 1, yEnd + 1, mapToCrop.getMaxUndos());
+        SokobanMap croppedMap = new SokobanMap(xEnd + 1 -xStart, yEnd + 1-yStart, mapToCrop.getMaxUndos());
         for (int y = yStart; y <= yEnd; y++) {
             for (int x = xStart; x <= xEnd; x++) {
                 croppedMap.put(mapToCrop.get(new Coordinate(x, y)), new Coordinate(x - xStart, y - yStart));
