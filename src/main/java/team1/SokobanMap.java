@@ -256,7 +256,7 @@ public class SokobanMap {
      * Takes a coordinate and returns the set of coordinates which are accessible from there.
      * Accessible meaning not blocked by a WALL.
      * @param origin The coordinate space from which to start the search for accessible spaces.
-     * @param doBoxesBlock true if you want to ignore boxes in the search.
+     * @param ignoreBoxes true if you want to ignore boxes in the search.
      */
     public Set<Coordinate> accessibleSpaces(Coordinate origin,boolean ignoreBoxes) {
         Set<Coordinate> edges = new HashSet<Coordinate>();
