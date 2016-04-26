@@ -1,6 +1,7 @@
 package team1;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,9 +14,11 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -26,11 +29,13 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingWorker;
 
@@ -54,6 +59,7 @@ public class BoxTerm extends JPanel {
     private static Set<JMenuItem> editMenuItems = new HashSet<JMenuItem>();
     private static Set<JMenuItem> gameMenuItems = new HashSet<JMenuItem>();
     private static SingleThreadSolver solver;
+    private static ArrayList<String> levels = new ArrayList<String>();
 
     public static int getTileSetNo() {
         return tileSetNo;
@@ -177,38 +183,58 @@ public class BoxTerm extends JPanel {
         openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
         openItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                    int returnVal = fileChooser.showOpenDialog(null);
-                    if (returnVal != JFileChooser.APPROVE_OPTION) {
-                        return;  // cancelled
-                    }
-                    File selectedFile = fileChooser.getSelectedFile();
-                    InputStream stream = new FileInputStream(selectedFile);
-                    SokobanMap map = SokobanMap.importLevel(stream);
-                    if (!map.validate()) {
-                        JOptionPane.showMessageDialog(frame,
-                                "This level cannot be beaten.\n You may want "
-                                + "to load it in the level editor and correct "
-                                + "it.", "Invalid level",
-                                JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
+                String[] buttons = { "Open", "Import", "Cancel"};
+                String[] items = levels.toArray(new String[levels.size()]);
+                JList<String> list = new JList<String>(items);
+                list.setSelectedIndex(0);
+                JScrollPane scrollPane = new JScrollPane(list);
+                scrollPane.setPreferredSize(new Dimension(200, 256));
+                int selectReturnVal = JOptionPane.showOptionDialog(frame, scrollPane, "Select or import a level",
+                        JOptionPane.PLAIN_MESSAGE, JOptionPane.PLAIN_MESSAGE, null, buttons, buttons[0]);
+                if (selectReturnVal == 0) {
+                    InputStream level = BoxTerm.class.getResourceAsStream("/levels/" + levels.get(list.getSelectedIndex()));
+                    SokobanMap map = SokobanMap.importLevel(level);
                     if (!editMode) {
                         SokobanGame.getSpriteMap().updateMap(map);
                     } else {
                         LevelEditor.getSpriteMap().updateMap(map);
                         LevelEditor.updateCounters();
                     }
-                } catch (FileNotFoundException e1) {
-                    System.out.println("BAD LEVEL");
-                    e1.printStackTrace();
-                } catch (IllegalArgumentException e2) {
-                    JOptionPane.showMessageDialog(frame, "Invalid level."
-                            + "\nMake sure that the file you have selected "
-                            + "uses the standard format.", "Invalid level",
-                            JOptionPane.WARNING_MESSAGE);
+                } else if (selectReturnVal == 1) {
+                    try {
+                        int returnVal = fileChooser.showOpenDialog(null);
+                        if (returnVal != JFileChooser.APPROVE_OPTION) {
+                            return;  // cancelled
+                        }
+                        File selectedFile = fileChooser.getSelectedFile();
+                        InputStream stream = new FileInputStream(selectedFile);
+                        SokobanMap map = SokobanMap.importLevel(stream);
+                        if (!map.validate()) {
+                            JOptionPane.showMessageDialog(frame,
+                                    "This level cannot be beaten.\n You may want "
+                                    + "to load it in the level editor and correct "
+                                    + "it.", "Invalid level",
+                                    JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+                        if (!editMode) {
+                            SokobanGame.getSpriteMap().updateMap(map);
+                        } else {
+                            LevelEditor.getSpriteMap().updateMap(map);
+                            LevelEditor.updateCounters();
+                        }
+                    } catch (FileNotFoundException e1) {
+                        System.out.println("BAD LEVEL");
+                        e1.printStackTrace();
+                    } catch (IllegalArgumentException e2) {
+                        JOptionPane.showMessageDialog(frame, "Invalid level."
+                                + "\nMake sure that the file you have selected "
+                                + "uses the standard format.", "Invalid level",
+                                JOptionPane.WARNING_MESSAGE);
+                    }
+                } else {
+                    // System.out.println(list.getSelectedIndex());
                 }
-
                 frame.pack();
             }
         });
@@ -491,11 +517,24 @@ public class BoxTerm extends JPanel {
             return LevelEditor.getSpriteMap();
         }
     }
+    private static void getBuiltinLevels() {
+        // ArrayList<String> levelsines = new ArrayList<String>();
+        InputStream levelIndex = BoxTerm.class.getResourceAsStream("/levels/LEVEL_INDEX");
+        Scanner levelIndexScanner = new Scanner(levelIndex);
+        while (levelIndexScanner.hasNextLine()) {
+            String levelName = levelIndexScanner.nextLine();
+            levels.add(levelName);
+            // InputStream level = BoxTerm.class.getResourceAsStream("/level/" + levelName);
+            // levels.put(levelName, level);
 
+        }
+        levelIndexScanner.close();
+    }
     public static void main(String[] args) {
         frame = new JFrame("Box Terminator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        getBuiltinLevels();
         InputStream level = BoxTerm.class.getClassLoader().getResourceAsStream("level");
         SokobanMap map = SokobanMap.importLevel(level);
         editor = LevelEditor.getInstance(new SpriteMap(map, false, 1));
