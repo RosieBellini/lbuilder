@@ -528,10 +528,12 @@ public class BoxTerm extends JPanel {
             SokobanMap map = SokobanMap.importLevel(level);
             if (!editMode) {
                 SokobanGame.getSpriteMap().updateMap(map);
+                SokobanGame.redraw();
             } else {
                 LevelEditor.getSpriteMap().updateMap(map);
                 LevelEditor.updateCounters();
             }
+            frame.pack();
         } else if (selectReturnVal == 1) {
             try {
                 int returnVal = fileChooser.showOpenDialog(null);
