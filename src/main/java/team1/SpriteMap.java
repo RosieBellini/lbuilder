@@ -1,7 +1,5 @@
 package team1;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -129,13 +127,8 @@ public class SpriteMap extends JPanel {
     }
 
     public void win() {
-        if(map.isDone()) {
-            removeAll();
-            this.setBackground(Color.green);
-            JLabel winIcon = new JLabel("YOU WON!!");
-            winIcon.setFont(new Font("Courier New", Font.ITALIC, 50));
-            winIcon.setForeground(Color.WHITE);
-            add (winIcon);
+        if (map.isDone()) {
+            BoxTerm.winDialog();
         }
     }
 
@@ -190,7 +183,7 @@ public class SpriteMap extends JPanel {
             iconMap.put(iconName, new ImageIcon(resizedImage));
         }
     }
-    
+
     @Override public Dimension getPreferredSize(){
     	float prefWidth = 32*BoxTerm.getMagnification()*xSize;
     	float prefHeight = 32*BoxTerm.getMagnification()*ySize;
