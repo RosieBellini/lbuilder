@@ -487,13 +487,13 @@ public class BoxTerm extends JPanel {
         button1.addActionListener(new ActionListener()
                 {
                     @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
+                    public void actionPerformed(ActionEvent e) {
                         SwingUtilities.getWindowAncestor(button1).dispose();
                         currentLevelIndex++;
                         InputStream level = BoxTerm.class.getResourceAsStream("/levels/" + levels.get(currentLevelIndex));
                         SokobanMap map = SokobanMap.importLevel(level);
                         SokobanGame.getSpriteMap().updateMap(map);
+                        // LevelEditor.getSpriteMap().updateMap(map);
                         SokobanGame.redraw();
                         frame.pack();
                     }

@@ -40,7 +40,7 @@ public class SpriteMap extends JPanel {
 
     public void updateMap(SokobanMap map) {
         mapDrawn = false;
-        this.map = map;
+        this.map = new SokobanMap(map);
         xSize = map.getXSize();
         ySize = map.getYSize();
         setLayout(new GridLayout(ySize, xSize));
