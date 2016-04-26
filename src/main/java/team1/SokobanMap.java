@@ -436,7 +436,7 @@ public class SokobanMap {
             }
         }
 
-        SokobanMap croppedMap = new SokobanMap(xEnd + 1, yEnd + 1, mapToCrop.getMaxUndos());
+        SokobanMap croppedMap = new SokobanMap(xEnd + 1 -xStart, yEnd + 1-yStart, mapToCrop.getMaxUndos());
         for (int y = yStart; y <= yEnd; y++) {
             for (int x = xStart; x <= xEnd; x++) {
                 croppedMap.put(mapToCrop.get(new Coordinate(x, y)), new Coordinate(x - xStart, y - yStart));

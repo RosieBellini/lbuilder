@@ -48,13 +48,16 @@ public class SingleThreadSolver implements Runnable {
         Set<Coordinate> accessibleSpaces = map.accessibleSpaces(state.getWPos(), false);
         List<Coordinate[]> validPushes = new ArrayList<Coordinate[]>();
         for (Coordinate box : state.getBoxPositions()){
-            for (Coordinate spaceNextToBox : map.neighbors(box))
+            for (Coordinate spaceNextToBox : map.neighbors(box)){
+            	SokobanObject thingOppositeBox = map.get(box.add(box.add(spaceNextToBox.reverse())));
                 if (accessibleSpaces.contains(spaceNextToBox)&&
-                        (map.get(box.add(box.add(spaceNextToBox.reverse()))).name().equals("SPACE") ||
-                                (map.get(box.add(box.add(spaceNextToBox.reverse()))).name().contains("PLAYER")) ||
-                                map.get(box.add(box.add(spaceNextToBox.reverse()))).name().equals("GOAL"))){
+                        (thingOppositeBox==SokobanObject.SPACE ||
+                        		thingOppositeBox==SokobanObject.PLAYER ||
+                        				thingOppositeBox==SokobanObject.GOAL ||
+                        				thingOppositeBox==SokobanObject.PLAYER_ON_GOAL)){
                     Coordinate[] aPush = {spaceNextToBox,box.add(spaceNextToBox.reverse())};
                     validPushes.add(aPush);
+                }
                 }
         }
         return validPushes;

@@ -1,5 +1,6 @@
 package team1;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -188,6 +189,12 @@ public class SpriteMap extends JPanel {
             Image resizedImage = iconImage.getScaledInstance(newIconDimension, newIconDimension, Image.SCALE_DEFAULT);
             iconMap.put(iconName, new ImageIcon(resizedImage));
         }
+    }
+    
+    @Override public Dimension getPreferredSize(){
+    	float prefWidth = 32*BoxTerm.getMagnification()*xSize;
+    	float prefHeight = 32*BoxTerm.getMagnification()*ySize;
+    	return new Dimension((int) prefWidth,(int) prefHeight);
     }
 
 }
