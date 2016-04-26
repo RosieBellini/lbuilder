@@ -108,7 +108,8 @@ public class SingleThreadSolver implements Runnable {
             donePushes.add(aPush);
         }
         map.undo();
-        triedPushes++;
+        triedPushes=donePushes.size();
+//        triedPushes++;
         if (triedPushes%1000==0){
             System.out.println(triedPushes);
         }
