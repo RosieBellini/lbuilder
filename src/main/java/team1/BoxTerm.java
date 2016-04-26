@@ -551,11 +551,13 @@ public class BoxTerm extends JPanel {
                 }
                 if (!editMode) {
                     SokobanGame.getSpriteMap().updateMap(map);
+                    SokobanGame.redraw();
                 } else {
                     LevelEditor.getSpriteMap().updateMap(map);
                     LevelEditor.updateCounters();
                 }
                 currentLevelIndex = -1;
+                frame.pack();
             } catch (FileNotFoundException e1) {
                 System.out.println("BAD LEVEL");
                 e1.printStackTrace();
