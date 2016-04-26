@@ -6,6 +6,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,6 +41,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.WindowConstants;
 
 /** Box Terminator main method. This class handles importing the level, drawing
  * the game screen and interpreting key presses.
@@ -234,6 +237,7 @@ public class BoxTerm extends JPanel {
                         List<String> contents = Arrays.asList(LevelEditor.getSokobanMap().toString().split("\\n"));
                         try {
                             Files.write(newFile, contents);
+                            LevelEditor.getSpriteMap().updateMap(SokobanMap.shallowCopy(LevelEditor.getSokobanMap(), 100));
                         } catch (IOException io) {
                             System.out.println("Couldn't save");
                         }
@@ -257,7 +261,7 @@ public class BoxTerm extends JPanel {
         quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, SHORTCUT_MASK));
         quitItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                closeRoutine();
             }
         });
         fileMenu.add(quitItem);
@@ -574,9 +578,28 @@ public class BoxTerm extends JPanel {
         frame.pack();
     }
 
+    private static boolean checkChanges() {
+        SokobanMap map = LevelEditor.getSokobanMap();
+        return map.getInitialState().equals(map.getMyState());
+    }
+
+    private static void closeRoutine() {
+        if (!checkChanges()) {
+            int result = JOptionPane.showConfirmDialog(frame, "Your level has unsaved changes.\n"
+                    + "Are you sure you want to exit?", "Unsaved changes",
+                    JOptionPane.YES_NO_OPTION);
+            if (result == 0) {
+                System.exit(0);
+            }
+        } else {
+            System.exit(0);
+        }
+    }
+
     public static void main(String[] args) {
         frame = new JFrame("Box Terminator");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         getBuiltinLevels();
         // InputStream level = BoxTerm.class.getClassLoader().getResourceAsStream("level");
@@ -590,6 +613,13 @@ public class BoxTerm extends JPanel {
         boxTerm.add(game, BorderLayout.CENTER);
         boxTerm.add(editor, BorderLayout.SOUTH);
         editor.setVisible(false);
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                closeRoutine();
+            }
+        });
 
         makeMenuBar(frame);
         updateContextMenu();
