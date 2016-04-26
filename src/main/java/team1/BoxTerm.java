@@ -175,8 +175,9 @@ public class BoxTerm extends JPanel {
 		newMapItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
                 SokobanMap map = new SokobanMap(20, 20, 100);
-                map.put(SokobanObject.PLAYER, new Coordinate(5, 5));
                 LevelEditor.getSpriteMap().updateMap(map);
+                LevelEditor.getSokobanMap().put(SokobanObject.PLAYER, new Coordinate(5, 5));
+                LevelEditor.getSpriteMap().forceRedraw();
                 LevelEditor.updateCounters();
                 frame.setSize(frame.getPreferredSize());
             }

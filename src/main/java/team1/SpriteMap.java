@@ -114,6 +114,11 @@ public class SpriteMap extends JPanel {
         mapDrawn = false;
     }
 
+    public void forceRedraw() {
+        mapDrawn = false;
+        placeSprites();
+    }
+
     public ImageIcon randomIcon(String iconName, int iconCount) {
         if (noOfGrass==1) {
             return iconMap.get(iconName);
