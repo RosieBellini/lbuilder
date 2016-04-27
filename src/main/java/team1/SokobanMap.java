@@ -103,8 +103,8 @@ public class SokobanMap {
 	 * This will be used to determine a state of the map independent of the players exact position.
 	 * @return a SaveState which represents a state of the game for the solving algorithm to use.
 	 */
-	public SaveState getState(){
-		Set<Coordinate> accessibleSpaces = accessibleSpaces(getMyState().getWPos(),false);
+	public SaveState getState() {
+		Set<Coordinate> accessibleSpaces = accessibleSpaces(getMyState().getWPos(), false);
 		Coordinate potentialTopLeftSpace = new Coordinate(xSize,ySize);
 		for (Coordinate potential : Coordinate.allValidCoordinates(xSize, ySize)) {
 			potentialTopLeftSpace = potential;
@@ -112,7 +112,7 @@ public class SokobanMap {
 				break;
 			}
 		}
-		//		System.out.println(potentialTopLeftSpace.getX()+""+potentialTopLeftSpace.getY());
+
 		return new SaveState(potentialTopLeftSpace, getMyState().getBoxPositions());
 	}
 
@@ -400,9 +400,7 @@ public class SokobanMap {
 
         while (!xStartFound) {
             for (int j = 0; j < mapToCrop.getYSize(); j++) {
-                System.out.println(xStart + ", " + j);
                 if (mapToCrop.get(new Coordinate(xStart, j)).equals(SokobanObject.WALL)) {
-                    System.out.println("found xStart");
                     xStartFound = true;
                     break;
                 }
@@ -414,9 +412,7 @@ public class SokobanMap {
 
         while (!xEndFound) {
             for (int j = 0; j < mapToCrop.getYSize(); j++) {
-                System.out.println(xEnd + ", " + j);
                 if (mapToCrop.get(new Coordinate(xEnd, j)).equals(SokobanObject.WALL)) {
-                    System.out.println("found xEnd");
                     xEndFound = true;
                     break;
                 }
@@ -428,9 +424,7 @@ public class SokobanMap {
 
         while (!yStartFound) {
             for (int i = 0; i < mapToCrop.getXSize(); i++) {
-                System.out.println(i + ", " + yStart);
                 if (mapToCrop.get(new Coordinate(i, yStart)).equals(SokobanObject.WALL)) {
-                    System.out.println("found yStart");
                     yStartFound = true;
                     break;
                 }
@@ -442,9 +436,7 @@ public class SokobanMap {
 
         while (!yEndFound) {
             for (int i = 0; i < mapToCrop.getXSize(); i++) {
-                System.out.println(i + ", " + yEnd);
                 if (mapToCrop.get(new Coordinate(i, yEnd)).equals(SokobanObject.WALL)) {
-                    System.out.println("found yEnd");
                     yEndFound = true;
                     break;
                 }
