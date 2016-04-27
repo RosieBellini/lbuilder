@@ -23,13 +23,11 @@ import javax.swing.event.ListSelectionListener;
 
 @SuppressWarnings("serial")
 public class SokobanGame extends JPanel {
-    // private static SokobanMap map;
     private static JLabel statusBar;
     private static SpriteMap spriteMap;
     private static KeyListener listener;
     private static SokobanGame instance;
     private static boolean playable = true;
-    private static SokobanObject paletteState = SokobanObject.WALL;
     private static JList<ImageIcon> list;
     private static final ImageIcon[] tiles = new ImageIcon[4];
     private static JPanel tilePalette;
@@ -133,10 +131,6 @@ public class SokobanGame extends JPanel {
         redraw();
     }
 
-    public static SokobanObject getPaletteState() {
-        return paletteState;
-    }
-
     public static SpriteMap getSpriteMap() {
         return spriteMap;
     }
@@ -209,6 +203,8 @@ public class SokobanGame extends JPanel {
     private static void selectTile() {
 
         int selection = list.getSelectedIndex();
+        SokobanObject paletteState = SokobanObject.WALL;
+
         switch(selection) {
             case 0: paletteState = SokobanObject.WALL;
                     break;
@@ -219,5 +215,7 @@ public class SokobanGame extends JPanel {
             case 3: paletteState = SokobanObject.PLAYER;
                     break;
         }
+
+        Cell.setPaletteState(paletteState);
     }
 }

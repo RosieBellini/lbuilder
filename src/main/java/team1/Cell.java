@@ -17,6 +17,7 @@ public class Cell extends JLabel{
     private static final long serialVersionUID = 1L;
     private SpriteMap spriteMap;
     private Coordinate position;
+    private static SokobanObject paletteState = SokobanObject.WALL;
 
     public Cell(Coordinate position, SpriteMap spriteMap, boolean playable) {
         super();
@@ -58,7 +59,7 @@ public class Cell extends JLabel{
     private void modifyCell(MouseEvent me) {
         spriteMap.getSokobanMap().storeState();
         if (me.getButton() == MouseEvent.BUTTON1) {
-            spriteMap.getSokobanMap().put(SokobanGame.getPaletteState(), position);
+            spriteMap.getSokobanMap().put(paletteState, position);
         } else if (me.getButton() == MouseEvent.BUTTON3) {
             if (spriteMap.getSokobanMap().get(position) != SokobanObject.PLAYER) {
                 spriteMap.getSokobanMap().removeLayer(position);
@@ -67,5 +68,9 @@ public class Cell extends JLabel{
 
         SokobanGame.redraw();
         spriteMap.getSokobanMap().clearRedoStack();
+    }
+
+    public static void setPaletteState(SokobanObject paletteState) {
+        Cell.paletteState = paletteState;
     }
 }
