@@ -127,6 +127,7 @@ public class SokobanGame extends JPanel {
         playable = !playable;
         tilePalette.setVisible(!playable);
         statusBarContainer.setVisible(playable);
+        spriteMap.resetSolver();
         spriteMap.toggleMode();
         redraw();
     }

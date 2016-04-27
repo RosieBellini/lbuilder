@@ -159,7 +159,7 @@ public class SpriteMap extends JPanel {
 
     }
 
-    private void resetSolver() {
+    public void resetSolver() {
         stageInSolution = 0;
         boxToSolve = new Coordinate(-2, -2);
         solution.clear();
