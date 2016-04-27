@@ -25,13 +25,16 @@ public class SpriteMap extends JPanel {
     private boolean mapDrawn;
     private boolean playable;
     private boolean initialised = false;
+    private float scale = 1;
+
     int noOfWalls;
     int noOfGrass;
 
-    public SpriteMap(SokobanMap map, boolean playable, int tileSetNo) {
+    public SpriteMap(SokobanMap map, int tileSetNo) {
         panelHolder = new HashMap<Coordinate, JLabel>();
         iconMap = new HashMap<String, ImageIcon>();
-        this.playable = playable;
+        // this.playable = playable;
+        playable = true;
         this.updateMap(map);
         loadSprites(tileSetNo);
         setVisible(true);
@@ -53,6 +56,15 @@ public class SpriteMap extends JPanel {
         if (initialised) {
             placeSprites();
         }
+    }
+
+    public void toggleMode() {
+        playable = !playable;
+        forceRedraw();
+    }
+
+    public boolean getPlayable() {
+        return playable;
     }
 
     public void setMap(SokobanMap map) {
@@ -179,8 +191,16 @@ public class SpriteMap extends JPanel {
         loadSprites(BoxTerm.getTileSetNo());
     }
 
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
     public void resizeSprites(){
-        float iconDimension = BoxTerm.getMagnification() * 32;
+        float iconDimension = scale * 32;
         int newIconDimension = (int) iconDimension;
         for(String iconName : iconMap.keySet()) {
             Image iconImage = iconMap.get(iconName).getImage();
@@ -190,8 +210,8 @@ public class SpriteMap extends JPanel {
     }
 
     @Override public Dimension getPreferredSize(){
-    	float prefWidth = 32*BoxTerm.getMagnification()*xSize;
-    	float prefHeight = 32*BoxTerm.getMagnification()*ySize;
+    	float prefWidth = 32*scale*xSize;
+    	float prefHeight = 32*scale*ySize;
     	return new Dimension((int) prefWidth,(int) prefHeight);
     }
 

@@ -1,7 +1,10 @@
 package team1;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Label;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -10,9 +13,14 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /** Box Terminator main method. This class handles importing the level, drawing
  * the game screen and interpreting key presses.
@@ -27,6 +35,14 @@ public class SokobanGame extends JPanel {
     private static int tileSetNo = 1;
     private static KeyListener listener;
     private static SokobanGame instance;
+    private static boolean playable = true;
+    private static SokobanObject paletteState = SokobanObject.WALL;
+    private static JList<ImageIcon> list;
+    private static final ImageIcon[] tiles = new ImageIcon[4];
+    private static JPanel tilePalette;
+    private static JPanel statusBarContainer;
+    private static Label boxLabel;
+    private static Label goalLabel;
 
     /**
      * A constructor to initialise the key listener which allows methods to be
@@ -54,7 +70,38 @@ public class SokobanGame extends JPanel {
 
         SokobanGame.spriteMap = spriteMap;
 
-        JPanel statusBarContainer = new JPanel();
+
+        list = new JList<ImageIcon>(tiles);
+        list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        importPaletteIcons();
+        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        list.setVisibleRowCount(1);
+        list.setBackground(Color.WHITE);
+        list.setForeground(Color.BLACK);
+        list.setSelectedIndex(0);
+        list.addListSelectionListener(new ListListener());
+
+        JPanel counters = new JPanel();
+        JPanel padding = new JPanel();
+        counters.setLayout(new BoxLayout(counters, BoxLayout.Y_AXIS));
+        boxLabel = new Label();
+        goalLabel = new Label();
+
+        counters.add(boxLabel);
+        counters.add(goalLabel);
+
+        tilePalette = new JPanel();
+        tilePalette.setLayout(new BoxLayout(tilePalette, BoxLayout.X_AXIS));
+        tilePalette.setBackground(Color.WHITE);
+        tilePalette.add(counters, BorderLayout.WEST);
+        tilePalette.add(list, BorderLayout.CENTER);
+        tilePalette.add(padding, BorderLayout.EAST);
+        tilePalette.setVisible(false);
+        tilePalette.setPreferredSize(new Dimension(tilePalette.getSize().width, 48));
+        selectTile();
+        updateCounters();
+
+        statusBarContainer = new JPanel();
         statusBar = new JLabel();
         statusBar.setFont(new Font("Helvetica",Font.PLAIN , 24));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -62,8 +109,19 @@ public class SokobanGame extends JPanel {
         statusBarContainer.setPreferredSize(new Dimension(statusBarContainer.getSize().width, 48));
         add(spriteMap);
         add(statusBarContainer);
+        add(tilePalette);
         redraw();
         setVisible(true);
+    }
+
+    class ListListener implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                selectTile();
+            }
+        }
     }
 
     public static SokobanGame getInstance(SpriteMap spriteMap) {
@@ -73,8 +131,24 @@ public class SokobanGame extends JPanel {
         return instance;
     }
 
+    public static void toggleMode() {
+        SokobanMap map = spriteMap.getSokobanMap();
+        if (!playable) {
+            map.setInitialState(map.getMyState());
+        }
+        map.reset();
+        playable = !playable;
+        tilePalette.setVisible(!playable);
+        statusBarContainer.setVisible(playable);
+        spriteMap.toggleMode();
+    }
+
     public static int getTileSetNo() {
         return tileSetNo;
+    }
+
+    public static SokobanObject getPaletteState() {
+        return paletteState;
     }
 
     public static SpriteMap getSpriteMap() {
@@ -83,6 +157,13 @@ public class SokobanGame extends JPanel {
 
     public static SokobanMap getSokobanMap() {
         return spriteMap.getSokobanMap();
+    }
+
+    public static void updateCounters() {
+        int boxCount = getSokobanMap().getMyState().getBoxPositions().size();
+        int goalCount = getSokobanMap().getMyState().getGoalPositions().size();
+        boxLabel.setText("Boxes: " + boxCount);
+        goalLabel.setText("Goals: " + goalCount);
     }
 
     /**
@@ -94,6 +175,10 @@ public class SokobanGame extends JPanel {
      *          on a goal rather than every time the player moves
      */
     public static void moveWorker(KeyEvent e) {
+        if (!playable) {
+            return;
+        }
+
         SokobanMap map = getSokobanMap();
 
         switch (e.getKeyCode()) {
@@ -134,4 +219,28 @@ public class SokobanGame extends JPanel {
         spriteMap.placeSprites();
     }
 
+    public static void importPaletteIcons() {
+        tiles[0] = spriteMap.getUnscaledIconMap().get("WALL");
+        tiles[1] = spriteMap.getUnscaledIconMap().get("BOX");
+        tiles[2] = spriteMap.getUnscaledIconMap().get("GOAL");
+        tiles[3] = spriteMap.getUnscaledIconMap().get("PLAYER");
+        list.setFixedCellHeight(36);
+        list.setFixedCellWidth(36);
+        list.repaint();
+    }
+
+    public static void selectTile() {
+
+        int selection = list.getSelectedIndex();
+        switch(selection) {
+            case 0: paletteState = SokobanObject.WALL;
+                    break;
+            case 1: paletteState = SokobanObject.BOX;
+                    break;
+            case 2: paletteState = SokobanObject.GOAL;
+                    break;
+            case 3: paletteState = SokobanObject.PLAYER;
+                    break;
+        }
+    }
 }
