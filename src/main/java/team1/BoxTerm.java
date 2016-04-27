@@ -86,7 +86,7 @@ public class BoxTerm extends JPanel {
             @Override
             protected void done() {
                 SokobanGame.getSpriteMap().setSolution(solution);
-                SokobanGame.getSpriteMap().forceRedraw();
+                SokobanGame.getSpriteMap().placeSprites();
                 dialog.dispose();
             }
 
