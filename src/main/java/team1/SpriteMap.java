@@ -43,7 +43,7 @@ public class SpriteMap extends JPanel {
         boxToSolve = new Coordinate(-2, -2);
         this.tileSetNo = tileSetNo;
         this.updateMap(map);
-        loadSprites(tileSetNo);
+        loadSprites();
         setVisible(true);
         initialised = true;
     }
@@ -167,7 +167,7 @@ public class SpriteMap extends JPanel {
         return iconMap.get(iconName + randomNumber);
     }
 
-    public void loadSprites(int tileSetNo) {
+    public void loadSprites() {
         String tilesetpath = "/tileset0" + tileSetNo + "/";
         ArrayList<String> iconNames = new ArrayList<String>(Arrays.asList("SPACE", "GOAL", "BOX", "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL", "GRASS", "WALL", "DEFAULT", "DEFAULT_HOVER", "BOX_UP", "BOX_DOWN", "BOX_LEFT", "BOX_RIGHT"));
         noOfWalls = 1;
@@ -204,13 +204,17 @@ public class SpriteMap extends JPanel {
         return tileSetNo;
     }
 
+    public void setTileSetNo(int tileSetNo) {
+        this.tileSetNo = tileSetNo;
+    }
+
     public Map<String, ImageIcon> getUnscaledIconMap() {
         return unscaledIconMap;
     }
 
     public void update() {
         mapDrawn = false;
-        loadSprites(tileSetNo);
+        loadSprites();
     }
 
     public void setScale(float scale) {

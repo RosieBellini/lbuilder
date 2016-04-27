@@ -326,9 +326,10 @@ public class BoxTerm extends JPanel {
         tileItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, SHORTCUT_MASK));
         tileItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int tileSetNo = SokobanGame.getSpriteMap().getTileSetNo();
-                tileSetNo = (tileSetNo + 1) % 3;
-                SokobanGame.getSpriteMap().loadSprites(tileSetNo);
+                SpriteMap spriteMap = SokobanGame.getSpriteMap();
+                int tileSetNo = spriteMap.getTileSetNo();
+                spriteMap.setTileSetNo((tileSetNo + 1) % 3);
+                spriteMap.loadSprites();
                 SokobanGame.importPaletteIcons();
             }
         });
