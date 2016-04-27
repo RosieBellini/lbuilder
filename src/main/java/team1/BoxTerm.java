@@ -52,7 +52,6 @@ import javax.swing.WindowConstants;
 @SuppressWarnings("serial")
 public class BoxTerm extends JPanel {
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
-    private static int tileSetNo = 1;
     private static SokobanGame game;
     private static JFrame frame;
     private static BoxTerm boxTerm;
@@ -65,14 +64,6 @@ public class BoxTerm extends JPanel {
     private static ArrayList<String> levels = new ArrayList<String>();
     private static int currentLevelIndex = 0;
     private static SokobanMap lastOpenedMap;
-
-    public static int getTileSetNo() {
-        return tileSetNo;
-    }
-
-    public static JFrame getFrame() {
-        return frame;
-    }
 
     public static void startSolver() {
         final JDialog dialog = new JDialog();
@@ -333,6 +324,7 @@ public class BoxTerm extends JPanel {
         tileItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, SHORTCUT_MASK));
         tileItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                int tileSetNo = SokobanGame.getSpriteMap().getTileSetNo();
                 tileSetNo = (tileSetNo + 1) % 3;
                 SokobanGame.getSpriteMap().loadSprites(tileSetNo);
                 SokobanGame.importPaletteIcons();

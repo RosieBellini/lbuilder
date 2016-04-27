@@ -7,14 +7,9 @@ import java.awt.Font;
 import java.awt.Label;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -31,8 +26,6 @@ public class SokobanGame extends JPanel {
     // private static SokobanMap map;
     private static JLabel statusBar;
     private static SpriteMap spriteMap;
-    private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
-    private static int tileSetNo = 1;
     private static KeyListener listener;
     private static SokobanGame instance;
     private static boolean playable = true;
@@ -140,10 +133,6 @@ public class SokobanGame extends JPanel {
         redraw();
     }
 
-    public static int getTileSetNo() {
-        return tileSetNo;
-    }
-
     public static SokobanObject getPaletteState() {
         return paletteState;
     }
@@ -187,17 +176,6 @@ public class SokobanGame extends JPanel {
             default:                return;
         }
         redraw();
-    }
-
-    //TODO The getFile method should check for a valid Sokoban level file and force the user to choose another level
-    public static InputStream getFile() throws FileNotFoundException {
-        int returnVal = fileChooser.showOpenDialog(null);
-        if (returnVal != JFileChooser.APPROVE_OPTION) {
-            return null;  // cancelled
-        }
-        File selectedFile = fileChooser.getSelectedFile();
-        InputStream streamToReturn = new FileInputStream(selectedFile);
-        return streamToReturn;
     }
 
     /**

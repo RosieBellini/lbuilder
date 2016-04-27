@@ -25,7 +25,8 @@ public class SpriteMap extends JPanel {
     private boolean mapDrawn;
     private boolean playable;
     private boolean initialised = false;
-    private float scale = 1;
+    private float scale;
+    private int tileSetNo;
 
     int noOfWalls;
     int noOfGrass;
@@ -33,8 +34,9 @@ public class SpriteMap extends JPanel {
     public SpriteMap(SokobanMap map, int tileSetNo) {
         panelHolder = new HashMap<Coordinate, JLabel>();
         iconMap = new HashMap<String, ImageIcon>();
-        // this.playable = playable;
         playable = true;
+        scale = 1;
+        this.tileSetNo = tileSetNo;
         this.updateMap(map);
         loadSprites(tileSetNo);
         setVisible(true);
@@ -182,13 +184,17 @@ public class SpriteMap extends JPanel {
         return iconMap;
     }
 
+    public int getTileSetNo() {
+        return tileSetNo;
+    }
+
     public Map<String, ImageIcon> getUnscaledIconMap() {
         return unscaledIconMap;
     }
 
     public void update() {
         mapDrawn = false;
-        loadSprites(BoxTerm.getTileSetNo());
+        loadSprites(tileSetNo);
     }
 
     public void setScale(float scale) {
