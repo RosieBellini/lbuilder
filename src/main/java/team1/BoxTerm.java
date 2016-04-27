@@ -70,23 +70,18 @@ public class BoxTerm extends JPanel {
         final JDialog dialog = new JDialog();
         JPanel panel = new JPanel(new BorderLayout(5, 5));
 
-        JButton b2 = new JButton("Close");
-
-        ActionListener listen2 = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
-            }
-        };
-
-        b2.addActionListener(listen2);
-
         class solverWorker extends SwingWorker<Void, Object> {
             LinkedList<Coordinate[]> solution;
 
             @Override
             protected void done() {
-                SokobanGame.getSpriteMap().setSolution(solution);
-                SokobanGame.getSpriteMap().placeSprites();
+                if (solution.size() != 0) {
+                    SokobanGame.getSpriteMap().reset();
+                    SokobanGame.redraw();
+                    SokobanGame.getSpriteMap().setSolution(solution);
+                    SokobanGame.getSpriteMap().placeSprites();
+                }
+
                 dialog.dispose();
             }
 
@@ -360,7 +355,6 @@ public class BoxTerm extends JPanel {
         JMenuItem assistItem = new JMenuItem("Solver");
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanGame.getSpriteMap().reset();
                 startSolver();
             }
         });
