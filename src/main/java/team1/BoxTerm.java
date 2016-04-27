@@ -41,6 +41,8 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 /** Box Terminator main method. This class handles importing the level, drawing
@@ -598,8 +600,27 @@ public class BoxTerm extends JPanel {
     }
 
     public static void main(String[] args) {
+        if (args[0].equals("osx")) {
+            try {
+                System.setProperty("apple.laf.useScreenMenuBar", "true");
+                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Test");
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            }
+            catch(ClassNotFoundException e) {
+                System.out.println("ClassNotFoundException: " + e.getMessage());
+            }
+            catch(InstantiationException e) {
+                System.out.println("InstantiationException: " + e.getMessage());
+            }
+            catch(IllegalAccessException e) {
+                System.out.println("IllegalAccessException: " + e.getMessage());
+            }
+            catch(UnsupportedLookAndFeelException e) {
+                System.out.println("UnsupportedLookAndFeelException: " + e.getMessage());
+            }
+        }
+
         frame = new JFrame("Box Terminator");
-        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         getBuiltinLevels();
