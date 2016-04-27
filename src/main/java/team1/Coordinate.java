@@ -3,7 +3,7 @@ package team1;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Coordinate {
+public class Coordinate implements Comparable<Coordinate>{
 	public Coordinate(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -93,5 +93,10 @@ public class Coordinate {
 	public int hashCode()
 	{
 		return Arrays.hashCode(new Object[]{new Integer(x), new Integer(y)});
+	}
+	
+	@Override
+	public int compareTo(Coordinate coord){
+	    return (x-coord.x)*20+(y-coord.y);
 	}
 }

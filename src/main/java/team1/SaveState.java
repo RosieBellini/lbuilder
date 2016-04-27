@@ -1,6 +1,8 @@
 package team1;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -171,6 +173,21 @@ public final class SaveState {
     }
 
     @Override public int hashCode(){ 
+        if (simpleState){
+            ArrayList<Coordinate> coordArrayList = new ArrayList<Coordinate>();
+            coordArrayList.addAll(boxPositions);
+            Collections.sort(coordArrayList);
+            coordArrayList.add(wPos.mult(-1));
+            int[] coordListXY = new int[coordArrayList.size()*2];
+            int p=0;
+            for (int i=0;i<coordArrayList.size();i++){
+                coordListXY[p]=coordArrayList.get(i).getX();
+                p++;
+                coordListXY[p]=coordArrayList.get(i).getY();
+                p++;
+            }
+            return Arrays.hashCode(coordListXY);
+        }
         return Arrays.hashCode(new Object[]{wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(), goalPositions.hashCode()});
     }
 

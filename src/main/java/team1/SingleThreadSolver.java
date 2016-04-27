@@ -9,7 +9,7 @@ import java.util.Set;
 public class SingleThreadSolver implements Runnable {
     private SokobanMap map;
     private List<SaveState> seenStates;
-    private Set<Long> seenStatesValues;
+    private Set<Integer> seenStatesValues;
     private Set<String> seenStateStrings;
     private List<Integer> stateOrigins;
     private List<Coordinate[]> donePushes;
@@ -20,8 +20,8 @@ public class SingleThreadSolver implements Runnable {
         this.map=new SokobanMap(map);
         seenStates = new ArrayList<SaveState>();
         seenStates.add(map.getState());
-        seenStatesValues = new HashSet<Long>();
-        seenStatesValues.add(map.getState().uniqueID());
+        seenStatesValues = new HashSet<Integer>();
+        seenStatesValues.add(map.getState().hashCode());
         seenStateStrings = new HashSet<String>();
         seenStateStrings.add(map.toString());
         stateOrigins = new ArrayList<Integer>();
@@ -96,10 +96,10 @@ public class SingleThreadSolver implements Runnable {
         map.move(aPush[1]);
         boolean isDone = map.isDone();
         SaveState possibleNewState = map.getState();
-        long newStateHashCode = possibleNewState.uniqueID();
-        //		String newStateString = map.toString();
+        int newStateHashCode = possibleNewState.hashCode();
+//        		String newStateString = map.toString();
         if (!(seenStatesValues.contains(newStateHashCode)
-                //				||seenStateStrings.contains(map.toString())
+//                				&&seenStates.contains(possibleNewState)
                 )){
             seenStates.add(possibleNewState);
             seenStatesValues.add(newStateHashCode);
@@ -161,6 +161,7 @@ public class SingleThreadSolver implements Runnable {
         for (int i=0;i<pushesToSolve.size();i++){
             solution+=(pushesToSolve.get(i)[0]+"   Direction: "+pushesToSolve.get(i)[1]+"\n");
         }
+        System.out.println(solution);
         return solution;
     }
 
