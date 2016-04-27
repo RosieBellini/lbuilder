@@ -85,14 +85,8 @@ public class BoxTerm extends JPanel {
 
             @Override
             protected void done() {
-                // if (solution == "NO_SOLUTION") {
-                //     dialog.dispose();
-                // } else {
-                //     panel.removeAll();
-                //     panel.add(new JLabel("<html>" + solution.replaceAll("\n", "<br>") + "</html>"), BorderLayout.PAGE_START);
-                //     panel.add(b2, BorderLayout.SOUTH);
-                //     dialog.pack();
-                // }
+                SokobanGame.getSpriteMap().setSolution(solution);
+                SokobanGame.getSpriteMap().forceRedraw();
                 dialog.dispose();
             }
 

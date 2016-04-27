@@ -18,13 +18,13 @@ public class Coordinate implements Comparable<Coordinate>{
 
 	public String toString() {
 		if (x == 1 && y == 0) {
-			return "Right";
+			return "RIGHT";
 		} else if(x == -1 && y == 0) {
-			return "Left";
+			return "LEFT";
 		} else if(x == 0 && y == 1) {
-			return "Down";
+			return "DOWN";
 		} else if(x == 0 && y == -1) {
-			return "Up";
+			return "UP";
 		} else {
             return(x + "," + y);
         }

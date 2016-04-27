@@ -183,11 +183,11 @@ public class SokobanGame extends JPanel {
 
         statusBar.setText(Integer.toString(getSokobanMap().totalHistoryLength() - 1));
 
+        spriteMap.placeSprites();
+
         if (playable && getSokobanMap().isDone()) {
             BoxTerm.winDialog();
         }
-
-        spriteMap.placeSprites();
     }
 
     public static void importPaletteIcons() {
