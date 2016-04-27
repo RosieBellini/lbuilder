@@ -84,9 +84,7 @@ public class SpriteMap extends JPanel {
 
     public void placeSprites(ArrayList<Coordinate> toDraw) {
         Set<Coordinate> grassPositions = map.inaccessibleSpaces();
-        boolean arrowDrawn = false;
         boolean needNextArrow = false;
-
 
         toDraw.remove(new Coordinate(-1, -1));
 
@@ -99,12 +97,8 @@ public class SpriteMap extends JPanel {
                     icon = randomIcon("WALL", noOfWalls);
                 } else if (playable && grassPositions.contains(position)) {
                     icon = randomIcon("GRASS", noOfGrass);
-                } else if (solution.size() != 0 && position.equals(solution.get(stageInSolution)[0].add(solution.get(stageInSolution)[1])) && (object == SokobanObject.BOX || object == SokobanObject.BOX_ON_GOAL)) {
-                    icon = iconMap.get("BOX_" + solution.get(stageInSolution)[1].toString());
-                    boxToSolve = position;
-                    arrowDrawn = true;
                 } else if (solution.size() != 0 && position.equals(boxToSolve) && (object == SokobanObject.PLAYER || object == SokobanObject.PLAYER_ON_GOAL)) {
-                    icon = iconMap.get("PLAYER");
+                    icon = iconMap.get(object.name());
                     needNextArrow = true;
                 } else {
                     icon = iconMap.get(object.name());
@@ -112,22 +106,25 @@ public class SpriteMap extends JPanel {
                 panelHolder.get(position).setIcon(icon);
         }
 
-        revalidate();
-        repaint();
-
-        if (arrowDrawn) {
+        if (needNextArrow) {
             stageInSolution++;
             if (stageInSolution >= solution.size()) {
                 stageInSolution = 0;
+                boxToSolve = new Coordinate(-2, -2);
                 solution.clear();
             }
         }
 
-        if (needNextArrow) {
-            ArrayList<Coordinate> nextArrow = new ArrayList<Coordinate>();
-            nextArrow.add(solution.get(stageInSolution)[0].add(solution.get(stageInSolution)[1]));
-            placeSprites(nextArrow);
+        if (solution.size() != 0) {
+            Coordinate position = solution.get(stageInSolution)[0].add(solution.get(stageInSolution)[1]);
+            boxToSolve = position;
+            ImageIcon icon = iconMap.get("BOX_" + solution.get(stageInSolution)[1].toString());
+            panelHolder.get(position).setIcon(icon);
         }
+
+        revalidate();
+        repaint();
+
     }
 
     public void placeSprites() {
