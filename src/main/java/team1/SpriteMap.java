@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.Stack;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -81,43 +80,31 @@ public class SpriteMap extends JPanel {
     }
 
     public void placeSprites() {
+        ArrayList<Coordinate> toDraw = new ArrayList<Coordinate>();
+        Set<Coordinate> grassPositions = map.inaccessibleSpaces();
+
         if (!mapDrawn) {
-            resizeSprites();
-            Set<Coordinate> grassPositions = map.inaccessibleSpaces();
-            for (Coordinate position : Coordinate.allValidCoordinates(xSize, ySize)) {
-                SokobanObject object = map.get(position);
-                ImageIcon icon;
-                if (!playable) {
-                    if (object == SokobanObject.SPACE) {
-                        icon = iconMap.get("DEFAULT");
-                    } else {
-                        icon = iconMap.get(object.name());
-                    }
-                } else {
-                    if (object.name().equals("WALL")) {
-                        icon = randomIcon("WALL", noOfWalls);
-                    } else if (playable && grassPositions.contains(position)) {
-                        icon = randomIcon("GRASS", noOfGrass);
-                    } else {
-                        icon = iconMap.get(object.name());
-                    }
-                }
-                panelHolder.get(position).setIcon(icon);
-            }
+            toDraw = Coordinate.allValidCoordinates(xSize, ySize);
             mapDrawn = true;
         } else {
-            for (Coordinate position : map.getChanges()) {
-                if (!position.equals(new Coordinate(-1, -1))) {
-                    SokobanObject object = map.get(position);
-                    ImageIcon icon;
-                    if(!playable && object.name().equals("SPACE")){
-                        icon = iconMap.get("DEFAULT");
-                    } else {
-                        icon = iconMap.get(object.name());
-                    }
-                    panelHolder.get(position).setIcon(icon);
+            toDraw.addAll(map.getChanges());
+        }
+
+        toDraw.remove(new Coordinate(-1, -1));
+
+        for (Coordinate position : toDraw) {
+                SokobanObject object = map.get(position);
+                ImageIcon icon;
+                if (!playable && object == SokobanObject.SPACE) {
+                    icon = iconMap.get("DEFAULT");
+                } else if (object == SokobanObject.WALL) {
+                    icon = randomIcon("WALL", noOfWalls);
+                } else if (playable && grassPositions.contains(position)) {
+                    icon = randomIcon("GRASS", noOfGrass);
+                } else {
+                    icon = iconMap.get(object.name());
                 }
-            }
+                panelHolder.get(position).setIcon(icon);
         }
 
         revalidate();
@@ -135,9 +122,10 @@ public class SpriteMap extends JPanel {
     }
 
     private ImageIcon randomIcon(String iconName, int iconCount) {
-        if (noOfGrass==1) {
+        if (iconCount == 1 || !playable) {
             return iconMap.get(iconName);
         }
+
         Random r = new Random();
         String randomNumber = Integer.toString(r.nextInt(iconCount) + 1);
         if (randomNumber.equals("1")) {
