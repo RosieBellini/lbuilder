@@ -85,6 +85,7 @@ public class SpriteMap extends JPanel {
 
         if (!mapDrawn) {
             toDraw = Coordinate.allValidCoordinates(xSize, ySize);
+            resizeSprites();
             mapDrawn = true;
         } else {
             toDraw.addAll(map.getChanges());
