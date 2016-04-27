@@ -600,7 +600,7 @@ public class BoxTerm extends JPanel {
     }
 
     public static void main(String[] args) {
-        if (args[0].equals("osx")) {
+        if (args.length != 0 && args[0].equals("osx")) {
             try {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Test");
