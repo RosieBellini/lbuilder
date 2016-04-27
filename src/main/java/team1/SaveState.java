@@ -172,7 +172,7 @@ public final class SaveState {
                 && goalPositions.equals(someState.getGoalPositions());
     }
 
-    @Override public int hashCode(){ 
+    @Override public int hashCode(){
         if (simpleState){
             ArrayList<Coordinate> coordArrayList = new ArrayList<Coordinate>();
             coordArrayList.addAll(boxPositions);
@@ -181,9 +181,9 @@ public final class SaveState {
             int[] coordListXY = new int[coordArrayList.size()*2];
             int p=0;
             for (int i=0;i<coordArrayList.size();i++){
-                coordListXY[p]=coordArrayList.get(i).getX();
+                coordListXY[p]=coordArrayList.get(i).x;
                 p++;
-                coordListXY[p]=coordArrayList.get(i).getY();
+                coordListXY[p]=coordArrayList.get(i).y;
                 p++;
             }
             return Arrays.hashCode(coordListXY);
