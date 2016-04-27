@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -80,18 +81,19 @@ public class BoxTerm extends JPanel {
         b2.addActionListener(listen2);
 
         class solverWorker extends SwingWorker<Void, Object> {
-            String solution;
+            LinkedList<Coordinate[]> solution;
 
             @Override
             protected void done() {
-                if (solution == "NO_SOLUTION") {
-                    dialog.dispose();
-                } else {
-                    panel.removeAll();
-                    panel.add(new JLabel("<html>" + solution.replaceAll("\n", "<br>") + "</html>"), BorderLayout.PAGE_START);
-                    panel.add(b2, BorderLayout.SOUTH);
-                    dialog.pack();
-                }
+                // if (solution == "NO_SOLUTION") {
+                //     dialog.dispose();
+                // } else {
+                //     panel.removeAll();
+                //     panel.add(new JLabel("<html>" + solution.replaceAll("\n", "<br>") + "</html>"), BorderLayout.PAGE_START);
+                //     panel.add(b2, BorderLayout.SOUTH);
+                //     dialog.pack();
+                // }
+                dialog.dispose();
             }
 
             @Override

@@ -6,9 +6,11 @@ import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.Stack;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -29,6 +31,8 @@ public class SpriteMap extends JPanel {
     private int tileSetNo;
     private int noOfWalls;
     private int noOfGrass;
+    private LinkedList<Coordinate[]> solution;
+    private int stageInSolution = 0;
 
     public SpriteMap(SokobanMap map, int tileSetNo) {
         panelHolder = new HashMap<Coordinate, JLabel>();

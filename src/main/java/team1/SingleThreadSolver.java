@@ -60,7 +60,7 @@ public class SingleThreadSolver implements Runnable {
                     Coordinate[] aPush = {spaceNextToBox,box.add(spaceNextToBox.reverse())};
                     if(isSafePush(aPush)){
                         validPushes.add(aPush);
-                    }                    
+                    }
                 }
             }
         }
@@ -83,10 +83,10 @@ public class SingleThreadSolver implements Runnable {
         }
         else if (aPush[1].getY()!=0){
             spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(1,0));
-            spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(-1,0));    		
+            spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(-1,0));
         }
         if (map.get(spaceRightOfPush)==SokobanObject.WALL||map.get(spaceLeftOfPush)==SokobanObject.WALL){
-            return false;    		    		
+            return false;
         }
         else return true;
     }
@@ -147,22 +147,24 @@ public class SingleThreadSolver implements Runnable {
         return allPushesString;
     }
 
-    public String levelSolution(){
+    public LinkedList<Coordinate[]> levelSolution(){
         LinkedList<Coordinate[]> pushesToSolve = new LinkedList<Coordinate[]>();
         String solution="NO_SOLUTION";
-        if(solveLevel()){
-            int currentStateIndex=seenStates.size()-1;
+
+        if (solveLevel()) {
+            int currentStateIndex = seenStates.size() - 1;
             solution="Solution: \n";
-            while (currentStateIndex>0){
+            while (currentStateIndex > 0){
                 pushesToSolve.addFirst(donePushes.get(currentStateIndex));
-                currentStateIndex=stateOrigins.get(currentStateIndex);
+                currentStateIndex = stateOrigins.get(currentStateIndex);
             }
         }
-        for (int i=0;i<pushesToSolve.size();i++){
-            solution+=(pushesToSolve.get(i)[0]+"   Direction: "+pushesToSolve.get(i)[1]+"\n");
+        for (int i = 0; i < pushesToSolve.size(); i++) {
+            solution += (pushesToSolve.get(i)[0] + "   Direction: " + pushesToSolve.get(i)[1] + "\n");
         }
+
         System.out.println(solution);
-        return solution;
+        return pushesToSolve;
     }
 
 }
