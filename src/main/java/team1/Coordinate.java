@@ -16,20 +16,18 @@ public class Coordinate implements Comparable<Coordinate>{
 		this.y = coordToCopy.getY();
 	}
 
-	public String toString(){
-		if(x==1 && y==0){
+	public String toString() {
+		if (x == 1 && y == 0) {
 			return "Right";
-		}
-		if(x==-1 && y==0){
+		} else if(x == -1 && y == 0) {
 			return "Left";
-		}
-		if(x==0 && y==1){
+		} else if(x == 0 && y == 1) {
 			return "Down";
-		}
-		if(x==0 && y==-1){
+		} else if(x == 0 && y == -1) {
 			return "Up";
-		}    	
-		return(x+","+y);
+		} else {
+            return(x + "," + y);
+        }
 	}
 
 	public int getX() {
@@ -94,9 +92,9 @@ public class Coordinate implements Comparable<Coordinate>{
 	{
 		return Arrays.hashCode(new Object[]{new Integer(x), new Integer(y)});
 	}
-	
+
 	@Override
-	public int compareTo(Coordinate coord){
-	    return (x-coord.x)*20+(y-coord.y);
+	public int compareTo(Coordinate coord) {
+	    return (x - coord.x) * 20 + (y - coord.y);
 	}
 }
