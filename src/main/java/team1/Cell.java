@@ -17,12 +17,9 @@ public class Cell extends JLabel{
     private static final long serialVersionUID = 1L;
     private SpriteMap spriteMap;
     private Coordinate position;
-    // private boolean playable;
-
 
     public Cell(Coordinate position, SpriteMap spriteMap, boolean playable) {
         super();
-        // this.playable=playable;
         this.position = position;
         this.spriteMap = spriteMap;
 
@@ -67,9 +64,8 @@ public class Cell extends JLabel{
                 spriteMap.getSokobanMap().removeLayer(position);
             }
         }
-        spriteMap.placeSprites();
-        spriteMap.getSokobanMap().clearRedoStack();
 
-        SokobanGame.updateCounters();
+        SokobanGame.redraw();
+        spriteMap.getSokobanMap().clearRedoStack();
     }
 }

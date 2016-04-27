@@ -66,10 +66,7 @@ public class SokobanGame extends JPanel {
         addKeyListener(listener);
         setFocusable(true);
 
-        // setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-
         SokobanGame.spriteMap = spriteMap;
-
 
         list = new JList<ImageIcon>(tiles);
         list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -99,7 +96,6 @@ public class SokobanGame extends JPanel {
         tilePalette.setVisible(false);
         tilePalette.setPreferredSize(new Dimension(tilePalette.getSize().width, 48));
         selectTile();
-        updateCounters();
 
         statusBarContainer = new JPanel();
         statusBar = new JLabel();
@@ -141,6 +137,7 @@ public class SokobanGame extends JPanel {
         tilePalette.setVisible(!playable);
         statusBarContainer.setVisible(playable);
         spriteMap.toggleMode();
+        redraw();
     }
 
     public static int getTileSetNo() {
@@ -157,13 +154,6 @@ public class SokobanGame extends JPanel {
 
     public static SokobanMap getSokobanMap() {
         return spriteMap.getSokobanMap();
-    }
-
-    public static void updateCounters() {
-        int boxCount = getSokobanMap().getMyState().getBoxPositions().size();
-        int goalCount = getSokobanMap().getMyState().getGoalPositions().size();
-        boxLabel.setText("Boxes: " + boxCount);
-        goalLabel.setText("Goals: " + goalCount);
     }
 
     /**
@@ -214,8 +204,13 @@ public class SokobanGame extends JPanel {
      * Updates the contents of the game window
      */
     public static void redraw() {
-        SokobanMap map = getSokobanMap();
-        statusBar.setText(Integer.toString(map.totalHistoryLength() - 1));
+        int boxCount = getSokobanMap().getMyState().getBoxPositions().size();
+        int goalCount = getSokobanMap().getMyState().getGoalPositions().size();
+        boxLabel.setText("Boxes: " + boxCount);
+        goalLabel.setText("Goals: " + goalCount);
+
+        statusBar.setText(Integer.toString(getSokobanMap().totalHistoryLength() - 1));
+
         spriteMap.placeSprites();
     }
 

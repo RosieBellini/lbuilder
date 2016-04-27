@@ -174,7 +174,7 @@ public class BoxTerm extends JPanel {
                 SokobanGame.getSpriteMap().updateMap(map);
                 SokobanGame.getSokobanMap().put(SokobanObject.PLAYER, new Coordinate(5, 5));
                 SokobanGame.getSpriteMap().forceRedraw();
-                SokobanGame.updateCounters();
+                SokobanGame.redraw();
                 frame.setSize(frame.getPreferredSize());
             }
 		});
@@ -275,10 +275,8 @@ public class BoxTerm extends JPanel {
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
         undo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanMap map = SokobanGame.getSpriteMap().getSokobanMap();
-                map.undo();
-                SokobanGame.updateCounters();
-                SokobanGame.getSpriteMap().placeSprites();
+                SokobanGame.getSokobanMap().undo();
+                SokobanGame.redraw();
             }
         });
         gameMenu.add(undo);
@@ -287,10 +285,8 @@ public class BoxTerm extends JPanel {
         redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, SHORTCUT_MASK));
         redo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanMap map = SokobanGame.getSpriteMap().getSokobanMap();
-                map.redo();
-                SokobanGame.updateCounters();
-                SokobanGame.getSpriteMap().placeSprites();
+                SokobanGame.getSokobanMap().redo();
+                SokobanGame.redraw();
             }
         });
         gameMenu.add(redo);
@@ -522,7 +518,6 @@ public class BoxTerm extends JPanel {
             SokobanGame.getSpriteMap().updateMap(map);
             lastOpenedMap = new SokobanMap(map);
             SokobanGame.redraw();
-            SokobanGame.updateCounters();
             frame.pack();
         } else if (selectReturnVal == 1) {
             try {
@@ -544,7 +539,6 @@ public class BoxTerm extends JPanel {
                 SokobanGame.getSpriteMap().updateMap(map);
                 lastOpenedMap = new SokobanMap(map);
                 SokobanGame.redraw();
-                SokobanGame.updateCounters();
                 currentLevelIndex = -1;
                 frame.pack();
             } catch (FileNotFoundException e1) {
