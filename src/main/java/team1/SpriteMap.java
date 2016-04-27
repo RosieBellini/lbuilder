@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
@@ -33,12 +34,14 @@ public class SpriteMap extends JPanel {
     private LinkedList<Coordinate[]> solution;
     private int stageInSolution = 0;
     private Coordinate boxToSolve;
+    private boolean mistakeMade;
 
     public SpriteMap(SokobanMap map, int tileSetNo) {
         panelHolder = new HashMap<Coordinate, JLabel>();
         iconMap = new HashMap<String, ImageIcon>();
         solution = new LinkedList<Coordinate[]>();
         playable = true;
+        mistakeMade = false;
         scale = 1;
         boxToSolve = new Coordinate(-2, -2);
         this.tileSetNo = tileSetNo;
@@ -50,6 +53,7 @@ public class SpriteMap extends JPanel {
 
     public void updateMap(SokobanMap map) {
         mapDrawn = false;
+        resetSolver();
         this.map = SokobanMap.shallowCopy(map, map.getMaxUndos());
         xSize = map.getXSize();
         ySize = map.getYSize();
@@ -82,9 +86,39 @@ public class SpriteMap extends JPanel {
         return map;
     }
 
-    public void placeSprites(ArrayList<Coordinate> toDraw) {
+    public void placeSprites() {
         Set<Coordinate> grassPositions = map.inaccessibleSpaces();
         boolean needNextArrow = false;
+        ArrayList<Coordinate> toDraw = new ArrayList<Coordinate>();
+
+        if (!mapDrawn) {
+            toDraw = Coordinate.allValidCoordinates(xSize, ySize);
+            resizeSprites();
+            mapDrawn = true;
+        } else {
+            toDraw.addAll(map.getChanges());
+            if (solution.size() != 0) {
+                Set<Coordinate> changedPlaces = new HashSet<Coordinate>(toDraw);
+                Coordinate playerPos = new Coordinate(-1, -1);
+                Coordinate boxPos = new Coordinate(-1, -1);
+                for (Coordinate position : changedPlaces) {
+                    SokobanObject object = map.get(position);
+                    if (object == SokobanObject.PLAYER || object == SokobanObject.PLAYER_ON_GOAL) {
+                        playerPos = position;
+                    } else if (object == SokobanObject.BOX|| object == SokobanObject.BOX_ON_GOAL) {
+                        boxPos = position;
+                    }
+                }
+
+                if (!playerPos.equals(new Coordinate(-1, -1)) && !boxPos.equals(new Coordinate(-1, -1))) {
+                    // if (!playerPos.equals(boxToSolve)) {
+                    if (!playerPos.equals(boxToSolve) || !boxPos.equals(boxToSolve.add(solution.get(stageInSolution)[1]))) {
+                        mistakeMade = true;
+                        toDraw.add(boxToSolve);
+                    }
+                }
+            }
+        }
 
         toDraw.remove(new Coordinate(-1, -1));
 
@@ -98,24 +132,22 @@ public class SpriteMap extends JPanel {
                 } else if (playable && grassPositions.contains(position)) {
                     icon = randomIcon("GRASS", noOfGrass);
                 } else if (solution.size() != 0 && position.equals(boxToSolve) && (object == SokobanObject.PLAYER || object == SokobanObject.PLAYER_ON_GOAL)) {
-                    icon = iconMap.get(object.name());
                     needNextArrow = true;
+                    icon = iconMap.get(object.name());
                 } else {
                     icon = iconMap.get(object.name());
                 }
                 panelHolder.get(position).setIcon(icon);
         }
 
-        if (needNextArrow) {
+        if (needNextArrow && !mistakeMade) {
             stageInSolution++;
             if (stageInSolution >= solution.size()) {
-                stageInSolution = 0;
-                boxToSolve = new Coordinate(-2, -2);
-                solution.clear();
+                resetSolver();
             }
         }
 
-        if (solution.size() != 0) {
+        if (solution.size() != 0 && !mistakeMade) {
             Coordinate position = solution.get(stageInSolution)[0].add(solution.get(stageInSolution)[1]);
             boxToSolve = position;
             ImageIcon icon = iconMap.get("BOX_" + solution.get(stageInSolution)[1].toString());
@@ -127,23 +159,17 @@ public class SpriteMap extends JPanel {
 
     }
 
-    public void placeSprites() {
-        ArrayList<Coordinate> toDraw = new ArrayList<Coordinate>();
-
-        if (!mapDrawn) {
-            toDraw = Coordinate.allValidCoordinates(xSize, ySize);
-            resizeSprites();
-            mapDrawn = true;
-        } else {
-            toDraw.addAll(map.getChanges());
-        }
-
-        placeSprites(toDraw);
+    private void resetSolver() {
+        stageInSolution = 0;
+        boxToSolve = new Coordinate(-2, -2);
+        solution.clear();
     }
 
     public void reset() {
+        resetSolver();
         map.reset();
         mapDrawn = false;
+        mistakeMade = false;
     }
 
     public void forceRedraw() {

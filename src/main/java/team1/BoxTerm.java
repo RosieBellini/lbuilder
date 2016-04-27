@@ -360,6 +360,7 @@ public class BoxTerm extends JPanel {
         JMenuItem assistItem = new JMenuItem("Solver");
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                SokobanGame.getSpriteMap().reset();
                 startSolver();
             }
         });
