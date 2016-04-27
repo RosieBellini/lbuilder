@@ -109,15 +109,13 @@ public class SpriteMap extends JPanel {
                     if(!playable && object.name().equals("SPACE")){
                         icon = iconMap.get("DEFAULT");
                     } else {
-                        icon=iconMap.get(object.name());
+                        icon = iconMap.get(object.name());
                     }
                     panelHolder.get(position).setIcon(icon);
                 }
             }
         }
-        if (playable) {
-            win();
-        }
+
         revalidate();
         repaint();
     }
@@ -142,12 +140,6 @@ public class SpriteMap extends JPanel {
             randomNumber="";
         }
         return iconMap.get(iconName + randomNumber);
-    }
-
-    private void win() {
-        if (map.isDone()) {
-            BoxTerm.winDialog();
-        }
     }
 
     public void loadSprites(int tileSetNo) {

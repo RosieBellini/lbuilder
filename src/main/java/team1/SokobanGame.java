@@ -189,6 +189,10 @@ public class SokobanGame extends JPanel {
 
         statusBar.setText(Integer.toString(getSokobanMap().totalHistoryLength() - 1));
 
+        if (playable && getSokobanMap().isDone()) {
+            BoxTerm.winDialog();
+        }
+
         spriteMap.placeSprites();
     }
 
