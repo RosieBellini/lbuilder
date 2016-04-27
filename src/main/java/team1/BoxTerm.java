@@ -161,12 +161,14 @@ public class BoxTerm extends JPanel {
         newMapItem.setToolTipText("Start a new map design");
 		newMapItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-                SokobanMap map = new SokobanMap(20, 20, 100);
-                SokobanGame.getSpriteMap().updateMap(map);
-                SokobanGame.getSokobanMap().put(SokobanObject.PLAYER, new Coordinate(5, 5));
-                SokobanGame.getSpriteMap().forceRedraw();
-                SokobanGame.redraw();
-                frame.setSize(frame.getPreferredSize());
+                if (!hasChanged("make a new one?")) {
+                    SokobanMap map = new SokobanMap(20, 20, 100);
+                    SokobanGame.getSpriteMap().updateMap(map);
+                    SokobanGame.getSokobanMap().put(SokobanObject.PLAYER, new Coordinate(5, 5));
+                    SokobanGame.getSpriteMap().forceRedraw();
+                    SokobanGame.redraw();
+                    frame.setSize(frame.getPreferredSize());
+                }
             }
 		});
         editMenuItems.add(newMapItem);
@@ -176,7 +178,9 @@ public class BoxTerm extends JPanel {
         openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
         openItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                openDialog();
+                if (!hasChanged("open a different one?")) {
+                    openDialog();
+                }
             }
         });
         fileMenu.add(openItem);
@@ -253,7 +257,9 @@ public class BoxTerm extends JPanel {
         quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, SHORTCUT_MASK));
         quitItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                closeRoutine();
+                if (!hasChanged("exit?")) {
+                    System.exit(0);
+                }
             }
         });
         fileMenu.add(quitItem);
@@ -546,26 +552,26 @@ public class BoxTerm extends JPanel {
         frame.pack();
     }
 
-    private static boolean checkChanges() {
+    private static boolean hasChanged(String reason) {
         SokobanMap map = SokobanGame.getSokobanMap();
-        if (SokobanGame.getSpriteMap().getPlayable()) {
-            return map.getInitialState().equals(lastOpenedMap.getInitialState());
-        } else {
-            return map.getMyState().equals(lastOpenedMap.getInitialState());
-        }
-    }
+        boolean changed;
 
-    private static void closeRoutine() {
-        if (!checkChanges()) {
-            int result = JOptionPane.showConfirmDialog(frame, "Your level has unsaved changes.\n"
-                    + "Are you sure you want to exit?", "Unsaved changes",
-                    JOptionPane.YES_NO_OPTION);
-            if (result == 0) {
-                System.exit(0);
-            }
+        if (SokobanGame.getSpriteMap().getPlayable()) {
+            changed = !map.getInitialState().equals(lastOpenedMap.getInitialState());
         } else {
-            System.exit(0);
+            changed = !map.getMyState().equals(lastOpenedMap.getInitialState());
         }
+
+        if (changed) {
+            int result = JOptionPane.showConfirmDialog(frame, "Your level has unsaved changes.\n"
+                    + "Are you sure you want to " + reason, "Unsaved changes",
+                    JOptionPane.YES_NO_OPTION);
+            if (result != 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static void main(String[] args) {
@@ -605,7 +611,9 @@ public class BoxTerm extends JPanel {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                closeRoutine();
+                if (!hasChanged("exit?")) {
+                    System.exit(0);
+                }
             }
         });
 
