@@ -425,15 +425,12 @@ public class BoxTerm extends JPanel {
 
     public static void toggleMode() {
         boolean playable = SokobanGame.getSpriteMap().getPlayable();
-        SokobanGame.toggleMode();
-        updateContextMenu();
 
         if (!playable) {
             if (SokobanGame.getSokobanMap().validate()) {
                 gameMenu.setText("Game");
                 toggleItem.setText("Start editor");
             } else {
-                playable = true;
                 JOptionPane.showMessageDialog(frame, "This level cannot be won"
                         + ".\nMake sure that there are at least as many boxes"
                         + " as goals\nand that there is at least one uncovered goal,\n"
@@ -445,6 +442,9 @@ public class BoxTerm extends JPanel {
             gameMenu.setText("Edit");
             toggleItem.setText("Start game");
         }
+
+        SokobanGame.toggleMode();
+        updateContextMenu();
     }
 
     public static void updateContextMenu() {
