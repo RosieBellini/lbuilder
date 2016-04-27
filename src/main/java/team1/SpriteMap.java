@@ -27,9 +27,8 @@ public class SpriteMap extends JPanel {
     private boolean initialised = false;
     private float scale;
     private int tileSetNo;
-
-    int noOfWalls;
-    int noOfGrass;
+    private int noOfWalls;
+    private int noOfGrass;
 
     public SpriteMap(SokobanMap map, int tileSetNo) {
         panelHolder = new HashMap<Coordinate, JLabel>();
@@ -133,7 +132,7 @@ public class SpriteMap extends JPanel {
         placeSprites();
     }
 
-    public ImageIcon randomIcon(String iconName, int iconCount) {
+    private ImageIcon randomIcon(String iconName, int iconCount) {
         if (noOfGrass==1) {
             return iconMap.get(iconName);
         }
@@ -145,7 +144,7 @@ public class SpriteMap extends JPanel {
         return iconMap.get(iconName + randomNumber);
     }
 
-    public void win() {
+    private void win() {
         if (map.isDone()) {
             BoxTerm.winDialog();
         }
@@ -205,7 +204,7 @@ public class SpriteMap extends JPanel {
         return scale;
     }
 
-    public void resizeSprites(){
+    private void resizeSprites(){
         float iconDimension = scale * 32;
         int newIconDimension = (int) iconDimension;
         for(String iconName : iconMap.keySet()) {

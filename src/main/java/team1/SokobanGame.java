@@ -153,7 +153,7 @@ public class SokobanGame extends JPanel {
      * TODO:    Only check if win conditions have been met when a box is placed
      *          on a goal rather than every time the player moves
      */
-    public static void moveWorker(KeyEvent e) {
+    private static void moveWorker(KeyEvent e) {
         if (!playable) {
             return;
         }
@@ -202,7 +202,7 @@ public class SokobanGame extends JPanel {
         list.repaint();
     }
 
-    public static void selectTile() {
+    private static void selectTile() {
 
         int selection = list.getSelectedIndex();
         switch(selection) {

@@ -124,7 +124,7 @@ public final class SaveState {
         return wPos;
     }
 
-    public void makeEmpty(Coordinate position) {
+    private void makeEmpty(Coordinate position) {
         boxPositions.remove(position);
         wallPositions.remove(position);
         goalPositions.remove(position);
@@ -142,7 +142,7 @@ public final class SaveState {
         return goalPositions;
     }
 
-    public static Set<Coordinate> symmetricDiff(Set<Coordinate> set1, Set<Coordinate> set2) {
+    private static Set<Coordinate> symmetricDiff(Set<Coordinate> set1, Set<Coordinate> set2) {
         Set<Coordinate> set1Copy = new HashSet<Coordinate>(set1);
         Set<Coordinate> set2Copy = new HashSet<Coordinate>(set2);
         set1Copy.removeAll(set2);
@@ -189,26 +189,6 @@ public final class SaveState {
             return Arrays.hashCode(coordListXY);
         }
         return Arrays.hashCode(new Object[]{wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(), goalPositions.hashCode()});
-    }
-
-    public long uniqueID(){
-        int[] fieldsx;
-        int[] fieldsy;
-        int numberOfFields=getBoxPositions().size()+1;
-        fieldsx = new int[numberOfFields];
-        fieldsy = new int[numberOfFields];
-        fieldsx[0] = getWPos().getX();
-        fieldsy[0] = getWPos().getY();
-        int i = 1;
-        for (Coordinate box : getBoxPositions()){
-            fieldsx[i]=box.getX();
-            fieldsy[i]=box.getY();
-            i++;
-        }
-        long hashCodex = (long) Arrays.hashCode(fieldsx);
-        long hashCodey = (long) Arrays.hashCode(fieldsy);
-        long uniqueID= hashCodex+hashCodey*10^10;
-        return uniqueID;
     }
 
     public boolean isSimple(){

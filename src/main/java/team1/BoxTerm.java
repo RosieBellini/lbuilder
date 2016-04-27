@@ -65,7 +65,7 @@ public class BoxTerm extends JPanel {
     private static int currentLevelIndex = 0;
     private static SokobanMap lastOpenedMap;
 
-    public static void startSolver() {
+    private static void startSolver() {
         final JDialog dialog = new JDialog();
         JPanel panel = new JPanel(new BorderLayout(5, 5));
 
@@ -389,7 +389,7 @@ public class BoxTerm extends JPanel {
         helpMenu.add(aboutItem);
     }
 
-    public static void changeMagnification(boolean getBigger) {
+    private static void changeMagnification(boolean getBigger) {
         SpriteMap spriteMap = SokobanGame.getSpriteMap();
         float scale = spriteMap.getScale();
 
@@ -411,7 +411,7 @@ public class BoxTerm extends JPanel {
         spriteMap.update();
     }
 
-    public static void toggleMode() {
+    private static void toggleMode() {
         boolean playable = SokobanGame.getSpriteMap().getPlayable();
 
         if (!playable) {
@@ -435,7 +435,7 @@ public class BoxTerm extends JPanel {
         updateContextMenu();
     }
 
-    public static void updateContextMenu() {
+    private static void updateContextMenu() {
         boolean playable = SokobanGame.getSpriteMap().getPlayable();
 
         for (JMenuItem item : gameMenuItems) {

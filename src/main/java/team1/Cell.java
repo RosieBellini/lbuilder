@@ -55,7 +55,7 @@ public class Cell extends JLabel{
         });
     }
 
-    public void modifyCell(MouseEvent me) {
+    private void modifyCell(MouseEvent me) {
         spriteMap.getSokobanMap().storeState();
         if (me.getButton() == MouseEvent.BUTTON1) {
             spriteMap.getSokobanMap().put(SokobanGame.getPaletteState(), position);

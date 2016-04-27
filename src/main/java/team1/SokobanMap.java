@@ -155,7 +155,7 @@ public class SokobanMap {
         clearRedoStack();
     }
 
-    public int historyLength() {
+    private int historyLength() {
         return history.size();
     }
 
