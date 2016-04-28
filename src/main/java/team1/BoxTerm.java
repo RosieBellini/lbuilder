@@ -69,7 +69,7 @@ public class BoxTerm extends JPanel {
     private static SokobanMap lastOpenedMap;
 
     private static void startSolver() {
-        solving=true;
+        solving = true;
         final JDialog dialog = new JDialog();
         JPanel panel = new JPanel(new BorderLayout(5, 5));
 
@@ -79,11 +79,10 @@ public class BoxTerm extends JPanel {
             @Override
             protected void done() {
                 if (solution.size() != 0) {
-                    solving=false;
+                    solving = false;
                     SokobanGame.getSpriteMap().reset();
-                    SokobanGame.redraw();
                     SokobanGame.getSpriteMap().setSolution(solution);
-                    SokobanGame.getSpriteMap().placeSprites();
+                    SokobanGame.redraw();
                 }
 
                 dialog.dispose();
@@ -91,7 +90,7 @@ public class BoxTerm extends JPanel {
 
             @Override
             protected Void doInBackground() throws Exception {
-                solving=true;
+                solving = true;
                 SokobanMap mapToSolve = new SokobanMap(SokobanGame.getSokobanMap());
                 solver = new SingleThreadSolver(mapToSolve);
                 solution = solver.levelSolution();
@@ -131,7 +130,7 @@ public class BoxTerm extends JPanel {
 
     private static void makeMenuBar(JFrame frame) {
         final int SHORTCUT_MASK =
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+            Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
         menubar = new JMenuBar();
         frame.setJMenuBar(menubar);
@@ -197,9 +196,9 @@ public class BoxTerm extends JPanel {
                             + "playable.\nContinue?", "Save level",
                             JOptionPane.YES_NO_OPTION);
                     switch (result) {
-                    case JOptionPane.NO_OPTION:
-                    case JOptionPane.CLOSED_OPTION:
-                        return;
+                        case JOptionPane.NO_OPTION:
+                        case JOptionPane.CLOSED_OPTION:
+                            return;
                     }
                 }
 
@@ -210,12 +209,12 @@ public class BoxTerm extends JPanel {
                         if (file.exists() && getDialogType() == SAVE_DIALOG) {
                             int result = JOptionPane.showConfirmDialog(this, file + " already exists. Overwrite it?", "Overwrite file", JOptionPane.YES_NO_OPTION);
                             switch (result) {
-                            case JOptionPane.YES_OPTION:
-                                super.approveSelection();
-                                return;
-                            case JOptionPane.NO_OPTION:
-                            case JOptionPane.CLOSED_OPTION:
-                                return;
+                                case JOptionPane.YES_OPTION:
+                                    super.approveSelection();
+                                    return;
+                                case JOptionPane.NO_OPTION:
+                                case JOptionPane.CLOSED_OPTION:
+                                    return;
                             }
                         }
                         super.approveSelection();
@@ -296,9 +295,9 @@ public class BoxTerm extends JPanel {
                         + " you want to crop?", "Crop",
                         JOptionPane.YES_NO_OPTION);
                 switch (result) {
-                case JOptionPane.NO_OPTION:
-                case JOptionPane.CLOSED_OPTION:
-                    return;
+                    case JOptionPane.NO_OPTION:
+                    case JOptionPane.CLOSED_OPTION:
+                        return;
                 }
                 SokobanGame.getSpriteMap().updateMap(SokobanMap.crop(SokobanGame.getSokobanMap()));
                 frame.setSize(frame.getPreferredSize());
@@ -416,19 +415,6 @@ public class BoxTerm extends JPanel {
         spriteMap.loadSprites();
     }
 
-    private static boolean confirmCancelSolver(String thingTheyWannaDo){
-        int result = JOptionPane.showConfirmDialog(frame, "The assistant is currently attempting to find a solution for this level.\n"
-                + "Would you like to cancel the assistant in order to "+thingTheyWannaDo+"?",
-                "Cancel Solving Level?",
-                JOptionPane.YES_NO_OPTION);
-        if (result == 0) {
-            solver.stopSolving();
-            solving=false;
-            return true;
-        }
-        return false;        
-    }
-
     private static void toggleMode() {
         boolean playable = SokobanGame.getSpriteMap().getPlayable();
 
@@ -478,8 +464,7 @@ public class BoxTerm extends JPanel {
 
     public static void winDialog() {
         JButton button1 = new JButton("Next level");
-        button1.addActionListener(new ActionListener()
-        {
+        button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.getWindowAncestor(button1).dispose();
@@ -494,11 +479,9 @@ public class BoxTerm extends JPanel {
         });
 
         JButton button2 = new JButton("Change level");
-        button2.addActionListener(new ActionListener()
-        {
+        button2.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 SwingUtilities.getWindowAncestor(button2).dispose();
                 openDialog();
             }
@@ -543,9 +526,9 @@ public class BoxTerm extends JPanel {
                 if (!map.validate()) {
                     JOptionPane.showMessageDialog(frame,
                             "This level cannot be beaten.\n You may want "
-                                    + "to load it in the level editor and correct "
-                                    + "it.", "Invalid level",
-                                    JOptionPane.WARNING_MESSAGE);
+                            + "to load it in the level editor and correct "
+                            + "it.", "Invalid level",
+                            JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 SokobanGame.getSpriteMap().updateMap(map);
@@ -585,6 +568,19 @@ public class BoxTerm extends JPanel {
             }
         }
 
+        return false;
+    }
+
+    private static boolean confirmCancelSolver(String reason) {
+        int result = JOptionPane.showConfirmDialog(frame, "The assistant is "
+                + "trying to find a solution for this level.\nWould you like "
+                + "to cancel it in order to " + reason + "?",
+                "Cancel solving level", JOptionPane.YES_NO_OPTION);
+        if (result == 0) {
+            solver.stopSolving();
+            solving = false;
+            return true;
+        }
         return false;
     }
 
