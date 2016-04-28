@@ -2,24 +2,18 @@ BOX
 Asset
 Barrel
 Bin
-Block
 Burden
-Boku no
 Cache
-Canister
-Capsule
 Cargo
 Carton
-Case
+# Case
 Cask
 Casket
 Chest
-Coffer
+# Coffer
 Commodity
 Consignment
 Crate
-Cube
-Cuboid
 Depository
 Depot
 Distribution Centre
@@ -27,25 +21,18 @@ Drum
 Firkin
 Flotsam and Jetsam
 Freight
-Generic Product
 Goods
-Hamper
 Hoard
 Hogshead
 Inventory
 Keg
 Merchandise
-Mixed Goods
 Package
-Parcel
 Payload
 Portmanteau
 Produce
-Product
 Receptacle
-Rectangle
 Repository
-Resource
 Stock
 Stockpile
 Stockroom
@@ -54,55 +41,40 @@ Store
 Storehouse
 Storage
 Supply
-Sundry Item
 Treasury
 Trunk
-Tub
 Vessel
-Wardrobe
 Warehouse
 Wares
 PUSH
-Agent
-Agitator
 Advancer
 Antagonist
 Assassin
 Assaulter
-Attacker
+# Attacker
 Blaster
-Bumper
+# Bumper
 Charger
 Crusher
-Combobulator
 Cowboy
-Daibouken
-Destroyer
-Disruptor
+# Destroyer
 Driver
 Drudge
-Emissary
 Exerter
-Explosion
-Fantasy
 Fighter II
-Forcer
+# Forcer
 General
 Gopher
 Grunt
-Helper
 Hero
 Hitman
 Jolter
 Knight
 Labourer
-Lifter
 Maneuverer
 Mover
-Negotiator
 Nudger
 Organiser
-Operator
 Peasant
 Peon
 Poker
@@ -110,8 +82,6 @@ President
 Princess
 Prodder
 Professional
-Pusher
-Quest
 Relocator
 Saga
 Scoundrel
@@ -122,11 +92,10 @@ Shover
 Slayer
 Slider
 Sorter
-Strainer
+# Strainer
 Strategist
 Squire
 Terminator
-Time
 Thruster
 Villain
 Warrior
