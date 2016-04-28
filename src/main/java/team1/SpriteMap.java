@@ -84,7 +84,6 @@ public class SpriteMap extends JPanel {
 
     public void placeSprites() {
         Set<Coordinate> grassPositions = map.inaccessibleSpaces();
-        // boolean needNextArrow = false;
         ArrayList<Coordinate> toDraw = new ArrayList<Coordinate>();
 
         if (!mapDrawn) {
@@ -122,11 +121,20 @@ public class SpriteMap extends JPanel {
         System.out.println("BOXES: " + map.getState().getBoxPositions());
         System.out.println("PLAYER: " + map.getState().getWPos() + "\n");
 
+        System.out.println("Key found: " + solution.containsKey(map.getState()));
+
         for (SaveState state : solution.keySet()) {
             if (map.getState().equals(state)) {
                 System.out.println("matching state found");
                 Coordinate direction = solution.get(state)[1];
                 Coordinate position = solution.get(state)[0].add(direction);
+                Set<Coordinate> otherBoxes = new HashSet<Coordinate>(map.getMyState().getBoxPositions());
+                otherBoxes.remove(position);
+
+                for (Coordinate otherBox : otherBoxes) {
+                    panelHolder.get(otherBox).setIcon(iconMap.get("BOX"));
+                }
+
                 ImageIcon icon = iconMap.get("BOX_" + direction.toString());
                 panelHolder.get(position).setIcon(icon);
             }
