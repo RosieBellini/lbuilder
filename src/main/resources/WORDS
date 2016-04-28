@@ -10,11 +10,11 @@ Canister
 Capsule
 Cargo
 Carton
-Case
+# Case
 Cask
-Casket
+# Casket
 Chest
-Coffer
+# Coffer
 Commodity
 Consignment
 Crate
@@ -69,15 +69,15 @@ Advancer
 Antagonist
 Assassin
 Assaulter
-Attacker
+# Attacker
 Blaster
-Bumper
+# Bumper
 Charger
 Crusher
 Combobulator
 Cowboy
 Daibouken
-Destroyer
+# Destroyer
 Disruptor
 Driver
 Drudge
@@ -86,7 +86,7 @@ Exerter
 Explosion
 Fantasy
 Fighter II
-Forcer
+# Forcer
 General
 Gopher
 Grunt
@@ -122,7 +122,7 @@ Shover
 Slayer
 Slider
 Sorter
-Strainer
+# Strainer
 Strategist
 Squire
 Terminator
