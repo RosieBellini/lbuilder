@@ -234,10 +234,11 @@ public class SokobanMap {
         return mapLine;
     }
 
-    public Set<Coordinate> getChanges() {
+    public Set<Coordinate> tilesToRedraw(boolean playable) {
         Set<Coordinate> changedPlaces = new HashSet<Coordinate>();
         SaveState[] stateArray = new SaveState[maxUndos];
         history.toArray(stateArray);
+
         if (history.size() < 2 && redoStack.size() == 0) {
             return changedPlaces;
         }
@@ -249,7 +250,21 @@ public class SokobanMap {
             lastState = stateArray[history.size() - 2];
         }
 
-        return getState().compareStates(lastState);
+        changedPlaces.add(getState().getWPos());
+        changedPlaces.add(lastState.getWPos());
+
+        changedPlaces.addAll(getState().getBoxPositions());
+        changedPlaces.addAll(lastState.getBoxPositions());
+
+        if (!playable) {
+            changedPlaces.addAll(getState().getWallPositions());
+            changedPlaces.addAll(lastState.getWallPositions());
+
+            changedPlaces.addAll(getState().getGoalPositions());
+            changedPlaces.addAll(lastState.getGoalPositions());
+        }
+
+        return changedPlaces;
     }
 
     /**

@@ -91,8 +91,7 @@ public class SpriteMap extends JPanel {
             resizeSprites();
             mapDrawn = true;
         } else {
-            toDraw.addAll(map.getChanges());
-            toDraw.addAll(map.getState().getBoxPositions());
+            toDraw.addAll(map.tilesToRedraw(playable));
         }
 
         toDraw.remove(new Coordinate(-1, -1));

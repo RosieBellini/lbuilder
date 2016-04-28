@@ -149,29 +149,6 @@ public final class SaveState {
         return goalPositions;
     }
 
-    private static Set<Coordinate> symmetricDiff(Set<Coordinate> set1, Set<Coordinate> set2) {
-        Set<Coordinate> set1Copy = new HashSet<Coordinate>(set1);
-        Set<Coordinate> set2Copy = new HashSet<Coordinate>(set2);
-        set1Copy.removeAll(set2);
-        set2Copy.removeAll(set1);
-        Set<Coordinate> differences = new HashSet<Coordinate>();
-        differences.addAll(set1Copy);
-        differences.addAll(set2Copy);
-        return differences;
-    }
-
-    public Set<Coordinate> compareStates(SaveState someState) {
-        Set<Coordinate> changedPlaces = new HashSet<Coordinate>();
-        if (!wPos.equals(someState.getWPos())) {
-            changedPlaces.add(wPos);
-            changedPlaces.add(someState.getWPos());
-        }
-        changedPlaces.addAll(symmetricDiff(boxPositions, someState.getBoxPositions()));
-        changedPlaces.addAll(symmetricDiff(wallPositions, someState.getWallPositions()));
-        changedPlaces.addAll(symmetricDiff(goalPositions, someState.getGoalPositions()));
-        return changedPlaces;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
