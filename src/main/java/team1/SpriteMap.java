@@ -122,18 +122,13 @@ public class SpriteMap extends JPanel {
         System.out.println("BOXES: " + map.getSimpleState().getBoxPositions());
         System.out.println("PLAYER: " + map.getSimpleState().getWPos() + "\n");
 
-        System.out.println("Key found: " + solution.containsKey(map.getSimpleState()));
+        System.out.println("\nKey found: " + solution.containsKey(map.getSimpleState()) + "\n=============");
 
-        for (SaveState state : solution.keySet()) {
-            if (map.getSimpleState().equals(state)) {
-                System.out.println("matching state found");
-                System.out.println("solution state hashcode: " + state.hashCode());
-                System.out.println("game state hashcode: " + map.getSimpleState().hashCode());
-                Coordinate direction = solution.get(state)[1];
-                Coordinate position = solution.get(state)[0].add(direction);
-                ImageIcon icon = iconMap.get(map.get(position).name()+"_" + direction.toString());
-                panelHolder.get(position).setIcon(icon);
-            }
+        if (solution.containsKey(map.getSimpleState())) {
+            Coordinate direction = solution.get(map.getSimpleState())[1];
+            Coordinate position = solution.get(map.getSimpleState())[0].add(direction);
+            ImageIcon icon = iconMap.get(map.get(position).name() + "_" + direction.toString());
+            panelHolder.get(position).setIcon(icon);
         }
     }
 

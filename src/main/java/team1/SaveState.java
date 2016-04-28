@@ -172,29 +172,37 @@ public final class SaveState {
         return changedPlaces;
     }
 
-    public boolean equals(SaveState someState) {
-        if (simpleState) {
-            return this.hashCode() == (someState.hashCode());
+    @Override
+    public boolean equals(Object obj) {
+        // if (simpleState) {
+        if (obj == null) {
+            return false;
+        } else if (!(obj instanceof SaveState)) {
+            return false;
+        } else {
+            return this.hashCode() == obj.hashCode();
         }
+        // }
 
-        return wPos.equals(someState.getWPos())
-                && boxPositions.equals(someState.getBoxPositions())
-                && wallPositions.equals(someState.getWallPositions())
-                && goalPositions.equals(someState.getGoalPositions());
+        // return wPos.equals(someState.getWPos())
+        //         && boxPositions.equals(someState.getBoxPositions())
+        //         && wallPositions.equals(someState.getWallPositions())
+        //         && goalPositions.equals(someState.getGoalPositions());
     }
 
-    @Override public int hashCode(){
-        if (simpleState){
+    @Override
+    public int hashCode() {
+        if (simpleState) {
             ArrayList<Coordinate> coordArrayList = new ArrayList<Coordinate>();
             coordArrayList.addAll(boxPositions);
             Collections.sort(coordArrayList);
             coordArrayList.add(wPos.mult(-1));
             int[] coordListXY = new int[coordArrayList.size()*2];
-            int p=0;
-            for (int i=0;i<coordArrayList.size();i++){
-                coordListXY[p]=coordArrayList.get(i).x;
+            int p = 0;
+            for (int i = 0; i < coordArrayList.size(); i++) {
+                coordListXY[p] = coordArrayList.get(i).x;
                 p++;
-                coordListXY[p]=coordArrayList.get(i).y;
+                coordListXY[p] = coordArrayList.get(i).y;
                 p++;
             }
             return Arrays.hashCode(coordListXY);
@@ -202,7 +210,7 @@ public final class SaveState {
         return Arrays.hashCode(new Object[]{wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(), goalPositions.hashCode()});
     }
 
-    public boolean isSimple(){
+    public boolean isSimple() {
         return simpleState;
     }
 }
