@@ -68,7 +68,7 @@ public class BoxTerm extends JPanel {
     private static SokobanMap lastOpenedMap;
 
     private static void startSolver() {
-        final JDialog dialog = new JDialog();
+        JDialog dialog = new JDialog(frame, "Solver", true);
         JPanel panel = new JPanel(new BorderLayout(5, 5));
 
         class solverWorker extends SwingWorker<Void, Object> {
@@ -78,9 +78,8 @@ public class BoxTerm extends JPanel {
             protected void done() {
                 if (solution.size() != 0) {
                     SokobanGame.getSpriteMap().reset();
-                    SokobanGame.redraw();
                     SokobanGame.getSpriteMap().setSolution(solution);
-                    SokobanGame.getSpriteMap().placeSprites();
+                    SokobanGame.redraw();
                 }
 
                 dialog.dispose();
@@ -114,15 +113,15 @@ public class BoxTerm extends JPanel {
         panel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 
         dialog.getContentPane().add(panel);
-        dialog.setTitle("Solver");
         dialog.setResizable(false);
         dialog.pack();
         dialog.setSize(200, dialog.getHeight());
         dialog.setLocationRelativeTo(frame);
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        dialog.setVisible(true);
 
         (new solverWorker()).execute();
+
+        dialog.setVisible(true);
     }
 
     private static void makeMenuBar(JFrame frame) {
@@ -356,7 +355,11 @@ public class BoxTerm extends JPanel {
         JMenuItem assistItem = new JMenuItem("Solver");
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                startSolver();
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        startSolver();
+                    }
+                });
             }
         });
         gameMenuItems.add(assistItem);
