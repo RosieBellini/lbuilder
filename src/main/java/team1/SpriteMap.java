@@ -34,16 +34,16 @@ public class SpriteMap extends JPanel {
     private LinkedList<Coordinate[]> solution;
     private int stageInSolution = 0;
     private Coordinate boxToSolve;
-    private boolean mistakeMade;
+    private Set<Coordinate> mistakePlace;
 
     public SpriteMap(SokobanMap map, int tileSetNo) {
         panelHolder = new HashMap<Coordinate, JLabel>();
         iconMap = new HashMap<String, ImageIcon>();
         solution = new LinkedList<Coordinate[]>();
         playable = true;
-        mistakeMade = false;
         scale = 1;
         boxToSolve = new Coordinate(-2, -2);
+        mistakePlace = new HashSet<Coordinate>();
         this.tileSetNo = tileSetNo;
         this.updateMap(map);
         loadSprites();
@@ -111,9 +111,8 @@ public class SpriteMap extends JPanel {
                 }
 
                 if (!playerPos.equals(new Coordinate(-1, -1)) && !boxPos.equals(new Coordinate(-1, -1))) {
-                    // if (!playerPos.equals(boxToSolve)) {
                     if (!playerPos.equals(boxToSolve) || !boxPos.equals(boxToSolve.add(solution.get(stageInSolution)[1]))) {
-                        mistakeMade = true;
+                        mistakePlace = changedPlaces;
                         toDraw.add(boxToSolve);
                     }
                 }
@@ -140,14 +139,14 @@ public class SpriteMap extends JPanel {
                 panelHolder.get(position).setIcon(icon);
         }
 
-        if (needNextArrow && !mistakeMade) {
+        if (needNextArrow && mistakePlace.size() == 0) {
             stageInSolution++;
             if (stageInSolution >= solution.size()) {
                 resetSolver();
             }
         }
 
-        if (solution.size() != 0 && !mistakeMade) {
+        if (solution.size() != 0 && mistakePlace.size() == 0) {
             Coordinate position = solution.get(stageInSolution)[0].add(solution.get(stageInSolution)[1]);
             boxToSolve = position;
             ImageIcon icon = iconMap.get("BOX_" + solution.get(stageInSolution)[1].toString());
@@ -169,7 +168,7 @@ public class SpriteMap extends JPanel {
         resetSolver();
         map.reset();
         mapDrawn = false;
-        mistakeMade = false;
+        mistakePlace.clear();
     }
 
     public void forceRedraw() {
@@ -250,6 +249,25 @@ public class SpriteMap extends JPanel {
 
     public void setSolution(LinkedList<Coordinate[]> solution) {
         this.solution = solution;
+    }
+
+    public void nextSolutionStep() {
+        if (solution.size() > 0) {
+            stageInSolution++;
+
+            if (stageInSolution >= solution.size()) {
+                resetSolver();
+            }
+        }
+    }
+
+    public void lastSolutionStep() {
+        if (solution.size() > 0) {
+            stageInSolution--;
+            if (stageInSolution < 0) {
+                resetSolver();
+            }
+        }
     }
 
     private void resizeSprites(){

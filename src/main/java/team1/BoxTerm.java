@@ -263,6 +263,7 @@ public class BoxTerm extends JPanel {
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
         undo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                SokobanGame.getSpriteMap().lastSolutionStep();
                 SokobanGame.getSokobanMap().undo();
                 SokobanGame.redraw();
             }
@@ -273,6 +274,7 @@ public class BoxTerm extends JPanel {
         redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, SHORTCUT_MASK));
         redo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                SokobanGame.getSpriteMap().nextSolutionStep();
                 SokobanGame.getSokobanMap().redo();
                 SokobanGame.redraw();
             }
