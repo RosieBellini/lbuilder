@@ -221,10 +221,10 @@ public class SpriteMap extends JPanel {
         }
     }
 
-    @Override public Dimension getPreferredSize(){
+    @Override
+    public Dimension getPreferredSize() {
         float prefWidth = 32*scale*xSize;
         float prefHeight = 32*scale*ySize;
         return new Dimension((int) prefWidth,(int) prefHeight);
     }
-
 }
