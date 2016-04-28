@@ -339,6 +339,7 @@ public class BoxTerm extends JPanel {
         viewMenu.add(tileItem);
 
         JMenuItem magnifyItem = new JMenuItem("Increase Magnification");
+        magnifyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, SHORTCUT_MASK));
         magnifyItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 changeMagnification(true);
@@ -348,6 +349,7 @@ public class BoxTerm extends JPanel {
         viewMenu.add(magnifyItem);
 
         JMenuItem deMagnifyItem = new JMenuItem("Decrease Magnification");
+        deMagnifyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, SHORTCUT_MASK));
         deMagnifyItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 changeMagnification(false);
