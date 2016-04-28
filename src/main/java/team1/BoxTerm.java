@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -569,7 +570,6 @@ public class BoxTerm extends JPanel {
     public static void main(String[] args) {
         try {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Test");
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         }
         catch(ClassNotFoundException e) {
@@ -585,7 +585,28 @@ public class BoxTerm extends JPanel {
             System.out.println("UnsupportedLookAndFeelException: " + e.getMessage());
         }
 
-        frame = new JFrame("Box Terminator");
+        ArrayList<String> boxWords = new ArrayList<String>();
+        ArrayList<String> pushWords = new ArrayList<String>();
+        ArrayList<String> activeDictionary = boxWords;
+        InputStream wordList = BoxTerm.class.getResourceAsStream("/WORDS");
+        Scanner wordScanner = new Scanner(wordList);
+        while (wordScanner.hasNextLine()) {
+            String line = wordScanner.nextLine();
+            if (line.equals("BOX")) {
+                continue;
+            } else if (line.equals("PUSH")) {
+                activeDictionary = pushWords;
+            } else {
+                activeDictionary.add(line);
+            }
+        }
+        wordScanner.close();
+        Random randomGenerator = new Random();
+        int index1 = randomGenerator.nextInt(boxWords.size());
+        int index2 = randomGenerator.nextInt(pushWords.size());
+        String programName = boxWords.get(index1) + " " + pushWords.get(index2);
+
+        frame = new JFrame(programName);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         getBuiltinLevels();
