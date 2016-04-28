@@ -5,7 +5,6 @@ import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -30,8 +29,8 @@ public class SpriteMap extends JPanel {
     private int noOfWalls;
     private int noOfGrass;
     private HashMap<SaveState, Coordinate[]> solution;
-    private Set<Coordinate> mistakePlace;
     private int iconSize;
+    private Random random;
 
     public SpriteMap(SokobanMap map, int tileSetNo) {
         panelHolder = new HashMap<Coordinate, JLabel>();
@@ -39,7 +38,6 @@ public class SpriteMap extends JPanel {
         solution = new HashMap<SaveState, Coordinate[]>();
         playable = true;
         scale = 1;
-        mistakePlace = new HashSet<Coordinate>();
         this.tileSetNo = tileSetNo;
         this.updateMap(map);
         loadSprites();
@@ -51,6 +49,7 @@ public class SpriteMap extends JPanel {
         mapDrawn = false;
         resetSolver();
         this.map = SokobanMap.shallowCopy(map, map.getMaxUndos());
+        random = new Random(this.map.hashCode());
         xSize = map.getXSize();
         ySize = map.getYSize();
         setLayout(new GridLayout(ySize, xSize));
@@ -130,13 +129,14 @@ public class SpriteMap extends JPanel {
 
     public void reset() {
         resetSolver();
+        random = new Random(map.hashCode());
         map.reset();
         mapDrawn = false;
-        mistakePlace.clear();
     }
 
     public void forceRedraw() {
         mapDrawn = false;
+        random = new Random(map.hashCode());
         placeSprites();
     }
 
@@ -145,8 +145,7 @@ public class SpriteMap extends JPanel {
             return iconMap.get(iconName);
         }
 
-        Random r = new Random();
-        String randomNumber = Integer.toString(r.nextInt(iconCount) + 1);
+        String randomNumber = Integer.toString(random.nextInt(iconCount) + 1);
         if (randomNumber.equals("1")) {
             randomNumber="";
         }
