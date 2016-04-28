@@ -88,7 +88,6 @@ public class SpriteMap extends JPanel {
 
         if (!mapDrawn) {
             toDraw = Coordinate.allValidCoordinates(xSize, ySize);
-            resizeSprites();
             mapDrawn = true;
         } else {
             toDraw.addAll(map.tilesToRedraw(playable));
@@ -117,6 +116,8 @@ public class SpriteMap extends JPanel {
             ImageIcon icon = iconMap.get(map.get(position).name() + "_" + direction.toString());
             panelHolder.get(position).setIcon(icon);
         }
+
+        repaint();
     }
 
     public void resetSolver() {
@@ -170,6 +171,8 @@ public class SpriteMap extends JPanel {
         }
 
         unscaledIconMap = new HashMap<String, ImageIcon>(iconMap);
+        resizeSprites();
+
         mapDrawn = false;
         placeSprites();
     }
