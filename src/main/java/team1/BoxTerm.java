@@ -477,6 +477,9 @@ public class BoxTerm extends JPanel {
     }
 
     public static void winDialog() {
+        //You don't need the solver anymore if you won the level right?
+        solver.stopSolving();
+        solving=false;
         JButton button1 = new JButton("Next level");
         button1.addActionListener(new ActionListener()
         {
