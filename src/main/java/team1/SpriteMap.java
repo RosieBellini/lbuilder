@@ -152,6 +152,7 @@ public class SpriteMap extends JPanel {
     public void loadSprites() {
         String tilesetpath = "/tileset0" + tileSetNo + "/";
         ArrayList<String> iconNames = new ArrayList<String>(Arrays.asList("SPACE", "GOAL", "BOX", "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL", "GRASS", "WALL", "DEFAULT", "DEFAULT_HOVER", "BOX_UP", "BOX_DOWN", "BOX_LEFT", "BOX_RIGHT","BOX_ON_GOAL_UP","BOX_ON_GOAL_RIGHT","BOX_ON_GOAL_DOWN","BOX_ON_GOAL_LEFT"));
+        iconMap.clear();
         noOfWalls = 1;
         noOfGrass = 1;
 
