@@ -466,6 +466,7 @@ public class BoxTerm extends JPanel {
                         currentLevelIndex++;
                         InputStream level = BoxTerm.class.getResourceAsStream("/levels/" + levels.get(currentLevelIndex));
                         SokobanMap map = SokobanMap.importLevel(level);
+                        lastOpenedMap = new SokobanMap(map);
                         SokobanGame.getSpriteMap().updateMap(map);
                         SokobanGame.redraw();
                         frame.pack();
