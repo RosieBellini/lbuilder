@@ -18,8 +18,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -71,7 +71,7 @@ public class BoxTerm extends JPanel {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
 
         class solverWorker extends SwingWorker<Void, Object> {
-            LinkedList<Coordinate[]> solution;
+            HashMap<SaveState, Coordinate[]> solution;
 
             @Override
             protected void done() {
@@ -264,7 +264,6 @@ public class BoxTerm extends JPanel {
         undo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SokobanGame.getSokobanMap().undo();
-                SokobanGame.getSpriteMap().lastSolutionStep();
                 SokobanGame.redraw();
             }
         });
@@ -275,7 +274,6 @@ public class BoxTerm extends JPanel {
         redo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SokobanGame.getSokobanMap().redo();
-                // SokobanGame.getSpriteMap().nextSolutionStep();
                 SokobanGame.redraw();
             }
         });
@@ -418,6 +416,7 @@ public class BoxTerm extends JPanel {
             if (SokobanGame.getSokobanMap().validate()) {
                 gameMenu.setText("Game");
                 toggleItem.setText("Start editor");
+                game.requestFocusInWindow();
             } else {
                 JOptionPane.showMessageDialog(frame, "This level cannot be won"
                         + ".\nMake sure that there are at least as many boxes"

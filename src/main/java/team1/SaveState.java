@@ -166,6 +166,10 @@ public final class SaveState {
     }
 
     public boolean equals(SaveState someState) {
+        if (simpleState) {
+            return this.hashCode() == (someState.hashCode());
+        }
+
         return wPos.equals(someState.getWPos())
                 && boxPositions.equals(someState.getBoxPositions())
                 && wallPositions.equals(someState.getWallPositions())

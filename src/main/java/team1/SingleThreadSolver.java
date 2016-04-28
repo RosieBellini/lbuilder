@@ -1,6 +1,7 @@
 package team1;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -147,24 +148,28 @@ public class SingleThreadSolver implements Runnable {
         return allPushesString;
     }
 
-    public LinkedList<Coordinate[]> levelSolution(){
+    public HashMap<SaveState, Coordinate[]> levelSolution(){
         LinkedList<Coordinate[]> pushesToSolve = new LinkedList<Coordinate[]>();
-        String solution="NO_SOLUTION";
+        LinkedList<SaveState> statesToSolve = new LinkedList<SaveState>();
+        HashMap<SaveState, Coordinate[]> solution = new HashMap<SaveState, Coordinate[]>();
+        String solutionString = "NO_SOLUTION";
 
         if (solveLevel()) {
             int currentStateIndex = seenStates.size() - 1;
-            solution="Solution: \n";
+            solutionString="Solution: \n";
             while (currentStateIndex > 0){
                 pushesToSolve.addFirst(donePushes.get(currentStateIndex));
                 currentStateIndex = stateOrigins.get(currentStateIndex);
+                statesToSolve.addFirst(seenStates.get(currentStateIndex));
             }
         }
         for (int i = 0; i < pushesToSolve.size(); i++) {
-            solution += (pushesToSolve.get(i)[0] + "   Direction: " + pushesToSolve.get(i)[1] + "\n");
+            solutionString += (pushesToSolve.get(i)[0] + "   Direction: " + pushesToSolve.get(i)[1] + "\n");
+            solution.put(statesToSolve.get(i), new Coordinate[]{ pushesToSolve.get(i)[0], pushesToSolve.get(i)[1] });
         }
 
-        System.out.println(solution);
-        return pushesToSolve;
+        System.out.println(solutionString);
+        return solution;
     }
 
 }
