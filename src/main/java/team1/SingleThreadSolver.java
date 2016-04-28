@@ -11,10 +11,10 @@ public class SingleThreadSolver implements Runnable {
     private SokobanMap map;
     private List<SaveState> seenStates;
     private Set<Integer> seenStatesValues;
-    private Set<String> seenStateStrings;
     private List<Integer> stateOrigins;
     private List<Coordinate[]> donePushes;
     private boolean solving;
+    private boolean stopped;
     private int triedPushes;
 
     public SingleThreadSolver(SokobanMap map){
@@ -23,8 +23,6 @@ public class SingleThreadSolver implements Runnable {
         seenStates.add(map.getSimpleState());
         seenStatesValues = new HashSet<Integer>();
         seenStatesValues.add(map.getSimpleState().hashCode());
-        seenStateStrings = new HashSet<String>();
-        seenStateStrings.add(map.toString());
         stateOrigins = new ArrayList<Integer>();
         stateOrigins.add(-1);
         donePushes = new ArrayList<Coordinate[]>();
@@ -98,13 +96,9 @@ public class SingleThreadSolver implements Runnable {
         boolean isDone = map.isDone();
         SaveState possibleNewState = new SaveState(map.getSimpleState());
         int newStateHashCode = possibleNewState.hashCode();
-//        		String newStateString = map.toString();
-        if (!(seenStatesValues.contains(newStateHashCode)
-//                				&&seenStates.contains(possibleNewState)
-                )){
+        if (!seenStatesValues.contains(newStateHashCode)){
             seenStates.add(possibleNewState);
             seenStatesValues.add(newStateHashCode);
-            //			seenStateStrings.add(newStateString);
             stateOrigins.add(stateIndex);
             donePushes.add(aPush);
         }
@@ -130,7 +124,7 @@ public class SingleThreadSolver implements Runnable {
                     solved=true;
                     break;
                 }
-                if(!solving){
+                if(!solving || stopped){
                     break;
                 }
             }
@@ -167,8 +161,10 @@ public class SingleThreadSolver implements Runnable {
             solutionString += (pushesToSolve.get(i)[0] + "   Direction: " + pushesToSolve.get(i)[1] + "\n");
             solution.put(statesToSolve.get(i), new Coordinate[]{ pushesToSolve.get(i)[0], pushesToSolve.get(i)[1] });
         }
-
         System.out.println(solutionString);
+        if(stopped){
+            return null;
+        }
         return solution;
     }
 
