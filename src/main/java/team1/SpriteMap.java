@@ -129,7 +129,7 @@ public class SpriteMap extends JPanel {
                 System.out.println("matching state found");
                 Coordinate direction = solution.get(state)[1];
                 Coordinate position = solution.get(state)[0].add(direction);
-                ImageIcon icon = iconMap.get("BOX_" + direction.toString());
+                ImageIcon icon = iconMap.get(map.get(position).name()+"_" + direction.toString());
                 panelHolder.get(position).setIcon(icon);
             }
         }
@@ -166,7 +166,7 @@ public class SpriteMap extends JPanel {
 
     public void loadSprites() {
         String tilesetpath = "/tileset0" + tileSetNo + "/";
-        ArrayList<String> iconNames = new ArrayList<String>(Arrays.asList("SPACE", "GOAL", "BOX", "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL", "GRASS", "WALL", "DEFAULT", "DEFAULT_HOVER", "BOX_UP", "BOX_DOWN", "BOX_LEFT", "BOX_RIGHT"));
+        ArrayList<String> iconNames = new ArrayList<String>(Arrays.asList("SPACE", "GOAL", "BOX", "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL", "GRASS", "WALL", "DEFAULT", "DEFAULT_HOVER", "BOX_UP", "BOX_DOWN", "BOX_LEFT", "BOX_RIGHT","BOX_ON_GOAL_UP","BOX_ON_GOAL_RIGHT","BOX_ON_GOAL_DOWN","BOX_ON_GOAL_LEFT"));
         noOfWalls = 1;
         noOfGrass = 1;
 
