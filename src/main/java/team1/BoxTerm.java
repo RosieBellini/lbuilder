@@ -408,7 +408,7 @@ public class BoxTerm extends JPanel {
         }
 
         spriteMap.setScale(scale);
-        spriteMap.update();
+        spriteMap.loadSprites();
     }
 
     private static void toggleMode() {

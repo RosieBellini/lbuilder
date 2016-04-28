@@ -103,7 +103,7 @@ public class SpriteMap extends JPanel {
                 icon = iconMap.get("DEFAULT");
             } else if (object == SokobanObject.WALL) {
                 icon = randomIcon("WALL", noOfWalls);
-            } else if (playable && grassPositions.contains(position)) {
+            } else if (grassPositions.contains(position)) {
                 icon = randomIcon("GRASS", noOfGrass);
             } else {
                 icon = iconMap.get(object.name());
@@ -192,11 +192,6 @@ public class SpriteMap extends JPanel {
 
     public Map<String, ImageIcon> getUnscaledIconMap() {
         return unscaledIconMap;
-    }
-
-    public void update() {
-        mapDrawn = false;
-        loadSprites();
     }
 
     public void setScale(float scale) {
