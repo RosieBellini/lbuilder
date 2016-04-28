@@ -17,8 +17,8 @@ public class SingleThreadSolver implements Runnable {
     private boolean stopped;
     private int triedPushes;
 
-    public SingleThreadSolver(SokobanMap map){
-        this.map=new SokobanMap(map);
+    public SingleThreadSolver(SokobanMap map) {
+        this.map = new SokobanMap(map);
         seenStates = new ArrayList<SaveState>();
         seenStates.add(map.getSimpleState());
         seenStatesValues = new HashSet<Integer>();
@@ -28,14 +28,14 @@ public class SingleThreadSolver implements Runnable {
         donePushes = new ArrayList<Coordinate[]>();
         Coordinate[] emptyPush = {new Coordinate(0,0),new Coordinate(0,0)};
         donePushes.add(emptyPush);
-        triedPushes=0;
+        triedPushes = 0;
     }
 
-    public void run(){
+    public void run() {
         System.out.println(levelSolution());
     }
 
-    public void stopSolving(){
+    public void stopSolving() {
         solving = false;
     }
 
@@ -43,70 +43,79 @@ public class SingleThreadSolver implements Runnable {
         return solving;
     }
 
-    private List<Coordinate[]> validPushes(int stateIndex){
+    private List<Coordinate[]> validPushes(int stateIndex) {
         map.loadSimpleState(seenStates.get(stateIndex));
         SaveState state = seenStates.get(stateIndex);
         Set<Coordinate> accessibleSpaces = map.accessibleSpaces(state.getWPos(), false);
         List<Coordinate[]> validPushes = new ArrayList<Coordinate[]>();
-        for (Coordinate box : state.getBoxPositions()){
-            for (Coordinate spaceNextToBox : map.neighbors(box)){
+
+        for (Coordinate box : state.getBoxPositions()) {
+            for (Coordinate spaceNextToBox : map.neighbors(box)) {
                 SokobanObject thingOppositeBox = map.get(box.add(box.add(spaceNextToBox.reverse())));
-                if (accessibleSpaces.contains(spaceNextToBox)&&
-                        (thingOppositeBox==SokobanObject.SPACE ||
-                        thingOppositeBox==SokobanObject.PLAYER ||
-                        thingOppositeBox==SokobanObject.GOAL ||
-                        thingOppositeBox==SokobanObject.PLAYER_ON_GOAL)){
-                    Coordinate[] aPush = {spaceNextToBox,box.add(spaceNextToBox.reverse())};
-                    if(isSafePush(aPush)){
+                if (accessibleSpaces.contains(spaceNextToBox)
+                        && (thingOppositeBox == SokobanObject.SPACE
+                        || thingOppositeBox == SokobanObject.PLAYER
+                        || thingOppositeBox == SokobanObject.GOAL
+                        || thingOppositeBox == SokobanObject.PLAYER_ON_GOAL)) {
+                    Coordinate[] aPush = { spaceNextToBox, box.add(spaceNextToBox.reverse()) };
+                    if (isSafePush(aPush)) {
                         validPushes.add(aPush);
                     }
                 }
             }
         }
+
         return validPushes;
     }
 
-    private boolean isSafePush(Coordinate[] aPush){
+    private boolean isSafePush(Coordinate[] aPush) {
         Coordinate spaceBehindPush = (aPush[0].add(aPush[1].mult(3)));
         SokobanObject objectBehindPush = map.get(spaceBehindPush);
         Coordinate spaceToPushInto = (aPush[0].add(aPush[1]));
         SokobanObject objectToPushInto = map.get(spaceToPushInto);
-        if (objectToPushInto==SokobanObject.GOAL || objectBehindPush!=SokobanObject.WALL){
+        if (objectToPushInto == SokobanObject.GOAL
+                || objectBehindPush!=SokobanObject.WALL) {
             return true;
         }
-        Coordinate spaceLeftOfPush = new Coordinate(-1,-1);
-        Coordinate spaceRightOfPush= new Coordinate (-1,-1);
-        if(aPush[1].x!=0){
-            spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0,1));
-            spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0,-1));
+
+        Coordinate spaceLeftOfPush = new Coordinate(-1, -1);
+        Coordinate spaceRightOfPush= new Coordinate (-1, -1);
+
+        if (aPush[1].x != 0) {
+            spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0, 1));
+            spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0, -1));
+        } else if (aPush[1].y != 0) {
+            spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(1, 0));
+            spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(-1, 0));
         }
-        else if (aPush[1].y!=0){
-            spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(1,0));
-            spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(-1,0));
-        }
-        if (map.get(spaceRightOfPush)==SokobanObject.WALL||map.get(spaceLeftOfPush)==SokobanObject.WALL){
+
+        if (map.get(spaceRightOfPush) == SokobanObject.WALL
+                || map.get(spaceLeftOfPush) == SokobanObject.WALL) {
             return false;
+        } else {
+            return true;
         }
-        else return true;
     }
 
-    private boolean tryPush(int stateIndex, Coordinate[] aPush){
+    private boolean tryPush(int stateIndex, Coordinate[] aPush) {
         map.put(SokobanObject.PLAYER, aPush[0]);
         map.move(aPush[1]);
         boolean isDone = map.isDone();
         SaveState possibleNewState = new SaveState(map.getSimpleState());
         int newStateHashCode = possibleNewState.hashCode();
-        if (!seenStatesValues.contains(newStateHashCode)){
+        if (!seenStatesValues.contains(newStateHashCode)) {
             seenStates.add(possibleNewState);
             seenStatesValues.add(newStateHashCode);
             stateOrigins.add(stateIndex);
             donePushes.add(aPush);
         }
         map.undo();
+
         triedPushes++;
-        if (triedPushes%1000==0){
+        if (triedPushes%1000 == 0) {
             System.out.println(triedPushes);
         }
+
         return isDone;
     }
 
@@ -114,17 +123,17 @@ public class SingleThreadSolver implements Runnable {
         int currentStateIndex = 0;
         solving = true;
         boolean solved = false;
-        while (solving && currentStateIndex<seenStates.size()){
+        while (solving && currentStateIndex<seenStates.size()) {
             map.loadSimpleState(seenStates.get(currentStateIndex));
             List<Coordinate[]> validPushes = validPushes(currentStateIndex);
-            for (int i=0; i<validPushes.size();i++){
+            for (int i=0; i<validPushes.size();i++) {
                 boolean pushed = tryPush(currentStateIndex,validPushes.get(i));
-                if(pushed){
-                    solving=false;
-                    solved=true;
+                if (pushed) {
+                    solving = false;
+                    solved = true;
                     break;
                 }
-                if(!solving || stopped){
+                if (!solving || stopped) {
                     break;
                 }
             }
@@ -136,13 +145,13 @@ public class SingleThreadSolver implements Runnable {
     public String validPushesTestString(){
         List<Coordinate[]> validPushes = validPushes(0);
         String allPushesString = "";
-        for (int i=0;i<validPushes.size();i++){
-            allPushesString+=(validPushes.get(i)[0]+"    Direction: "+validPushes.get(i)[1]+"\n");
+        for (int i = 0; i < validPushes.size(); i++) {
+            allPushesString += (validPushes.get(i)[0] + "    Direction: " + validPushes.get(i)[1] + "\n");
         }
         return allPushesString;
     }
 
-    public HashMap<SaveState, Coordinate[]> levelSolution(){
+    public HashMap<SaveState, Coordinate[]> levelSolution() {
         LinkedList<Coordinate[]> pushesToSolve = new LinkedList<Coordinate[]>();
         LinkedList<SaveState> statesToSolve = new LinkedList<SaveState>();
         HashMap<SaveState, Coordinate[]> solution = new HashMap<SaveState, Coordinate[]>();
@@ -151,7 +160,7 @@ public class SingleThreadSolver implements Runnable {
         if (solveLevel()) {
             int currentStateIndex = seenStates.size() - 1;
             solutionString="Solution: \n";
-            while (currentStateIndex > 0){
+            while (currentStateIndex > 0) {
                 pushesToSolve.addFirst(donePushes.get(currentStateIndex));
                 currentStateIndex = stateOrigins.get(currentStateIndex);
                 statesToSolve.addFirst(seenStates.get(currentStateIndex));
@@ -162,10 +171,11 @@ public class SingleThreadSolver implements Runnable {
             solution.put(statesToSolve.get(i), new Coordinate[]{ pushesToSolve.get(i)[0], pushesToSolve.get(i)[1] });
         }
         System.out.println(solutionString);
-        if(stopped){
+
+        if (stopped) {
             return null;
         }
+
         return solution;
     }
-
 }
