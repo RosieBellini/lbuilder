@@ -366,12 +366,10 @@ public class BoxTerm extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, " This map editor can be used to"
                         + " design your own Sokoban levels (maximum 20x20). \n\n1) Use the"
-                        + " palette on the right to select either walls, pressure pad, player"
+                        + " palette at the bottom to select either walls, goals, player"
                         + " starting position or boxes. \n\n2) Click on the map once you have"
                         + " selected something on the palette to begin designing your level."
-                        + " \n\n3) You can save your map design at any point using File>Save."
-                        + " \n\n4) You must use File>Compile Map if you want to run your map"
-                        + " in-game.", "Map Editor Help", JOptionPane.PLAIN_MESSAGE,
+                        + " \n\n3) You can save your map design at any point using File>Save.", "Map Editor Help", JOptionPane.PLAIN_MESSAGE,
                         SokobanGame.getSpriteMap().getBoxSprite());
             }
         });
