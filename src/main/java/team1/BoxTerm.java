@@ -570,7 +570,6 @@ public class BoxTerm extends JPanel {
     public static void main(String[] args) {
         try {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Test");
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         }
         catch(ClassNotFoundException e) {
