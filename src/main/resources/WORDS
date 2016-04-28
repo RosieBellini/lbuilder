@@ -22,7 +22,7 @@ Cube
 Cuboid
 Depository
 Depot
-Distribution Centre
+# Distribution Centre
 Drum
 # Firkin
 Flotsam and Jetsam
@@ -55,7 +55,7 @@ Storehouse
 Storage
 Supply
 Sundry Item
-Treasury
+# Treasury
 Trunk
 Tub
 Vessel
@@ -87,13 +87,13 @@ Explosion
 Fantasy
 Fighter II
 # Forcer
-General
+# General
 Gopher
 Grunt
 Helper
 Hero
 Hitman
-Jolter
+# Jolter
 Knight
 Labourer
 Lifter
@@ -128,5 +128,5 @@ Squire
 Terminator
 Time
 Thruster
-Villain
+# Villain
 Warrior
