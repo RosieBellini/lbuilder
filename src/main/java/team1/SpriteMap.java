@@ -92,6 +92,7 @@ public class SpriteMap extends JPanel {
             mapDrawn = true;
         } else {
             toDraw.addAll(map.getChanges());
+            toDraw.addAll(map.getMyState().getBoxPositions());
         }
 
         toDraw.remove(new Coordinate(-1, -1));
@@ -128,13 +129,6 @@ public class SpriteMap extends JPanel {
                 System.out.println("matching state found");
                 Coordinate direction = solution.get(state)[1];
                 Coordinate position = solution.get(state)[0].add(direction);
-                Set<Coordinate> otherBoxes = new HashSet<Coordinate>(map.getMyState().getBoxPositions());
-                otherBoxes.remove(position);
-
-                for (Coordinate otherBox : otherBoxes) {
-                    panelHolder.get(otherBox).setIcon(iconMap.get("BOX"));
-                }
-
                 ImageIcon icon = iconMap.get("BOX_" + direction.toString());
                 panelHolder.get(position).setIcon(icon);
             }
