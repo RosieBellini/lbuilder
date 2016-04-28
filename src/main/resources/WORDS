@@ -4,7 +4,7 @@ Barrel
 Bin
 Block
 Burden
-Boku no
+# Boku no
 Cache
 Canister
 Capsule
@@ -45,7 +45,7 @@ Product
 Receptacle
 Rectangle
 Repository
-Resource
+# Resource
 Stock
 Stockpile
 Stockroom
@@ -59,7 +59,7 @@ Treasury
 Trunk
 Tub
 Vessel
-Wardrobe
+# Wardrobe
 Warehouse
 Wares
 PUSH
@@ -72,7 +72,7 @@ Assaulter
 # Attacker
 Blaster
 # Bumper
-Charger
+# Charger
 Crusher
 Combobulator
 Cowboy
@@ -82,7 +82,7 @@ Disruptor
 Driver
 Drudge
 Emissary
-Exerter
+# Exerter
 Explosion
 Fantasy
 Fighter II
