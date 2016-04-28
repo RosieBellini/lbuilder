@@ -27,9 +27,16 @@ public final class SaveState {
     public SaveState(SaveState stateToCopy) {
         this.wPos = new Coordinate(stateToCopy.getWPos());
         this.boxPositions = new HashSet<Coordinate>(stateToCopy.getBoxPositions());
-        this.wallPositions = new HashSet<Coordinate>(stateToCopy.getWallPositions());
-        this.goalPositions = new HashSet<Coordinate>(stateToCopy.getGoalPositions());
-        simpleState = false;
+
+        if (stateToCopy.isSimple()) {
+            this.wallPositions = new HashSet<Coordinate>();
+            this.goalPositions = new HashSet<Coordinate>();
+            simpleState = true;
+        } else {
+            this.wallPositions = new HashSet<Coordinate>(stateToCopy.getWallPositions());
+            this.goalPositions = new HashSet<Coordinate>(stateToCopy.getGoalPositions());
+            simpleState = false;
+        }
     }
 
     public SaveState(Coordinate wPos, Set<Coordinate> boxPositions) {

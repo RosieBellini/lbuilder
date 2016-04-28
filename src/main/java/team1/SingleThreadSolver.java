@@ -96,7 +96,7 @@ public class SingleThreadSolver implements Runnable {
         map.put(SokobanObject.PLAYER, aPush[0]);
         map.move(aPush[1]);
         boolean isDone = map.isDone();
-        SaveState possibleNewState = map.getSimpleState();
+        SaveState possibleNewState = new SaveState(map.getSimpleState());
         int newStateHashCode = possibleNewState.hashCode();
 //        		String newStateString = map.toString();
         if (!(seenStatesValues.contains(newStateHashCode)

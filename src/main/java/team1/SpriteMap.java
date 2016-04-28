@@ -127,6 +127,8 @@ public class SpriteMap extends JPanel {
         for (SaveState state : solution.keySet()) {
             if (map.getSimpleState().equals(state)) {
                 System.out.println("matching state found");
+                System.out.println("solution state hashcode: " + state.hashCode());
+                System.out.println("game state hashcode: " + map.getSimpleState().hashCode());
                 Coordinate direction = solution.get(state)[1];
                 Coordinate position = solution.get(state)[0].add(direction);
                 ImageIcon icon = iconMap.get(map.get(position).name()+"_" + direction.toString());

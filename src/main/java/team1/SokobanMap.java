@@ -108,7 +108,7 @@ public class SokobanMap {
 		Coordinate potentialTopLeftSpace = new Coordinate(xSize,ySize);
 		for (Coordinate potential : Coordinate.allValidCoordinates(xSize, ySize)) {
 			potentialTopLeftSpace = potential;
-			if (accessibleSpaces.contains(potentialTopLeftSpace)){
+			if (accessibleSpaces.contains(potentialTopLeftSpace)) {
 				break;
 			}
 		}
