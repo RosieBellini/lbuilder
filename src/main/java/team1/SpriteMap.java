@@ -92,7 +92,7 @@ public class SpriteMap extends JPanel {
             mapDrawn = true;
         } else {
             toDraw.addAll(map.getChanges());
-            toDraw.addAll(map.getMyState().getBoxPositions());
+            toDraw.addAll(map.getState().getBoxPositions());
         }
 
         toDraw.remove(new Coordinate(-1, -1));
@@ -119,13 +119,13 @@ public class SpriteMap extends JPanel {
         }
 
         System.out.println("\nCURRENT STATE:");
-        System.out.println("BOXES: " + map.getState().getBoxPositions());
-        System.out.println("PLAYER: " + map.getState().getWPos() + "\n");
+        System.out.println("BOXES: " + map.getSimpleState().getBoxPositions());
+        System.out.println("PLAYER: " + map.getSimpleState().getWPos() + "\n");
 
-        System.out.println("Key found: " + solution.containsKey(map.getState()));
+        System.out.println("Key found: " + solution.containsKey(map.getSimpleState()));
 
         for (SaveState state : solution.keySet()) {
-            if (map.getState().equals(state)) {
+            if (map.getSimpleState().equals(state)) {
                 System.out.println("matching state found");
                 Coordinate direction = solution.get(state)[1];
                 Coordinate position = solution.get(state)[0].add(direction);

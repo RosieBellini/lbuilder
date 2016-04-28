@@ -20,9 +20,9 @@ public class SingleThreadSolver implements Runnable {
     public SingleThreadSolver(SokobanMap map){
         this.map=new SokobanMap(map);
         seenStates = new ArrayList<SaveState>();
-        seenStates.add(map.getState());
+        seenStates.add(map.getSimpleState());
         seenStatesValues = new HashSet<Integer>();
-        seenStatesValues.add(map.getState().hashCode());
+        seenStatesValues.add(map.getSimpleState().hashCode());
         seenStateStrings = new HashSet<String>();
         seenStateStrings.add(map.toString());
         stateOrigins = new ArrayList<Integer>();
@@ -96,7 +96,7 @@ public class SingleThreadSolver implements Runnable {
         map.put(SokobanObject.PLAYER, aPush[0]);
         map.move(aPush[1]);
         boolean isDone = map.isDone();
-        SaveState possibleNewState = map.getState();
+        SaveState possibleNewState = map.getSimpleState();
         int newStateHashCode = possibleNewState.hashCode();
 //        		String newStateString = map.toString();
         if (!(seenStatesValues.contains(newStateHashCode)
