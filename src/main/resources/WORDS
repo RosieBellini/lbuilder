@@ -1,5 +1,5 @@
 BOX
-Asset
+# Asset
 Barrel
 Bin
 Block
@@ -15,7 +15,7 @@ Cask
 # Casket
 Chest
 # Coffer
-Commodity
+# Commodity
 Consignment
 Crate
 Cube
@@ -24,11 +24,11 @@ Depository
 Depot
 Distribution Centre
 Drum
-Firkin
+# Firkin
 Flotsam and Jetsam
 Freight
 Generic Product
-Goods
+# Goods
 Hamper
 Hoard
 Hogshead
@@ -50,7 +50,7 @@ Stock
 Stockpile
 Stockroom
 Strongbox
-Store
+# Store
 Storehouse
 Storage
 Supply
