@@ -611,7 +611,7 @@ public class BoxTerm extends JPanel {
         Scanner wordScanner = new Scanner(wordList);
         while (wordScanner.hasNextLine()) {
             String line = wordScanner.nextLine();
-            if (line.equals("BOX") || line.toCharArray()[0]  == '#' ) {
+            if (line.equals("BOX")) {
                 continue;
             } else if (line.equals("PUSH")) {
                 activeDictionary = pushWords;
