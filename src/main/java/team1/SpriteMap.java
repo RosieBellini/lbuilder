@@ -112,18 +112,6 @@ public class SpriteMap extends JPanel {
             panelHolder.get(position).setIcon(icon);
         }
 
-        for (SaveState state : solution.keySet()) {
-            System.out.println("BOXES: " + state.getBoxPositions());
-            System.out.println("PUSH: " + solution.get(state)[1].toString());
-            System.out.println("PLAYER: " + state.getWPos());
-        }
-
-        System.out.println("\nCURRENT STATE:");
-        System.out.println("BOXES: " + map.getSimpleState().getBoxPositions());
-        System.out.println("PLAYER: " + map.getSimpleState().getWPos() + "\n");
-
-        System.out.println("\nKey found: " + solution.containsKey(map.getSimpleState()) + "\n=============");
-
         if (solution.containsKey(map.getSimpleState())) {
             Coordinate direction = solution.get(map.getSimpleState())[1];
             Coordinate position = solution.get(map.getSimpleState())[0].add(direction);

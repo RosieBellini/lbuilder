@@ -174,7 +174,6 @@ public final class SaveState {
 
     @Override
     public boolean equals(Object obj) {
-        // if (simpleState) {
         if (obj == null) {
             return false;
         } else if (!(obj instanceof SaveState)) {
@@ -182,12 +181,6 @@ public final class SaveState {
         } else {
             return this.hashCode() == obj.hashCode();
         }
-        // }
-
-        // return wPos.equals(someState.getWPos())
-        //         && boxPositions.equals(someState.getBoxPositions())
-        //         && wallPositions.equals(someState.getWallPositions())
-        //         && goalPositions.equals(someState.getGoalPositions());
     }
 
     @Override
