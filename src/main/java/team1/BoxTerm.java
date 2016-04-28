@@ -223,7 +223,7 @@ public class BoxTerm extends JPanel {
                         List<String> contents = Arrays.asList(map.toString().split("\\n"));
                         try {
                             Files.write(newFile, contents);
-                            map.setInitialState(map.getMyState());
+                            map.setInitialState(map.getState());
                             map.reset();
                             lastOpenedMap = new SokobanMap(map);
                         } catch (IOException io) {
@@ -552,7 +552,7 @@ public class BoxTerm extends JPanel {
         if (SokobanGame.getSpriteMap().getPlayable()) {
             changed = !map.getInitialState().equals(lastOpenedMap.getInitialState());
         } else {
-            changed = !map.getMyState().equals(lastOpenedMap.getInitialState());
+            changed = !map.getState().equals(lastOpenedMap.getInitialState());
         }
 
         if (changed) {

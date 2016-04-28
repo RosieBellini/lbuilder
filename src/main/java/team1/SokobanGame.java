@@ -121,7 +121,7 @@ public class SokobanGame extends JPanel {
     public static void toggleMode() {
         SokobanMap map = spriteMap.getSokobanMap();
         if (!playable) {
-            map.setInitialState(map.getMyState());
+            map.setInitialState(map.getState());
         }
         map.reset();
         playable = !playable;
@@ -177,8 +177,8 @@ public class SokobanGame extends JPanel {
      * Updates the contents of the game window
      */
     public static void redraw() {
-        int boxCount = getSokobanMap().getMyState().getBoxPositions().size();
-        int goalCount = getSokobanMap().getMyState().getGoalPositions().size();
+        int boxCount = getSokobanMap().getState().getBoxPositions().size();
+        int goalCount = getSokobanMap().getState().getGoalPositions().size();
         boxLabel.setText("Boxes: " + boxCount);
         goalLabel.setText("Goals: " + goalCount);
 
