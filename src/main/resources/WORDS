@@ -1,7 +1,9 @@
 BOX
+Asset
 Barrel
 Bin
 Burden
+Cache
 Cargo
 Carton
 Case
@@ -9,6 +11,7 @@ Cask
 Casket
 Chest
 Coffer
+Commodity
 Consignment
 Crate
 Depository
@@ -19,21 +22,26 @@ Firkin
 Flotsam and Jetsam
 Freight
 Goods
+Hoard
 Hogshead
+Inventory
 Keg
 Merchandise
 Package
 Payload
 Portmanteau
+Produce
 Receptacle
 Repository
 Saga
+Stock
 Stockpile
 Stockroom
 Store
 Storehouse
 Storage
 Squire
+Supply
 Trunk
 Vessel
 Warehouse
