@@ -77,11 +77,11 @@ public class SingleThreadSolver implements Runnable {
         }
         Coordinate spaceLeftOfPush = new Coordinate(-1,-1);
         Coordinate spaceRightOfPush= new Coordinate (-1,-1);
-        if(aPush[1].getX()!=0){
+        if(aPush[1].x!=0){
             spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0,1));
             spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0,-1));
         }
-        else if (aPush[1].getY()!=0){
+        else if (aPush[1].y!=0){
             spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(1,0));
             spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(-1,0));
         }

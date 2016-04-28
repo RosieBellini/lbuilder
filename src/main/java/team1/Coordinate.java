@@ -12,8 +12,8 @@ public class Coordinate implements Comparable<Coordinate>{
     public final int y;
 
 	public Coordinate(Coordinate coordToCopy) {
-		this.x = coordToCopy.getX();
-		this.y = coordToCopy.getY();
+		this.x = coordToCopy.x;
+		this.y = coordToCopy.y;
 	}
 
 	public String toString() {
@@ -30,17 +30,9 @@ public class Coordinate implements Comparable<Coordinate>{
         }
 	}
 
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
 	public Coordinate add(Coordinate coord) {
-		int x = this.x + coord.getX();
-		int y = this.y + coord.getY();
+		int x = this.x + coord.x;
+		int y = this.y + coord.y;
 		return new Coordinate(x, y);
 	}
 
@@ -80,7 +72,7 @@ public class Coordinate implements Comparable<Coordinate>{
 			return false;
 		}
 		Coordinate pos = (Coordinate) obj;
-		if (this.x == pos.getX() && this.y == pos.getY()) {
+		if (this.x == pos.x && this.y == pos.y) {
 			return true;
 		} else {
 			return false;
