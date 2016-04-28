@@ -196,8 +196,8 @@ public class SokobanGame extends JPanel {
         tiles[1] = spriteMap.getUnscaledIconMap().get("BOX");
         tiles[2] = spriteMap.getUnscaledIconMap().get("GOAL");
         tiles[3] = spriteMap.getUnscaledIconMap().get("PLAYER");
-        list.setFixedCellHeight(36);
-        list.setFixedCellWidth(36);
+        list.setFixedCellHeight(spriteMap.getIconSize() + 4);
+        list.setFixedCellWidth(spriteMap.getIconSize() + 4);
         list.repaint();
     }
 

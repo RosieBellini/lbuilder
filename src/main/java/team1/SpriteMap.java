@@ -1,5 +1,4 @@
 package team1;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -32,6 +31,7 @@ public class SpriteMap extends JPanel {
     private int noOfGrass;
     private HashMap<SaveState, Coordinate[]> solution;
     private Set<Coordinate> mistakePlace;
+    private int iconSize;
 
     public SpriteMap(SokobanMap map, int tileSetNo) {
         panelHolder = new HashMap<Coordinate, JLabel>();
@@ -72,6 +72,10 @@ public class SpriteMap extends JPanel {
 
     public boolean getPlayable() {
         return playable;
+    }
+
+    public int getIconSize() {
+        return iconSize;
     }
 
     public void setMap(SokobanMap map) {
@@ -171,6 +175,8 @@ public class SpriteMap extends JPanel {
         }
 
         unscaledIconMap = new HashMap<String, ImageIcon>(iconMap);
+
+        iconSize = iconMap.get("BOX").getIconHeight();
         resizeSprites();
 
         mapDrawn = false;
@@ -209,20 +215,13 @@ public class SpriteMap extends JPanel {
         this.solution = solution;
     }
 
-    private void resizeSprites(){
-        float iconDimension = scale * 32;
+    private void resizeSprites() {
+        float iconDimension = scale * iconSize;
         int newIconDimension = (int) iconDimension;
         for(String iconName : iconMap.keySet()) {
             Image iconImage = iconMap.get(iconName).getImage();
             Image resizedImage = iconImage.getScaledInstance(newIconDimension, newIconDimension, Image.SCALE_DEFAULT);
             iconMap.put(iconName, new ImageIcon(resizedImage));
         }
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-        float prefWidth = 32*scale*xSize;
-        float prefHeight = 32*scale*ySize;
-        return new Dimension((int) prefWidth,(int) prefHeight);
     }
 }
