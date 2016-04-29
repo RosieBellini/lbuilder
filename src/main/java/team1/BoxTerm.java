@@ -82,12 +82,12 @@ public class BoxTerm extends JPanel {
             @Override
             protected void done() {
                 if (solution.size() != 0) {
-                    solving = false;
                     SokobanGame.getSpriteMap().reset();
                     SokobanGame.getSpriteMap().setSolution(solution);
                     SokobanGame.redraw();
                 }
 
+                solving = false;
                 dialog.dispose();
             }
 
