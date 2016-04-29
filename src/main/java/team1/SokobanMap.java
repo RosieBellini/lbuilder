@@ -503,6 +503,7 @@ public class SokobanMap {
             }
 
             storeState();
+            clearRedoStack();
             moveCounter += distanceToCover;
             put(SokobanObject.PLAYER, target);
             SokobanGame.redraw();
