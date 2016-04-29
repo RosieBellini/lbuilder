@@ -20,7 +20,6 @@ import javax.swing.JPanel;
  * as JPanel. It provides methods for importing tilesets and toggling between a
  * playable game mode and editor mode.
  */
-
 public class SpriteMap extends JPanel {
     private static final long serialVersionUID = 1L;
     private SokobanMap map;
@@ -41,7 +40,7 @@ public class SpriteMap extends JPanel {
      * SpriteMap constructor.
      *
      * @param   map         The initial SokobanMap to display
-     * @param   tilesetNum   The initial tileset to use
+     * @param   tilesetNum  The initial tileset to use
      */
     public SpriteMap(SokobanMap map, int tilesetNum) {
         panelHolder = new HashMap<Coordinate, JLabel>();
