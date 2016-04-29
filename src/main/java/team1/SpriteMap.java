@@ -81,6 +81,9 @@ public class SpriteMap extends JPanel {
 
     /**
      * Updates cells according to the status of the SokobanMap.
+     *
+     * @param   redraw      True to redraw every cell, false to only update
+     *                      those that may have changed
      */
     public void placeSprites(boolean redraw) {
         Set<Coordinate> grassPositions = map.inaccessibleSpaces();
@@ -195,6 +198,7 @@ public class SpriteMap extends JPanel {
     private void resizeSprites() {
         float iconDimension = scale * getIconSize();
         int newIconDimension = (int) iconDimension;
+
         for (String iconName : iconMap.keySet()) {
             Image iconImage = iconMap.get(iconName).getImage();
             Image resizedImage = iconImage.getScaledInstance(newIconDimension,
