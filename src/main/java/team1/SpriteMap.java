@@ -30,7 +30,6 @@ public class SpriteMap extends JPanel {
     private Map<String, ImageIcon> iconMap;
     private Map<String, Integer> iconCountMap;
     private Map<String, ImageIcon> unscaledIconMap;
-    private boolean mapDrawn;
     private boolean playable;
     private boolean initialised;
     private float scale;
@@ -65,10 +64,8 @@ public class SpriteMap extends JPanel {
      * @param   map         The new SokobanMap to display
      */
     public void updateMap(SokobanMap map) {
-        mapDrawn = false;
         this.map = SokobanMap.shallowCopy(map, map.getMaxUndos());
         resetSolver();
-        resetRandom();
         xSize = map.getXSize();
         ySize = map.getYSize();
         setLayout(new GridLayout(ySize, xSize));
@@ -83,20 +80,20 @@ public class SpriteMap extends JPanel {
         }
 
         if (initialised) {
-            placeSprites();
+            placeSprites(true);
         }
     }
 
     /**
      * Updates cells according to the status of the SokobanMap.
      */
-    public void placeSprites() {
+    public void placeSprites(boolean redraw) {
         Set<Coordinate> grassPositions = map.inaccessibleSpaces();
         ArrayList<Coordinate> toDraw = new ArrayList<Coordinate>();
 
-        if (!mapDrawn) {
+        if (redraw) {
             toDraw = Coordinate.allValidCoordinates(xSize, ySize);
-            mapDrawn = true;
+            random = new Random(map.hashCode());
         } else {
             toDraw.addAll(map.tilesToRedraw(playable));
         }
@@ -128,6 +125,15 @@ public class SpriteMap extends JPanel {
         }
 
         repaint();
+    }
+
+    /**
+     * {@code redraw} defaults to false.
+     *
+     * @see placeSprites(boolean)
+     */
+    public void placeSprites() {
+        placeSprites(false);
     }
 
     /**
@@ -168,9 +174,7 @@ public class SpriteMap extends JPanel {
 
         resizeSprites();
 
-        mapDrawn = false;
-        resetRandom();
-        placeSprites();
+        placeSprites(true);
     }
 
     /**
@@ -199,7 +203,7 @@ public class SpriteMap extends JPanel {
     private void resizeSprites() {
         float iconDimension = scale * getIconSize();
         int newIconDimension = (int) iconDimension;
-        for(String iconName : iconMap.keySet()) {
+        for (String iconName : iconMap.keySet()) {
             Image iconImage = iconMap.get(iconName).getImage();
             Image resizedImage = iconImage.getScaledInstance(newIconDimension,
                                         newIconDimension, Image.SCALE_DEFAULT);
@@ -212,9 +216,8 @@ public class SpriteMap extends JPanel {
      */
     public void reset() {
         resetSolver();
-        resetRandom();
         map.reset();
-        mapDrawn = false;
+        placeSprites(true);
     }
 
     /**
@@ -222,24 +225,6 @@ public class SpriteMap extends JPanel {
      */
     public void resetSolver() {
         solution.clear();
-    }
-
-    /**
-     * Resets the random number generator to its initial state, using the
-     * SokobanMap's hashcode as its seed. This is used to prevent icons with
-     * alternates from getting jumbled up when the SpriteMap is reset.
-     */
-    private void resetRandom() {
-        random = new Random(map.hashCode());
-    }
-
-    /**
-     * Forces the SpriteMap to redraw every icon in the grid array.
-     */
-    public void forceRedraw() {
-        mapDrawn = false;
-        resetRandom();
-        placeSprites();
     }
 
     /**
@@ -257,7 +242,7 @@ public class SpriteMap extends JPanel {
      */
     public void toggleMode() {
         playable = !playable;
-        forceRedraw();
+        placeSprites(true);
     }
 
     /**
