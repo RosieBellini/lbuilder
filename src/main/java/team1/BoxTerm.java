@@ -76,44 +76,17 @@ public class BoxTerm extends JPanel {
         final JDialog dialog = new JDialog();
         JPanel panel = new JPanel(new BorderLayout(5, 5));
 
-        class solverWorker extends SwingWorker<Void, Object> {
-            HashMap<SaveState, Coordinate[]> solution;
-
-            @Override
-            protected void done() {
-                solving = false;
-
-                if (solution != null) {
-                    if (solution.size() > 0) {
-                        SokobanGame.getSpriteMap().reset();
-                        SokobanGame.getSpriteMap().setSolution(solution);
-                        SokobanGame.redraw();
-                    } else {
-                        System.out.println("Impossible level!");
-                    }
-                }
-
-                dialog.dispose();
-            }
-
-            @Override
-            protected Void doInBackground() throws Exception {
-                solving = true;
-                SokobanMap mapToSolve = new SokobanMap(SokobanGame.getSokobanMap());
-                solver = new SingleThreadSolver(mapToSolve);
-                solution = solver.levelSolution();
-                return null;
-            }
-        };
-
         ImageIcon spinnyCube = new ImageIcon(Toolkit.getDefaultToolkit().getImage(BoxTerm.class.getResource("/tileset01/cube.gif")));
         JLabel loadingCube = new JLabel(spinnyCube);
+        ImageIcon impossibleCube = new ImageIcon(Toolkit.getDefaultToolkit().getImage(BoxTerm.class.getResource("/tileset01/IMPOSSIBLE.png")));
+        JLabel badCube = new JLabel(impossibleCube);
         JLabel msgLabel = new JLabel("Calculating...");
         JButton b1 = new JButton("Cancel");
 
         ActionListener listen = new ActionListener() {
             public void actionPerformed(ActionEvent e2) {
                 solver.stopSolving();
+                dialog.dispose();
             }
         };
 
@@ -132,6 +105,41 @@ public class BoxTerm extends JPanel {
         dialog.setLocationRelativeTo(frame);
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         dialog.setVisible(true);
+
+        class solverWorker extends SwingWorker<Void, Object> {
+            HashMap<SaveState, Coordinate[]> solution;
+
+            @Override
+            protected void done() {
+                solving = false;
+
+                if (solution != null) {
+                    if (solution.size() > 0) {
+                        SokobanGame.getSpriteMap().reset();
+                        SokobanGame.getSpriteMap().setSolution(solution);
+                        SokobanGame.redraw();
+                        dialog.dispose();
+                    } else {
+                        msgLabel.setText("This level is impossible!");
+                        panel.remove(loadingCube);
+                        panel.add(badCube);
+                        panel.repaint();
+                        panel.setSize(panel.getPreferredSize());
+                    }
+                } else {
+                    dialog.dispose();
+                }
+            }
+
+            @Override
+            protected Void doInBackground() throws Exception {
+                solving = true;
+                SokobanMap mapToSolve = new SokobanMap(SokobanGame.getSokobanMap());
+                solver = new SingleThreadSolver(mapToSolve);
+                solution = solver.levelSolution();
+                return null;
+            }
+        };
 
         (new solverWorker()).execute();
     }
