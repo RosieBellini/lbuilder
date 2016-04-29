@@ -337,7 +337,7 @@ public class BoxTerm extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 SpriteMap spriteMap = SokobanGame.getSpriteMap();
                 int tileSetNo = spriteMap.getTileSetNo();
-                spriteMap.setTileSetNo((tileSetNo + 1) % 3);
+                spriteMap.setTileSetNo((tileSetNo + 1) % 4);
                 spriteMap.loadSprites();
                 SokobanGame.importPaletteIcons();
             }
