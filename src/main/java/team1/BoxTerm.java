@@ -418,10 +418,10 @@ public class BoxTerm extends JPanel {
         editMenuItems.add(editorHelpItem);
         helpMenu.add(editorHelpItem);
 
-        JMenuItem aboutItem = new JMenuItem("About Box Terminator");
+        JMenuItem aboutItem = new JMenuItem("About Wonderful Sokoban");
         aboutItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(SokobanGame.getSpriteMap(), "A Sokoban clone.", "Box Terminator",JOptionPane.PLAIN_MESSAGE,SokobanGame.getSpriteMap().getIconMap().get("BOX"));
+                JOptionPane.showMessageDialog(SokobanGame.getSpriteMap(), "A Sokoban clone.\n\nRosie Bellini\nJosh Gant\nDoris Hao\nHaiza Hazali\nLoki Li\nTom Picton\nMarcus Redgrave-Close\nJohn Zhuang", "Wonderful Sokoban", JOptionPane.PLAIN_MESSAGE, SokobanGame.getSpriteMap().getIconMap().get("BOX"));
             }
         });
         helpMenu.add(aboutItem);
@@ -431,7 +431,8 @@ public class BoxTerm extends JPanel {
         SpriteMap spriteMap = SokobanGame.getSpriteMap();
 
         if (!autoScale) {
-            float scale = perfectPixelScaler(spriteMap.getScale(), scaleDirection);
+            float scale = spriteMap.getScale();
+            scale = perfectPixelScaler(scale, scaleDirection);
             int gameWidth = (int) (spriteMap.getIconSize() * spriteMap.getXSize() * scale);
 
             if (gameWidth > 220) {
@@ -446,9 +447,7 @@ public class BoxTerm extends JPanel {
                 spriteMap.placeSprites(true);
             }
         } else {
-            autoScaleFactor = perfectPixelScaler(autoScaleFactor, scaleDirection);
             float scale = autoScaleFactor;
-
             double preferredHeight = 0.75 * autoScaleFactor * Toolkit.getDefaultToolkit().getScreenSize().getHeight();
             int unscaledGameHeight = spriteMap.getIconSize() * spriteMap.getYSize();
             float gameHeight = unscaledGameHeight * scale + 64;
