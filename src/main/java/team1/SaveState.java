@@ -72,6 +72,8 @@ public final class SaveState {
 
     /**
      * Constructor for a SaveState clone. Respects simple and full types.
+     *
+     * @param   stateToCopy     The SaveState to clone
      */
     public SaveState(SaveState stateToCopy) {
         this.playerPos = new Coordinate(stateToCopy.getPlayerPos());
