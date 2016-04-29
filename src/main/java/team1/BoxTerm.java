@@ -29,6 +29,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -67,6 +68,8 @@ public class BoxTerm extends JPanel {
     private static ArrayList<String> levels = new ArrayList<String>();
     private static int currentLevelIndex = 0;
     private static SokobanMap lastOpenedMap;
+    private static boolean autoScale = false;
+    private static float autoScaleFactor = 1;
 
     private static void startSolver() {
         solving = true;
@@ -160,6 +163,7 @@ public class BoxTerm extends JPanel {
                     SokobanMap map = new SokobanMap(20, 20, 100);
                     SokobanGame.getSpriteMap().updateMap(map);
                     SokobanGame.getSokobanMap().put(SokobanObject.PLAYER, new Coordinate(5, 5));
+                    changeMagnification(0);
                     SokobanGame.getSpriteMap().forceRedraw();
                     SokobanGame.redraw();
                     frame.setSize(frame.getPreferredSize());
@@ -300,6 +304,7 @@ public class BoxTerm extends JPanel {
                         return;
                 }
                 SokobanGame.getSpriteMap().updateMap(SokobanMap.crop(SokobanGame.getSokobanMap()));
+                changeMagnification(0);
                 frame.setSize(frame.getPreferredSize());
             }
         });
@@ -358,6 +363,19 @@ public class BoxTerm extends JPanel {
         });
         viewMenu.add(deMagnifyItem);
 
+        JCheckBoxMenuItem autoScaleItem = new JCheckBoxMenuItem("Enable autoscale", false);
+        autoScaleItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (autoScaleItem.getState()) {
+                    autoScale = true;
+                    changeMagnification(0);
+                    frame.pack();
+                } else {
+                    autoScale = false;
+                }
+            }
+        });
+        viewMenu.add(autoScaleItem);
 
 
         // Help menu
@@ -397,33 +415,72 @@ public class BoxTerm extends JPanel {
 
     private static void changeMagnification(int scaleDirection) {
         SpriteMap spriteMap = SokobanGame.getSpriteMap();
-        float scale = spriteMap.getScale();
+        float scale;
+        if (autoScale) {
+            scale = autoScaleFactor;
+        } else {
+            scale = spriteMap.getScale();
+        }
 
+        scale = perfectPixelScaler(scale, scaleDirection);
+
+        if (!autoScale) {
+            int gameWidth = (int) (spriteMap.getIconSize() * spriteMap.getXSize() * scale);
+
+            if (gameWidth > 220) {
+                spriteMap.setScale(scale);
+                spriteMap.loadSprites();
+            } else if (scaleDirection == 0) {
+                scale = 220 / ((float) (spriteMap.getIconSize() * spriteMap.getXSize()));
+                scale = (float) Math.ceil(scale);
+                spriteMap.setScale(scale);
+                spriteMap.loadSprites();
+            }
+        } else {
+            double preferredHeight = 0.75 * autoScaleFactor * Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+            int unscaledGameHeight = spriteMap.getIconSize() * spriteMap.getYSize();
+            float gameHeight = unscaledGameHeight * scale + 64;
+
+            boolean getBigger = false;
+
+            while (gameHeight < preferredHeight) {
+                getBigger = true;
+                scale = perfectPixelScaler(scale, 1);
+                gameHeight = unscaledGameHeight * scale + 64;
+            }
+
+            if (!getBigger) {
+                while (gameHeight > preferredHeight) {
+                    scale = perfectPixelScaler(scale, -1);
+                    gameHeight = unscaledGameHeight * scale + 64;
+                }
+            }
+
+            if (getBigger) {
+                scale = perfectPixelScaler(scale, -1);
+            }
+
+            spriteMap.setScale(scale);
+            spriteMap.loadSprites();
+        }
+    }
+
+    private static float perfectPixelScaler(float input, int scaleDirection) {
         if (scaleDirection > 0) {
-            if (scale > 1) {
-                scale++;
+            if (input > 1) {
+                input++;
             } else {
-                scale = scale * 2;
+                input = input * 2;
             }
         } else if (scaleDirection < 0) {
-            if (scale > 1) {
-                scale--;
+            if (input > 1) {
+                input--;
             } else {
-                scale = scale / 2;
+                input = input / 2;
             }
         }
 
-        int gameWidth = (int) (spriteMap.getIconSize() * spriteMap.getXSize() * scale);
-
-        if (gameWidth > 220) {
-            spriteMap.setScale(scale);
-            spriteMap.loadSprites();
-        } else if (scaleDirection == 0) {
-            scale = 220 / ((float) (spriteMap.getIconSize() * spriteMap.getXSize()));
-            scale = (float) Math.ceil(scale);
-            spriteMap.setScale(scale);
-            spriteMap.loadSprites();
-        }
+        return input;
     }
 
     private static void toggleMode() {
