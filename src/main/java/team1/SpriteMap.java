@@ -93,6 +93,10 @@ public class SpriteMap extends JPanel {
         return ySize;
     }
 
+    private void resetRandom() {
+        random = new Random(map.hashCode());
+    }
+
     public void placeSprites() {
         Set<Coordinate> grassPositions = map.inaccessibleSpaces();
         ArrayList<Coordinate> toDraw = new ArrayList<Coordinate>();
@@ -135,14 +139,14 @@ public class SpriteMap extends JPanel {
 
     public void reset() {
         resetSolver();
-        random = new Random(map.hashCode());
+        resetRandom();
         map.reset();
         mapDrawn = false;
     }
 
     public void forceRedraw() {
         mapDrawn = false;
-        random = new Random(map.hashCode());
+        resetRandom();
         placeSprites();
     }
 
@@ -182,6 +186,7 @@ public class SpriteMap extends JPanel {
         resizeSprites();
 
         mapDrawn = false;
+        resetRandom();
         placeSprites();
     }
 
