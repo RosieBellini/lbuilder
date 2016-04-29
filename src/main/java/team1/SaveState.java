@@ -182,9 +182,12 @@ public final class SaveState {
 
     @Override
     public int hashCode() {
-        if (simpleState) {
             ArrayList<Coordinate> coordArrayList = new ArrayList<Coordinate>();
             coordArrayList.addAll(boxPositions);
+            if (!simpleState){
+                coordArrayList.addAll(wallPositions);
+                coordArrayList.addAll(goalPositions);
+            }
             Collections.sort(coordArrayList);
             coordArrayList.add(wPos.mult(-1));
             int[] coordListXY = new int[coordArrayList.size() * 2];
@@ -196,9 +199,6 @@ public final class SaveState {
                 p++;
             }
             return Arrays.hashCode(coordListXY);
-        }
-        return Arrays.hashCode(new Object[] { wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(),
-                goalPositions.hashCode() });
     }
 
     public boolean isSimple() {
