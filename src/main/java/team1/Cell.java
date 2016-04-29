@@ -61,7 +61,7 @@ public class Cell extends JLabel{
         if (me.getButton() == MouseEvent.BUTTON1) {
             spriteMap.getSokobanMap().put(paletteState, position);
         } else if (me.getButton() == MouseEvent.BUTTON3) {
-            if (spriteMap.getSokobanMap().get(position) != SokobanObject.PLAYER) {
+            if (spriteMap.getSokobanMap().get(position) != SokobanObject.PLAYER && spriteMap.getSokobanMap().get(position) != SokobanObject.PLAYER_ON_GOAL) {
                 spriteMap.getSokobanMap().removeLayer(position);
             }
         }
