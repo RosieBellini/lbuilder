@@ -4,6 +4,7 @@ import java.awt.Toolkit;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
@@ -24,7 +25,9 @@ public class SokobanMap {
     private int xSize;
     private int ySize;
     private int maxUndos;
+    private int moveCounter;
     private SaveState initialState;
+    private Random random;
 
     /**
      * Initialises a MapContainer of the given size filled with spaces
@@ -33,6 +36,7 @@ public class SokobanMap {
         this.maxUndos = maxUndos;
         this.xSize = xSize;
         this.ySize = ySize;
+        moveCounter = 0;
         history = new FixedSizeStack<SaveState>(maxUndos);
         history.push(new SaveState());
         initialState = new SaveState();
@@ -133,6 +137,7 @@ public class SokobanMap {
         } else {
             prevRedoStackSize = redoStack.size();
             redoStack.push(state);
+            moveCounter--;
         }
     }
 
@@ -143,6 +148,7 @@ public class SokobanMap {
         if (redoStack.size() != 0) {
             prevRedoStackSize = redoStack.size();
             history.push(redoStack.pop());
+            moveCounter++;
         }
     }
 
@@ -153,6 +159,7 @@ public class SokobanMap {
     public void reset() {
         history.reset(initialState);
         clearRedoStack();
+        moveCounter = 0;
     }
 
     private int historyLength() {
@@ -322,7 +329,12 @@ public class SokobanMap {
         }
         return neighbors;
     }
-
+    
+    /**
+     * Takes a coordinate of the map and returns all the spaces
+     * which the player could access from that coordinate (ignoring boxes).
+     * @return a Set of all the inaccessible coordinates from the given position.
+     */
     public Set<Coordinate> inaccessibleSpaces() {
         ArrayList<Coordinate> potentialGrass = Coordinate.allValidCoordinates(xSize, ySize);
         Set<Coordinate> inaccessibleSpaces = new HashSet<Coordinate>();
@@ -462,6 +474,41 @@ public class SokobanMap {
         }
         return false;
     }
+    
+    /**
+     * Moves the player to the place specified if possible.
+     * @param placeToGo  The place the player wants to be.
+     * @return Whether or not the player could move there.
+     */
+    public boolean moveTo(Coordinate placeToGo){
+        Coordinate playerPosition = new Coordinate(getState().getWPos());
+        if (!accessibleSpaces(playerPosition,false).contains(placeToGo)){
+            return false;
+        }
+        else {
+            int xDiff = playerPosition.x-placeToGo.x;
+            int yDiff = playerPosition.y-placeToGo.y;
+            xDiff = (xDiff<0) ? -xDiff : xDiff;
+            yDiff = (yDiff<0) ? -yDiff : yDiff;
+            int distanceToCover = xDiff+yDiff;
+            if (distanceToCover>6){
+                random = new Random();
+                int randomNumber = random.nextInt(distanceToCover/2);
+                distanceToCover += randomNumber;
+            }
+            moveCounter += distanceToCover;
+            put(SokobanObject.PLAYER, placeToGo);
+            storeState();
+            //I understand that this is overboard but still.  Just as a proof of concept.
+            SokobanGame.getSpriteMap().placeSprites(true);
+            SokobanGame.redraw();
+        }
+        return true;
+    }
+    
+    public int getMoveCounter(){
+        return moveCounter;
+    }
 
     /**
      * Moves the player in the given direction, respecting the rules of the
@@ -486,7 +533,7 @@ public class SokobanMap {
          */
         if (!teleport(wCoord, direction)) {
             if (teleport(nCoord, direction)) {
-                teleport(wCoord, direction);
+                teleport(wCoord, direction);                
             } else {
                 /*
                  * otherwise, undo the last move without sticking it in the redo stack
@@ -502,6 +549,7 @@ public class SokobanMap {
          * don't give the player the possibility of jumping to inaccessible
          * states by reloading past states
          */
+        moveCounter++;
         clearRedoStack();
         return true;
     }

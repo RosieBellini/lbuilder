@@ -30,6 +30,9 @@ public class Cell extends JLabel{
                 if (!spriteMap.getPlayable()) {
                     modifyCell(me);
                 }
+                else {
+                    spriteMap.getSokobanMap().moveTo(position);
+                }
             }
 
             public void mouseEntered(MouseEvent me) {
