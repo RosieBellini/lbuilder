@@ -63,20 +63,20 @@ public class SokobanMap {
         return newMap;
     }
 
-	/*
-	 *  Is this right to do?  For a given state I want to set the map to that position so I can
-	 *  use accessibleSpaces() to work out what boxes you can push from a given SaveState.
-	 */
-	public void loadSimpleState(SaveState state){
-		if (!state.isSimple()){
-			throw new IllegalArgumentException();
-		}
-		SaveState stateToLoad = new SaveState(state.getWPos(),
-				state.getBoxPositions(),
-				this.getState().getWallPositions(),
-				this.getState().getGoalPositions());
-		history.push(stateToLoad);
-	}
+    /*
+     *  Is this right to do?  For a given state I want to set the map to that position so I can
+     *  use accessibleSpaces() to work out what boxes you can push from a given SaveState.
+     */
+    public void loadSimpleState(SaveState state){
+        if (!state.isSimple()){
+            throw new IllegalArgumentException();
+        }
+        SaveState stateToLoad = new SaveState(state.getWPos(),
+                state.getBoxPositions(),
+                this.getState().getWallPositions(),
+                this.getState().getGoalPositions());
+        history.push(stateToLoad);
+    }
 
     public int getYSize() {
         return ySize;
@@ -102,23 +102,23 @@ public class SokobanMap {
         history.push(new SaveState(getState()));
     }
 
-	/**
-	 * Returns a SaveState object that contains the upper leftmost accessible square and the box positions.
-	 * This will be used to determine a state of the map independent of the players exact position.
-	 * @return a SaveState which represents a state of the game for the solving algorithm to use.
-	 */
-	public SaveState getSimpleState() {
-		Set<Coordinate> accessibleSpaces = accessibleSpaces(getState().getWPos(), false);
-		Coordinate potentialTopLeftSpace = new Coordinate(xSize,ySize);
-		for (Coordinate potential : Coordinate.allValidCoordinates(xSize, ySize)) {
-			potentialTopLeftSpace = potential;
-			if (accessibleSpaces.contains(potentialTopLeftSpace)) {
-				break;
-			}
-		}
+    /**
+     * Returns a SaveState object that contains the upper leftmost accessible square and the box positions.
+     * This will be used to determine a state of the map independent of the players exact position.
+     * @return a SaveState which represents a state of the game for the solving algorithm to use.
+     */
+    public SaveState getSimpleState() {
+        Set<Coordinate> accessibleSpaces = accessibleSpaces(getState().getWPos(), false);
+        Coordinate potentialTopLeftSpace = new Coordinate(xSize,ySize);
+        for (Coordinate potential : Coordinate.allValidCoordinates(xSize, ySize)) {
+            potentialTopLeftSpace = potential;
+            if (accessibleSpaces.contains(potentialTopLeftSpace)) {
+                break;
+            }
+        }
 
-		return new SaveState(potentialTopLeftSpace, getState().getBoxPositions());
-	}
+        return new SaveState(potentialTopLeftSpace, getState().getBoxPositions());
+    }
 
 
     /**
@@ -477,34 +477,44 @@ public class SokobanMap {
 
     /**
      * Moves the player to the place specified if possible.
-     * @param placeToGo  The place the player wants to be.
-     * @return Whether or not the player could move there.
+     *
+     * @param   target      The Coordinate to move the player to
+     *
+     * @return              True if the move is allowed, false otherwise
      */
-    public boolean moveTo(Coordinate placeToGo){
+    public boolean moveTo(Coordinate target) {
         Coordinate playerPosition = new Coordinate(getState().getWPos());
-        if (!accessibleSpaces(playerPosition,false).contains(placeToGo)){
+
+        if (!accessibleSpaces(playerPosition, false).contains(target)) {
             return false;
-        }
-        else {
-            int xDiff = playerPosition.x-placeToGo.x;
-            int yDiff = playerPosition.y-placeToGo.y;
-            xDiff = (xDiff<0) ? -xDiff : xDiff;
-            yDiff = (yDiff<0) ? -yDiff : yDiff;
-            int distanceToCover = xDiff+yDiff;
-            if (distanceToCover>6){
+        } else {
+            int xDiff = playerPosition.x - target.x;
+            int yDiff = playerPosition.y - target.y;
+
+            if (xDiff < 0) {
+                xDiff = -xDiff;
+            }
+
+            if (yDiff < 0) {
+                yDiff = -yDiff;
+            }
+
+            int distanceToCover = xDiff + yDiff;
+            if (distanceToCover > 6) {
                 random = new Random();
-                int randomNumber = random.nextInt(distanceToCover/2);
+                int randomNumber = random.nextInt(distanceToCover / 2);
                 distanceToCover += randomNumber;
             }
+
             storeState();
             moveCounter += distanceToCover;
-            put(SokobanObject.PLAYER, placeToGo);
+            put(SokobanObject.PLAYER, target);
             SokobanGame.redraw();
         }
         return true;
     }
 
-    public int getMoveCounter(){
+    public int getMoveCounter() {
         return moveCounter;
     }
 
