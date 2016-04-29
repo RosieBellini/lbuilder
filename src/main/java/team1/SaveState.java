@@ -184,11 +184,11 @@ public final class SaveState {
     public int hashCode() {
             ArrayList<Coordinate> coordArrayList = new ArrayList<Coordinate>();
             coordArrayList.addAll(boxPositions);
+            Collections.sort(coordArrayList);
             if (!simpleState){
                 coordArrayList.addAll(wallPositions);
                 coordArrayList.addAll(goalPositions);
             }
-            Collections.sort(coordArrayList);
             coordArrayList.add(wPos.mult(-1));
             int[] coordListXY = new int[coordArrayList.size() * 2];
             int p = 0;
