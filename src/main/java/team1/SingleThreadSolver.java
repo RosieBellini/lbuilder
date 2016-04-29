@@ -36,7 +36,7 @@ public class SingleThreadSolver implements Runnable {
     }
 
     public void stopSolving() {
-        solving = false;
+        stopped = true;
     }
 
     public boolean isSolving() {

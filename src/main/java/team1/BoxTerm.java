@@ -81,13 +81,18 @@ public class BoxTerm extends JPanel {
 
             @Override
             protected void done() {
-                if (solution.size() != 0) {
-                    SokobanGame.getSpriteMap().reset();
-                    SokobanGame.getSpriteMap().setSolution(solution);
-                    SokobanGame.redraw();
+                solving = false;
+
+                if (solution != null) {
+                    if (solution.size() > 0) {
+                        SokobanGame.getSpriteMap().reset();
+                        SokobanGame.getSpriteMap().setSolution(solution);
+                        SokobanGame.redraw();
+                    } else {
+                        System.out.println("Impossible level!");
+                    }
                 }
 
-                solving = false;
                 dialog.dispose();
             }
 
