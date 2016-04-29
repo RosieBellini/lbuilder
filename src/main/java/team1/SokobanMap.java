@@ -4,7 +4,6 @@ import java.awt.Toolkit;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
@@ -27,7 +26,6 @@ public class SokobanMap {
     private int maxUndos;
     private int moveCounter;
     private SaveState initialState;
-    private Random random;
 
     /**
      * Initialises a MapContainer of the given size filled with spaces
@@ -486,22 +484,16 @@ public class SokobanMap {
         } else {
             int xDiff = playerPosition.x - target.x;
             int yDiff = playerPosition.y - target.y;
-
             if (xDiff < 0) {
                 xDiff = -xDiff;
             }
-
             if (yDiff < 0) {
                 yDiff = -yDiff;
             }
-
             int distanceToCover = xDiff + yDiff;
             if (distanceToCover > 6) {
-                random = new Random();
-                int randomNumber = random.nextInt(distanceToCover / 2);
-                distanceToCover += randomNumber;
+                distanceToCover += (distanceToCover / 2);
             }
-
             storeState();
             clearRedoStack();
             moveCounter += distanceToCover;
