@@ -71,26 +71,26 @@ public class SingleThreadSolver implements Runnable {
     private boolean isSafePush(Coordinate[] aPush) {
         Coordinate spaceBehindPush = (aPush[0].add(aPush[1].mult(3)));
         SokobanObject objectBehindPush = map.get(spaceBehindPush);
-        Coordinate spaceToPushInto = (aPush[0].add(aPush[1]));
+        Coordinate spaceToPushInto = (aPush[0].add(aPush[1].mult(2)));
         SokobanObject objectToPushInto = map.get(spaceToPushInto);
-        if (objectToPushInto == SokobanObject.GOAL
-                || objectBehindPush!=SokobanObject.WALL) {
+        if (objectToPushInto == SokobanObject.GOAL ||
+                objectBehindPush!=SokobanObject.WALL) {
             return true;
         }
-
+        
         Coordinate spaceLeftOfPush = new Coordinate(-1, -1);
         Coordinate spaceRightOfPush= new Coordinate (-1, -1);
-
-        if (aPush[1].x != 0) {
+        
+        if (aPush[1].y == 0) {
             spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0, 1));
             spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0, -1));
-        } else if (aPush[1].y != 0) {
+        } else if (aPush[1].x == 0) {
             spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(1, 0));
             spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(-1, 0));
         }
 
         if (map.get(spaceRightOfPush) == SokobanObject.WALL
-                || map.get(spaceLeftOfPush) == SokobanObject.WALL) {
+                && map.get(spaceLeftOfPush) == SokobanObject.WALL) {
             return false;
         } else {
             return true;
