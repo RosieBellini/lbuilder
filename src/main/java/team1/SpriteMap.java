@@ -31,7 +31,6 @@ public class SpriteMap extends JPanel {
     private Map<String, Integer> iconCountMap;
     private Map<String, ImageIcon> unscaledIconMap;
     private boolean playable;
-    private boolean initialised;
     private float scale;
     private int tileSetNo;
     private Map<SaveState, Coordinate[]> solution;
@@ -51,11 +50,9 @@ public class SpriteMap extends JPanel {
         playable = true;
         scale = 1;
         this.tileSetNo = tileSetNo;
-        initialised = false;
-        this.updateMap(map);
         loadSprites();
+        this.updateMap(map);
         setVisible(true);
-        initialised = true;
     }
 
     /**
@@ -79,9 +76,7 @@ public class SpriteMap extends JPanel {
             add(panelHolder.get(position));
         }
 
-        if (initialised) {
-            placeSprites(true);
-        }
+        placeSprites(true);
     }
 
     /**
@@ -171,10 +166,7 @@ public class SpriteMap extends JPanel {
         }
 
         unscaledIconMap = new HashMap<String, ImageIcon>(iconMap);
-
         resizeSprites();
-
-        placeSprites(true);
     }
 
     /**

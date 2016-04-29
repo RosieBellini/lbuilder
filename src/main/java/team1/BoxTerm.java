@@ -339,6 +339,7 @@ public class BoxTerm extends JPanel {
                 int tileSetNo = spriteMap.getTileSetNo();
                 spriteMap.setTileSetNo((tileSetNo + 1) % 4);
                 spriteMap.loadSprites();
+                spriteMap.placeSprites(true);
                 SokobanGame.importPaletteIcons();
             }
         });
@@ -424,11 +425,13 @@ public class BoxTerm extends JPanel {
             if (gameWidth > 220) {
                 spriteMap.setScale(scale);
                 spriteMap.loadSprites();
+                spriteMap.placeSprites(true);
             } else if (scaleDirection == 0) {
                 scale = 220 / ((float) (spriteMap.getIconSize() * spriteMap.getXSize()));
                 scale = (float) Math.ceil(scale);
                 spriteMap.setScale(scale);
                 spriteMap.loadSprites();
+                spriteMap.placeSprites(true);
             }
         } else {
             autoScaleFactor = perfectPixelScaler(autoScaleFactor, scaleDirection);
@@ -459,6 +462,7 @@ public class BoxTerm extends JPanel {
 
             spriteMap.setScale(scale);
             spriteMap.loadSprites();
+            spriteMap.placeSprites(true);
         }
     }
 
