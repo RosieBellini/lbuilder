@@ -418,10 +418,10 @@ public class BoxTerm extends JPanel {
         editMenuItems.add(editorHelpItem);
         helpMenu.add(editorHelpItem);
 
-        JMenuItem aboutItem = new JMenuItem("About Box Terminator");
+        JMenuItem aboutItem = new JMenuItem("About Wonderful Sokoban");
         aboutItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(SokobanGame.getSpriteMap(), "A Sokoban clone.", "Box Terminator",JOptionPane.PLAIN_MESSAGE,SokobanGame.getSpriteMap().getIconMap().get("BOX"));
+                JOptionPane.showMessageDialog(SokobanGame.getSpriteMap(), "A Sokoban clone.\n\nRosie Bellini\nJosh Gant\nDoris Hao\nHaiza Hazali\nLoki Li\nTom Picton\nMarcus Redgrave-Close\nJohn Zhuang", "Wonderful Sokoban", JOptionPane.PLAIN_MESSAGE, SokobanGame.getSpriteMap().getIconMap().get("BOX"));
             }
         });
         helpMenu.add(aboutItem);
