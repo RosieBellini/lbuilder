@@ -284,12 +284,15 @@ public final class SaveState {
             ArrayList<Coordinate> coordArrayList = new ArrayList<Coordinate>();
             coordArrayList.addAll(boxPositions);
 
+            Collections.sort(coordArrayList);
+
             if (!simpleState){
                 coordArrayList.addAll(wallPositions);
                 coordArrayList.addAll(goalPositions);
             }
-            Collections.sort(coordArrayList);
+
             coordArrayList.add(playerPos.mult(-1));
+
             int[] coordListXY = new int[coordArrayList.size() * 2];
             int p = 0;
             for (int i = 0; i < coordArrayList.size(); i++) {
