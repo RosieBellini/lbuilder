@@ -35,7 +35,7 @@ public class SpriteMap extends JPanel {
     private int tilesetNum;
     private Map<SaveState, Coordinate[]> solution;
     private Random random;
-    private final int tilesetCount = 3;
+    private final int tilesetCount = 4;
 
     /**
      * SpriteMap constructor.
