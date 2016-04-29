@@ -399,7 +399,7 @@ public class BoxTerm extends JPanel {
                         + " starting position or boxes. \n\n2) Click on the map once you have"
                         + " selected something on the palette to begin designing your level."
                         + " \n\n3) You can save your map design at any point using File>Save.", "Map Editor Help", JOptionPane.PLAIN_MESSAGE,
-                        SokobanGame.getSpriteMap().getBoxSprite());
+                        SokobanGame.getSpriteMap().getIconMap().get("BOX"));
             }
         });
         editMenuItems.add(editorHelpItem);
@@ -408,7 +408,7 @@ public class BoxTerm extends JPanel {
         JMenuItem aboutItem = new JMenuItem("About Box Terminator");
         aboutItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(SokobanGame.getSpriteMap(), "A Sokoban clone.", "Box Terminator",JOptionPane.PLAIN_MESSAGE,SokobanGame.getSpriteMap().getBoxSprite());
+                JOptionPane.showMessageDialog(SokobanGame.getSpriteMap(), "A Sokoban clone.", "Box Terminator",JOptionPane.PLAIN_MESSAGE,SokobanGame.getSpriteMap().getIconMap().get("BOX"));
             }
         });
         helpMenu.add(aboutItem);

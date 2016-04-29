@@ -2,6 +2,7 @@ package team1;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,11 +25,10 @@ public class SpriteMap extends JPanel {
     private Map<String, ImageIcon> unscaledIconMap;
     private boolean mapDrawn;
     private boolean playable;
-    private boolean initialised = false;
+    private boolean initialised;
     private float scale;
     private int tileSetNo;
-    private HashMap<SaveState, Coordinate[]> solution;
-    private int iconSize;
+    private Map<SaveState, Coordinate[]> solution;
     private Random random;
 
     public SpriteMap(SokobanMap map, int tileSetNo) {
@@ -39,6 +39,7 @@ public class SpriteMap extends JPanel {
         playable = true;
         scale = 1;
         this.tileSetNo = tileSetNo;
+        initialised = false;
         this.updateMap(map);
         loadSprites();
         setVisible(true);
@@ -64,38 +65,6 @@ public class SpriteMap extends JPanel {
         }
     }
 
-    public void toggleMode() {
-        playable = !playable;
-        forceRedraw();
-    }
-
-    public boolean getPlayable() {
-        return playable;
-    }
-
-    public int getIconSize() {
-        return iconSize;
-    }
-
-    public void setMap(SokobanMap map) {
-        this.map = map;
-    }
-
-    public SokobanMap getSokobanMap() {
-        return map;
-    }
-
-    public int getXSize() {
-        return xSize;
-    }
-
-    public int getYSize() {
-        return ySize;
-    }
-
-    private void resetRandom() {
-        random = new Random(map.hashCode());
-    }
 
     public void placeSprites() {
         Set<Coordinate> grassPositions = map.inaccessibleSpaces();
@@ -133,18 +102,40 @@ public class SpriteMap extends JPanel {
         repaint();
     }
 
-    public void resetSolver() {
-        solution.clear();
-    }
+    public void loadSprites() {
+        String tilesetPath = "/tileset0" + tileSetNo + "/";
+        ArrayList<String> iconNames
+                = new ArrayList<String>(Arrays.asList("SPACE", "GOAL", "BOX",
+                        "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL", "GRASS",
+                        "WALL", "DEFAULT", "DEFAULT_HOVER", "BOX_UP",
+                        "BOX_DOWN", "BOX_LEFT", "BOX_RIGHT","BOX_ON_GOAL_UP",
+                        "BOX_ON_GOAL_RIGHT","BOX_ON_GOAL_DOWN",
+                        "BOX_ON_GOAL_LEFT"));
+        iconMap.clear();
+        iconCountMap.clear();
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
 
-    public void reset() {
-        resetSolver();
-        resetRandom();
-        map.reset();
-        mapDrawn = false;
-    }
+        for (String iconName : iconNames) {
+            String iconPath = tilesetPath + iconName;
+            URL iconURL = getClass().getResource(iconPath + ".png");
+            Image icon = toolkit.getImage(iconURL);
+            iconMap.put(iconName, new ImageIcon(icon));
 
-    public void forceRedraw() {
+            int i = 2;
+            iconURL = getClass().getResource(iconPath + i + ".png");
+            while (iconURL != null) {
+                icon = toolkit.getImage(iconURL);
+                iconMap.put(iconName + i, new ImageIcon(icon));
+                i++;
+                iconURL = getClass().getResource(iconPath + i + ".png");
+            }
+            iconCountMap.put(iconName, i - 1);
+        }
+
+        unscaledIconMap = new HashMap<String, ImageIcon>(iconMap);
+
+        resizeSprites();
+
         mapDrawn = false;
         resetRandom();
         placeSprites();
@@ -163,39 +154,68 @@ public class SpriteMap extends JPanel {
         return iconMap.get(iconName + randomNumber);
     }
 
-    public void loadSprites() {
-        String tilesetpath = "/tileset0" + tileSetNo + "/";
-        ArrayList<String> iconNames = new ArrayList<String>(Arrays.asList("SPACE", "GOAL", "BOX", "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL", "GRASS", "WALL", "DEFAULT", "DEFAULT_HOVER", "BOX_UP", "BOX_DOWN", "BOX_LEFT", "BOX_RIGHT","BOX_ON_GOAL_UP","BOX_ON_GOAL_RIGHT","BOX_ON_GOAL_DOWN","BOX_ON_GOAL_LEFT"));
-        iconMap.clear();
-        iconCountMap.clear();
-
-        for (String iconName : iconNames) {
-            iconMap.put(iconName, new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource(tilesetpath + iconName + ".png"))));
-
-            int i = 1;
-            while (getClass().getResource(tilesetpath + iconName + (i + 1) + ".png") != null) {
-                iconMap.put(iconName + (i + 1), new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource(tilesetpath + iconName + (i + 1) + ".png"))));
-                i++;
-            }
-            iconCountMap.put(iconName, i);
+    private void resizeSprites() {
+        float iconDimension = scale * getIconSize();
+        int newIconDimension = (int) iconDimension;
+        for(String iconName : iconMap.keySet()) {
+            Image iconImage = iconMap.get(iconName).getImage();
+            Image resizedImage = iconImage.getScaledInstance(newIconDimension, newIconDimension, Image.SCALE_DEFAULT);
+            iconMap.put(iconName, new ImageIcon(resizedImage));
         }
+    }
 
-        unscaledIconMap = new HashMap<String, ImageIcon>(iconMap);
+    public void reset() {
+        resetSolver();
+        resetRandom();
+        map.reset();
+        mapDrawn = false;
+    }
 
-        iconSize = iconMap.get("BOX").getIconHeight();
-        resizeSprites();
+    public void resetSolver() {
+        solution.clear();
+    }
 
+    private void resetRandom() {
+        random = new Random(map.hashCode());
+    }
+
+    public void forceRedraw() {
         mapDrawn = false;
         resetRandom();
         placeSprites();
     }
 
-    public ImageIcon getBoxSprite(){
-        return iconMap.get("BOX");
+    public boolean getPlayable() {
+        return playable;
+    }
+
+    public void toggleMode() {
+        playable = !playable;
+        forceRedraw();
+    }
+
+    public int getXSize() {
+        return xSize;
+    }
+
+    public int getYSize() {
+        return ySize;
+    }
+
+    public SokobanMap getSokobanMap() {
+        return map;
+    }
+
+    public void setMap(SokobanMap map) {
+        this.map = map;
     }
 
     public Map<String, ImageIcon> getIconMap() {
         return iconMap;
+    }
+
+    public Map<String, ImageIcon> getUnscaledIconMap() {
+        return unscaledIconMap;
     }
 
     public int getTileSetNo() {
@@ -206,29 +226,19 @@ public class SpriteMap extends JPanel {
         this.tileSetNo = tileSetNo;
     }
 
-    public Map<String, ImageIcon> getUnscaledIconMap() {
-        return unscaledIconMap;
+    public float getScale() {
+        return scale;
     }
 
     public void setScale(float scale) {
         this.scale = scale;
     }
 
-    public float getScale() {
-        return scale;
+    public int getIconSize() {
+        return unscaledIconMap.get("BOX").getIconHeight();
     }
 
     public void setSolution(HashMap<SaveState, Coordinate[]> solution) {
         this.solution = solution;
-    }
-
-    private void resizeSprites() {
-        float iconDimension = scale * iconSize;
-        int newIconDimension = (int) iconDimension;
-        for(String iconName : iconMap.keySet()) {
-            Image iconImage = iconMap.get(iconName).getImage();
-            Image resizedImage = iconImage.getScaledInstance(newIconDimension, newIconDimension, Image.SCALE_DEFAULT);
-            iconMap.put(iconName, new ImageIcon(resizedImage));
-        }
     }
 }
