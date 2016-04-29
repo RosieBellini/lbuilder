@@ -429,16 +429,10 @@ public class BoxTerm extends JPanel {
 
     private static void changeMagnification(int scaleDirection) {
         SpriteMap spriteMap = SokobanGame.getSpriteMap();
-        float scale;
-        if (autoScale) {
-            scale = autoScaleFactor;
-        } else {
-            scale = spriteMap.getScale();
-        }
-
-        scale = perfectPixelScaler(scale, scaleDirection);
 
         if (!autoScale) {
+            float scale = spriteMap.getScale();
+            scale = perfectPixelScaler(scale, scaleDirection);
             int gameWidth = (int) (spriteMap.getIconSize() * spriteMap.getXSize() * scale);
 
             if (gameWidth > 220) {
@@ -453,6 +447,7 @@ public class BoxTerm extends JPanel {
                 spriteMap.placeSprites(true);
             }
         } else {
+            float scale = autoScaleFactor;
             double preferredHeight = 0.75 * autoScaleFactor * Toolkit.getDefaultToolkit().getScreenSize().getHeight();
             int unscaledGameHeight = spriteMap.getIconSize() * spriteMap.getYSize();
             float gameHeight = unscaledGameHeight * scale + 64;
