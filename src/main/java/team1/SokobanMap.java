@@ -499,6 +499,8 @@ public class SokobanMap {
             moveCounter += distanceToCover;
             put(SokobanObject.PLAYER, placeToGo);
             storeState();
+            //I understand that this is overboard but still.  Just as a proof of concept.
+            SokobanGame.getSpriteMap().placeSprites(true);
             SokobanGame.redraw();
         }
         return true;
