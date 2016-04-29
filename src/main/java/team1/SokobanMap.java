@@ -24,7 +24,7 @@ public class SokobanMap {
     private int xSize;
     private int ySize;
     private int maxUndos;
-    private int moveCounter;
+    private Stack<Integer> moveCounter;
     private SaveState initialState;
 
     /**
@@ -34,7 +34,8 @@ public class SokobanMap {
         this.maxUndos = maxUndos;
         this.xSize = xSize;
         this.ySize = ySize;
-        moveCounter = 0;
+        moveCounter = new Stack<Integer>();
+        moveCounter.push(0);
         history = new FixedSizeStack<SaveState>(maxUndos);
         history.push(new SaveState());
         initialState = new SaveState();
@@ -135,7 +136,7 @@ public class SokobanMap {
         } else {
             prevRedoStackSize = redoStack.size();
             redoStack.push(state);
-            moveCounter--;
+            moveCounter.pop();
         }
     }
 
@@ -146,7 +147,8 @@ public class SokobanMap {
         if (redoStack.size() != 0) {
             prevRedoStackSize = redoStack.size();
             history.push(redoStack.pop());
-            moveCounter++;
+            //Todo make moveCounter redo stack.
+            moveCounter.push(moveCounter.peek()+1);
         }
     }
 
@@ -157,7 +159,8 @@ public class SokobanMap {
     public void reset() {
         history.reset(initialState);
         clearRedoStack();
-        moveCounter = 0;
+        moveCounter.empty();
+        moveCounter.push(0);
     }
 
     private int historyLength() {
@@ -496,7 +499,7 @@ public class SokobanMap {
             }
             storeState();
             clearRedoStack();
-            moveCounter += distanceToCover;
+            moveCounter.push(moveCounter.peek()+distanceToCover);
             put(SokobanObject.PLAYER, target);
             SokobanGame.redraw();
         }
@@ -504,7 +507,7 @@ public class SokobanMap {
     }
 
     public int getMoveCounter() {
-        return moveCounter;
+        return moveCounter.peek();
     }
 
     /**
@@ -537,6 +540,7 @@ public class SokobanMap {
                  * to avoid the undo stack getting filled up with identical states
                  */
                 history.pop();
+                moveCounter.pop();
                 Toolkit.getDefaultToolkit().beep();
                 return false;
             }
@@ -546,7 +550,7 @@ public class SokobanMap {
          * don't give the player the possibility of jumping to inaccessible
          * states by reloading past states
          */
-        moveCounter++;
+        moveCounter.push(moveCounter.peek()+1);
         clearRedoStack();
         return true;
     }
