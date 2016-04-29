@@ -19,7 +19,7 @@ public class Cell extends JLabel{
     private Coordinate position;
     private static SokobanObject paletteState = SokobanObject.WALL;
 
-    public Cell(Coordinate position, SpriteMap spriteMap, boolean playable) {
+    public Cell(Coordinate position, SpriteMap spriteMap) {
         super();
         this.position = position;
         this.spriteMap = spriteMap;

@@ -1,4 +1,5 @@
 package team1;
+
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -13,6 +14,12 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+/**
+ * The SpriteMap class provides a graphical representation of a SokobanMap as
+ * as JPanel. It provides methods for importing tilesets and toggling between a
+ * playable game mode and editor mode.
+ */
 
 public class SpriteMap extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -31,6 +38,12 @@ public class SpriteMap extends JPanel {
     private Map<SaveState, Coordinate[]> solution;
     private Random random;
 
+    /**
+     * SpriteMap constructor.
+     *
+     * @param   map         The initial SokobanMap to display
+     * @param   tileSetNo   The initial tileset to use
+     */
     public SpriteMap(SokobanMap map, int tileSetNo) {
         panelHolder = new HashMap<Coordinate, JLabel>();
         iconMap = new HashMap<String, ImageIcon>();
@@ -46,26 +59,37 @@ public class SpriteMap extends JPanel {
         initialised = true;
     }
 
+    /**
+     * Replaces the displayed SokobanMap with a different one.
+     *
+     * @param   map         The new SokobanMap to display
+     */
     public void updateMap(SokobanMap map) {
         mapDrawn = false;
-        resetSolver();
         this.map = SokobanMap.shallowCopy(map, map.getMaxUndos());
-        random = new Random(this.map.hashCode());
+        resetSolver();
+        resetRandom();
         xSize = map.getXSize();
         ySize = map.getYSize();
         setLayout(new GridLayout(ySize, xSize));
         panelHolder.clear();
         this.removeAll();
-        for (Coordinate position : Coordinate.allValidCoordinates(xSize, ySize)) {
-            panelHolder.put(position, new Cell(position, this, this.playable));
+
+        ArrayList<Coordinate> gridPositions
+                = Coordinate.allValidCoordinates(xSize, ySize);
+        for (Coordinate position : gridPositions) {
+            panelHolder.put(position, new Cell(position, this));
             add(panelHolder.get(position));
         }
+
         if (initialised) {
             placeSprites();
         }
     }
 
-
+    /**
+     * Updates cells according to the status of the SokobanMap.
+     */
     public void placeSprites() {
         Set<Coordinate> grassPositions = map.inaccessibleSpaces();
         ArrayList<Coordinate> toDraw = new ArrayList<Coordinate>();
@@ -85,23 +109,31 @@ public class SpriteMap extends JPanel {
             if (!playable && object == SokobanObject.SPACE) {
                 icon = iconMap.get("DEFAULT");
             } else if (grassPositions.contains(position)) {
-                icon = randomIcon("GRASS", iconCountMap.get("GRASS"));
+                icon = randomIcon("GRASS");
             } else {
-                icon = randomIcon(object.name(), iconCountMap.get(object.name()));
+                icon = randomIcon(object.name());
             }
+
             panelHolder.get(position).setIcon(icon);
         }
 
         if (solution.containsKey(map.getSimpleState())) {
-            Coordinate direction = solution.get(map.getSimpleState())[1];
-            Coordinate position = solution.get(map.getSimpleState())[0].add(direction);
-            ImageIcon icon = iconMap.get(map.get(position).name() + "_" + direction.toString());
+            SaveState mapState = map.getSimpleState();
+            Coordinate direction = solution.get(mapState)[1];
+            Coordinate position = solution.get(mapState)[0].add(direction);
+            ImageIcon icon = iconMap.get(map.get(position).name()
+                                            + "_" + direction.toString());
+
             panelHolder.get(position).setIcon(icon);
         }
 
         repaint();
     }
 
+    /**
+     * Imports the icons of the active tileset and stores them in iconMap and
+     * unscaledIconMap for scaled and unscaled variants respectively.
+     */
     public void loadSprites() {
         String tilesetPath = "/tileset0" + tileSetNo + "/";
         ArrayList<String> iconNames
@@ -141,7 +173,14 @@ public class SpriteMap extends JPanel {
         placeSprites();
     }
 
-    private ImageIcon randomIcon(String iconName, int iconCount) {
+    /**
+     * Returns a randomly selected variant of the given icon.
+     *
+     * @param   iconName        The icon type to use
+     */
+    private ImageIcon randomIcon(String iconName) {
+        int iconCount = iconCountMap.get(iconName);
+
         if (iconCount == 1 || !playable) {
             return iconMap.get(iconName);
         }
@@ -154,16 +193,23 @@ public class SpriteMap extends JPanel {
         return iconMap.get(iconName + randomNumber);
     }
 
+    /**
+     * Resizes the icons in iconMap according to the scale field.
+     */
     private void resizeSprites() {
         float iconDimension = scale * getIconSize();
         int newIconDimension = (int) iconDimension;
         for(String iconName : iconMap.keySet()) {
             Image iconImage = iconMap.get(iconName).getImage();
-            Image resizedImage = iconImage.getScaledInstance(newIconDimension, newIconDimension, Image.SCALE_DEFAULT);
+            Image resizedImage = iconImage.getScaledInstance(newIconDimension,
+                                        newIconDimension, Image.SCALE_DEFAULT);
             iconMap.put(iconName, new ImageIcon(resizedImage));
         }
     }
 
+    /**
+     * Returns the SokobanMap and this SpriteMap to their initial states.
+     */
     public void reset() {
         resetSolver();
         resetRandom();
@@ -171,73 +217,147 @@ public class SpriteMap extends JPanel {
         mapDrawn = false;
     }
 
+    /**
+     * Removes the solution if one has been calculated.
+     */
     public void resetSolver() {
         solution.clear();
     }
 
+    /**
+     * Resets the random number generator to its initial state, using the
+     * SokobanMap's hashcode as its seed. This is used to prevent icons with
+     * alternates from getting jumbled up when the SpriteMap is reset.
+     */
     private void resetRandom() {
         random = new Random(map.hashCode());
     }
 
+    /**
+     * Forces the SpriteMap to redraw every icon in the grid array.
+     */
     public void forceRedraw() {
         mapDrawn = false;
         resetRandom();
         placeSprites();
     }
 
+    /**
+     * Returns the mode of the SpriteMap.
+     *
+     * @return      True if the SpriteMap is in game mode, false if in editor
+     *              mode
+     */
     public boolean getPlayable() {
         return playable;
     }
 
+    /**
+     * Toggles the mode of the SpriteMap.
+     */
     public void toggleMode() {
         playable = !playable;
         forceRedraw();
     }
 
+    /**
+     * Returns the size of the SokobanMap's X dimension.
+     *
+     * @return      The value of xSize
+     */
     public int getXSize() {
         return xSize;
     }
 
+    /**
+     * Returns the size of the SokobanMap's Y dimension.
+     *
+     * @return      The value of ySize
+     */
     public int getYSize() {
         return ySize;
     }
 
+    /**
+     * Returns the SokobanMap associated with this SpriteMap.
+     *
+     * @return      The value of map
+     */
     public SokobanMap getSokobanMap() {
         return map;
     }
 
-    public void setMap(SokobanMap map) {
-        this.map = map;
-    }
-
+    /**
+     * Returns the map of icon names to icons.
+     *
+     * @return      The value of iconMap
+     */
     public Map<String, ImageIcon> getIconMap() {
         return iconMap;
     }
 
+    /**
+     * Returns the map of icon names to icons (unscaled variants).
+     *
+     * @return      The value of unscaledIconMap
+     */
     public Map<String, ImageIcon> getUnscaledIconMap() {
         return unscaledIconMap;
     }
 
+    /**
+     * Returns the number of the active tileset.
+     *
+     * @return      The value of tileSetNo
+     */
     public int getTileSetNo() {
         return tileSetNo;
     }
 
+    /**
+     * Sets the active tileset to a different one.
+     *
+     * @param   tileSetNo       The number of the new tileset to use
+     */
     public void setTileSetNo(int tileSetNo) {
         this.tileSetNo = tileSetNo;
     }
 
+    /**
+     * Returns the current icon scale used by this SpriteMap.
+     *
+     * @return      The value of scale
+     */
     public float getScale() {
         return scale;
     }
 
+    /**
+     * Changes the scale used by icons in this SpriteMap.
+     *
+     * @param   scale       The new icon scale to use (1 is native)
+     */
     public void setScale(float scale) {
         this.scale = scale;
     }
 
+    /**
+     * Returns the native height of icons in the active tileset. This assumes
+     * that the icons are square and that they all have the same dimensions.
+     *
+     * @return      The native size of active icons (in pixels)
+     */
     public int getIconSize() {
         return unscaledIconMap.get("BOX").getIconHeight();
     }
 
+    /**
+     * Adds a solution for the active SokobanMap.
+     *
+     * @param   solution        The HashMap that links the "correct" states of
+     *                          the solution to the player's position and
+     *                          required push direction at each state
+     */
     public void setSolution(HashMap<SaveState, Coordinate[]> solution) {
         this.solution = solution;
     }
