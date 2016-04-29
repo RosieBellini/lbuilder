@@ -85,6 +85,14 @@ public class SpriteMap extends JPanel {
         return map;
     }
 
+    public int getXSize() {
+        return xSize;
+    }
+
+    public int getYSize() {
+        return ySize;
+    }
+
     public void placeSprites() {
         Set<Coordinate> grassPositions = map.inaccessibleSpaces();
         ArrayList<Coordinate> toDraw = new ArrayList<Coordinate>();

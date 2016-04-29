@@ -413,8 +413,12 @@ public class BoxTerm extends JPanel {
             }
         }
 
-        spriteMap.setScale(scale);
-        spriteMap.loadSprites();
+        int gameWidth = (int) (spriteMap.getIconSize() * spriteMap.getXSize() * scale);
+
+        if (gameWidth > 220) {
+            spriteMap.setScale(scale);
+            spriteMap.loadSprites();
+        }
     }
 
     private static void toggleMode() {
