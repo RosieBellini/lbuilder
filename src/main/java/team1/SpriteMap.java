@@ -32,24 +32,25 @@ public class SpriteMap extends JPanel {
     private Map<String, ImageIcon> unscaledIconMap;
     private boolean playable;
     private float scale;
-    private int tileSetNo;
+    private int tilesetNum;
     private Map<SaveState, Coordinate[]> solution;
     private Random random;
+    private final int tilesetCount = 3;
 
     /**
      * SpriteMap constructor.
      *
      * @param   map         The initial SokobanMap to display
-     * @param   tileSetNo   The initial tileset to use
+     * @param   tilesetNum   The initial tileset to use
      */
-    public SpriteMap(SokobanMap map, int tileSetNo) {
+    public SpriteMap(SokobanMap map, int tilesetNum) {
         panelHolder = new HashMap<Coordinate, JLabel>();
         iconMap = new HashMap<String, ImageIcon>();
         iconCountMap = new HashMap<String, Integer>();
         solution = new HashMap<SaveState, Coordinate[]>();
         playable = true;
         scale = 1;
-        this.tileSetNo = tileSetNo;
+        this.tilesetNum = tilesetNum;
         loadSprites();
         this.updateMap(map);
         setVisible(true);
@@ -136,7 +137,7 @@ public class SpriteMap extends JPanel {
      * unscaledIconMap for scaled and unscaled variants respectively.
      */
     public void loadSprites() {
-        String tilesetPath = "/tileset0" + tileSetNo + "/";
+        String tilesetPath = "/tileset0" + tilesetNum + "/";
         ArrayList<String> iconNames
                 = new ArrayList<String>(Arrays.asList("SPACE", "GOAL", "BOX",
                         "BOX_ON_GOAL", "PLAYER", "PLAYER_ON_GOAL", "GRASS",
@@ -283,21 +284,11 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Returns the number of the active tileset.
-     *
-     * @return      The value of tileSetNo
+     * Advances the value of tilesetNum to the next valid one. Loops back to
+     * zero.
      */
-    public int getTileSetNo() {
-        return tileSetNo;
-    }
-
-    /**
-     * Sets the active tileset to a different one.
-     *
-     * @param   tileSetNo       The number of the new tileset to use
-     */
-    public void setTileSetNo(int tileSetNo) {
-        this.tileSetNo = tileSetNo;
+    public void nextTileset() {
+        tilesetNum = (tilesetNum + 1) % tilesetCount;
     }
 
     /**
