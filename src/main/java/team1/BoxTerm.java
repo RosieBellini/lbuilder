@@ -342,7 +342,7 @@ public class BoxTerm extends JPanel {
         magnifyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, SHORTCUT_MASK));
         magnifyItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                changeMagnification(true);
+                changeMagnification(1);
                 frame.pack();
             }
         });
@@ -352,7 +352,7 @@ public class BoxTerm extends JPanel {
         deMagnifyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, SHORTCUT_MASK));
         deMagnifyItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                changeMagnification(false);
+                changeMagnification(-1);
                 frame.pack();
             }
         });
@@ -395,17 +395,17 @@ public class BoxTerm extends JPanel {
         helpMenu.add(aboutItem);
     }
 
-    private static void changeMagnification(boolean getBigger) {
+    private static void changeMagnification(int scaleDirection) {
         SpriteMap spriteMap = SokobanGame.getSpriteMap();
         float scale = spriteMap.getScale();
 
-        if (getBigger) {
+        if (scaleDirection > 0) {
             if (scale > 1) {
                 scale++;
             } else {
                 scale = scale * 2;
             }
-        } else {
+        } else if (scaleDirection < 0) {
             if (scale > 1) {
                 scale--;
             } else {
@@ -416,6 +416,11 @@ public class BoxTerm extends JPanel {
         int gameWidth = (int) (spriteMap.getIconSize() * spriteMap.getXSize() * scale);
 
         if (gameWidth > 220) {
+            spriteMap.setScale(scale);
+            spriteMap.loadSprites();
+        } else if (scaleDirection == 0) {
+            scale = 220 / ((float) (spriteMap.getIconSize() * spriteMap.getXSize()));
+            scale = (float) Math.ceil(scale);
             spriteMap.setScale(scale);
             spriteMap.loadSprites();
         }
@@ -481,6 +486,7 @@ public class BoxTerm extends JPanel {
                 SokobanMap map = SokobanMap.importLevel(level);
                 lastOpenedMap = new SokobanMap(map);
                 SokobanGame.getSpriteMap().updateMap(map);
+                changeMagnification(0);
                 SokobanGame.redraw();
                 frame.pack();
             }
@@ -520,6 +526,7 @@ public class BoxTerm extends JPanel {
             map = SokobanMap.importLevel(level);
             SokobanGame.getSpriteMap().updateMap(map);
             lastOpenedMap = new SokobanMap(map);
+            changeMagnification(0);
             SokobanGame.redraw();
             frame.pack();
         } else if (selectReturnVal == 1) {
@@ -541,6 +548,7 @@ public class BoxTerm extends JPanel {
                 }
                 SokobanGame.getSpriteMap().updateMap(map);
                 lastOpenedMap = new SokobanMap(map);
+                changeMagnification(0);
                 SokobanGame.redraw();
                 currentLevelIndex = -1;
                 frame.pack();
