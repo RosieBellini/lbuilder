@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Coordinate implements Comparable<Coordinate>{
+    public final int x;
+    public final int y;
+
 	public Coordinate(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
-    public final int x;
-    public final int y;
 
 	public Coordinate(Coordinate coordToCopy) {
 		this.x = coordToCopy.x;
@@ -36,9 +37,15 @@ public class Coordinate implements Comparable<Coordinate>{
 		return new Coordinate(x, y);
 	}
 
+    public Coordinate subtract(Coordinate coord) {
+        int x = this.x - coord.x;
+        int y = this.y - coord.y;
+		return new Coordinate(x, y);
+    }
+
 	public Coordinate mult(int multiplier) {
-		int x = this.x * 2;
-		int y = this.y * 2;
+		int x = this.x * multiplier;
+		int y = this.y * multiplier;
 		return new Coordinate(x, y);
 	}
 
