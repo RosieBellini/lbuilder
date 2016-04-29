@@ -74,7 +74,7 @@ public final class SaveState {
      * Constructor for a SaveState clone. Respects simple and full types.
      */
     public SaveState(SaveState stateToCopy) {
-        this.playerPos = new Coordinate(stateToCopy.getWPos());
+        this.playerPos = new Coordinate(stateToCopy.getPlayerPos());
         this.boxPositions = new HashSet<Coordinate>();
         this.wallPositions = new HashSet<Coordinate>();
         this.goalPositions = new HashSet<Coordinate>();
@@ -131,7 +131,7 @@ public final class SaveState {
      *
      * @return      The Coordinate of the player
      */
-    public final Coordinate getWPos() {
+    public final Coordinate getPlayerPos() {
         return playerPos;
     }
 

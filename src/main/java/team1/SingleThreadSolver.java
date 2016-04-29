@@ -46,7 +46,7 @@ public class SingleThreadSolver implements Runnable {
     private List<Coordinate[]> validPushes(int stateIndex) {
         map.loadSimpleState(seenStates.get(stateIndex));
         SaveState state = seenStates.get(stateIndex);
-        Set<Coordinate> accessibleSpaces = map.accessibleSpaces(state.getWPos(), false);
+        Set<Coordinate> accessibleSpaces = map.accessibleSpaces(state.getPlayerPos(), false);
         List<Coordinate[]> validPushes = new ArrayList<Coordinate[]>();
 
         for (Coordinate box : state.getBoxPositions()) {

@@ -71,7 +71,7 @@ public class SokobanMap {
         if (!state.isSimple()){
             throw new IllegalArgumentException();
         }
-        SaveState stateToLoad = new SaveState(state.getWPos(),
+        SaveState stateToLoad = new SaveState(state.getPlayerPos(),
                 state.getBoxPositions(),
                 this.getState().getWallPositions(),
                 this.getState().getGoalPositions());
@@ -108,7 +108,7 @@ public class SokobanMap {
      * @return a SaveState which represents a state of the game for the solving algorithm to use.
      */
     public SaveState getSimpleState() {
-        Set<Coordinate> accessibleSpaces = accessibleSpaces(getState().getWPos(), false);
+        Set<Coordinate> accessibleSpaces = accessibleSpaces(getState().getPlayerPos(), false);
         Coordinate potentialTopLeftSpace = new Coordinate(xSize,ySize);
         for (Coordinate potential : Coordinate.allValidCoordinates(xSize, ySize)) {
             potentialTopLeftSpace = potential;
@@ -257,8 +257,8 @@ public class SokobanMap {
             lastState = stateArray[history.size() - 2];
         }
 
-        changedPlaces.add(getState().getWPos());
-        changedPlaces.add(lastState.getWPos());
+        changedPlaces.add(getState().getPlayerPos());
+        changedPlaces.add(lastState.getPlayerPos());
 
         changedPlaces.addAll(getState().getBoxPositions());
         changedPlaces.addAll(lastState.getBoxPositions());
@@ -338,7 +338,7 @@ public class SokobanMap {
     public Set<Coordinate> inaccessibleSpaces() {
         ArrayList<Coordinate> potentialGrass = Coordinate.allValidCoordinates(xSize, ySize);
         Set<Coordinate> inaccessibleSpaces = new HashSet<Coordinate>();
-        potentialGrass.removeAll(accessibleSpaces(getState().getWPos(),true));
+        potentialGrass.removeAll(accessibleSpaces(getState().getPlayerPos(),true));
         for(Coordinate potentialGrassSpace : potentialGrass){
             if (get(potentialGrassSpace) == SokobanObject.SPACE || get(potentialGrassSpace) == SokobanObject.GOAL) {
                 inaccessibleSpaces.add(potentialGrassSpace);
@@ -402,7 +402,7 @@ public class SokobanMap {
             }
         }
 
-        for (Coordinate position : accessibleSpaces(getState().getWPos(), true)) {
+        for (Coordinate position : accessibleSpaces(getState().getPlayerPos(), true)) {
             if (get(position) == SokobanObject.BOX) {
                 boxCount++;
             }
@@ -483,7 +483,7 @@ public class SokobanMap {
      * @return              True if the move is allowed, false otherwise
      */
     public boolean moveTo(Coordinate target) {
-        Coordinate playerPosition = new Coordinate(getState().getWPos());
+        Coordinate playerPosition = new Coordinate(getState().getPlayerPos());
 
         if (!accessibleSpaces(playerPosition, false).contains(target)) {
             return false;
@@ -529,7 +529,7 @@ public class SokobanMap {
      * @return true if the move is permitted, false otherwise
      */
     public boolean move(Coordinate direction) {
-        Coordinate wCoord = getState().getWPos();
+        Coordinate wCoord = getState().getPlayerPos();
         Coordinate nCoord = wCoord.add(direction);
         storeState();
 
