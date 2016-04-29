@@ -167,6 +167,7 @@ public class BoxTerm extends JPanel {
                     SokobanGame.getSpriteMap().forceRedraw();
                     SokobanGame.redraw();
                     frame.setSize(frame.getPreferredSize());
+                    currentLevelIndex = -1;
                 }
             }
         });
