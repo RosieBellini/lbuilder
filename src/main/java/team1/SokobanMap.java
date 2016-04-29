@@ -329,7 +329,7 @@ public class SokobanMap {
         }
         return neighbors;
     }
-    
+
     /**
      * Takes a coordinate of the map and returns all the spaces
      * which the player could access from that coordinate (ignoring boxes).
@@ -474,7 +474,7 @@ public class SokobanMap {
         }
         return false;
     }
-    
+
     /**
      * Moves the player to the place specified if possible.
      * @param placeToGo  The place the player wants to be.
@@ -496,16 +496,14 @@ public class SokobanMap {
                 int randomNumber = random.nextInt(distanceToCover/2);
                 distanceToCover += randomNumber;
             }
+            storeState();
             moveCounter += distanceToCover;
             put(SokobanObject.PLAYER, placeToGo);
-            storeState();
-            //I understand that this is overboard but still.  Just as a proof of concept.
-            SokobanGame.getSpriteMap().placeSprites(true);
             SokobanGame.redraw();
         }
         return true;
     }
-    
+
     public int getMoveCounter(){
         return moveCounter;
     }
@@ -533,7 +531,7 @@ public class SokobanMap {
          */
         if (!teleport(wCoord, direction)) {
             if (teleport(nCoord, direction)) {
-                teleport(wCoord, direction);                
+                teleport(wCoord, direction);
             } else {
                 /*
                  * otherwise, undo the last move without sticking it in the redo stack
