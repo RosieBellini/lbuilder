@@ -77,10 +77,8 @@ public class SingleThreadSolver implements Runnable {
                 objectBehindPush!=SokobanObject.WALL) {
             return true;
         }
-        
         Coordinate spaceLeftOfPush = new Coordinate(-1, -1);
         Coordinate spaceRightOfPush= new Coordinate (-1, -1);
-        
         if (aPush[1].y == 0) {
             spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0, 1));
             spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0, -1));
@@ -89,8 +87,8 @@ public class SingleThreadSolver implements Runnable {
             spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(-1, 0));
         }
 
-        if (map.get(spaceRightOfPush) == SokobanObject.WALL
-                && map.get(spaceLeftOfPush) == SokobanObject.WALL) {
+        if (map.get(spaceRightOfPush) == SokobanObject.WALL &&
+                map.get(spaceLeftOfPush) == SokobanObject.WALL) {
             return false;
         } else {
             return true;
