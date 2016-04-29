@@ -87,7 +87,7 @@ public class SingleThreadSolver implements Runnable {
             spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(-1, 0));
         }
 
-        if (map.get(spaceRightOfPush) == SokobanObject.WALL &&
+        if (map.get(spaceRightOfPush) == SokobanObject.WALL ||
                 map.get(spaceLeftOfPush) == SokobanObject.WALL) {
             return false;
         } else {
