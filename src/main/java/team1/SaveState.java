@@ -16,25 +16,33 @@ public final class SaveState {
     private Set<Coordinate> goalPositions;
     private final boolean simpleState;
 
-    public SaveState(Coordinate wPos, Set<Coordinate> boxPositions, Set<Coordinate> wallPositions, Set<Coordinate> goalPositions) {
+    public SaveState(
+                        Coordinate wPos,
+                        Set<Coordinate> boxPositions,
+                        Set<Coordinate> wallPositions,
+                        Set<Coordinate> goalPositions
+                    ) {
         this.wPos = new Coordinate(wPos.x, wPos.y);
         this.boxPositions = new HashSet<Coordinate>(boxPositions);
         this.wallPositions = new HashSet<Coordinate>(wallPositions);
         this.goalPositions = new HashSet<Coordinate>(goalPositions);
+
         simpleState = false;
     }
 
     public SaveState(SaveState stateToCopy) {
         this.wPos = new Coordinate(stateToCopy.getWPos());
-        this.boxPositions = new HashSet<Coordinate>(stateToCopy.getBoxPositions());
+        this.boxPositions = new HashSet<Coordinate>();
+        this.wallPositions = new HashSet<Coordinate>();
+        this.goalPositions = new HashSet<Coordinate>();
+
+        this.boxPositions.addAll(stateToCopy.getBoxPositions());
 
         if (stateToCopy.isSimple()) {
-            this.wallPositions = new HashSet<Coordinate>();
-            this.goalPositions = new HashSet<Coordinate>();
             simpleState = true;
         } else {
-            this.wallPositions = new HashSet<Coordinate>(stateToCopy.getWallPositions());
-            this.goalPositions = new HashSet<Coordinate>(stateToCopy.getGoalPositions());
+            this.wallPositions.addAll(stateToCopy.getWallPositions());
+            this.goalPositions.addAll(stateToCopy.getGoalPositions());
             simpleState = false;
         }
     }
@@ -44,6 +52,7 @@ public final class SaveState {
         this.boxPositions = new HashSet<Coordinate>(boxPositions);
         this.wallPositions = new HashSet<Coordinate>();
         this.goalPositions = new HashSet<Coordinate>();
+
         simpleState = true;
     }
 
@@ -52,40 +61,46 @@ public final class SaveState {
         this.boxPositions = new HashSet<Coordinate>();
         this.wallPositions = new HashSet<Coordinate>();
         this.goalPositions = new HashSet<Coordinate>();
+
         simpleState = false;
     }
 
-
     public SokobanObject get(Coordinate position) {
+        SokobanObject object;
+
         if (wallPositions.contains(position)) {
-            return SokobanObject.WALL;
+            object = SokobanObject.WALL;
         } else if (goalPositions.contains(position)) {
             if (wPos.equals(position)) {
-                return SokobanObject.PLAYER_ON_GOAL;
+                object = SokobanObject.PLAYER_ON_GOAL;
             } else if (boxPositions.contains(position)) {
-                return SokobanObject.BOX_ON_GOAL;
+                object = SokobanObject.BOX_ON_GOAL;
+            } else {
+                object = SokobanObject.GOAL;
             }
-            return SokobanObject.GOAL;
         } else if (boxPositions.contains(position)) {
-            return SokobanObject.BOX;
+            object = SokobanObject.BOX;
         } else if (wPos.equals(position)) {
-            return SokobanObject.PLAYER;
+            object = SokobanObject.PLAYER;
         } else {
-            return SokobanObject.SPACE;
+            object = SokobanObject.SPACE;
         }
+
+        return object;
     }
 
     public boolean put(SokobanObject object, Coordinate coord) {
         SokobanObject target = get(coord);
         boolean success = false;
 
-        switch(object) {
+        switch (object) {
         case PLAYER:
             if (target == SokobanObject.SPACE || target == SokobanObject.GOAL) {
                 wPos = coord;
                 success = true;
             }
             break;
+
         case BOX:
             if (target == SokobanObject.SPACE || target == SokobanObject.GOAL) {
                 success = boxPositions.add(coord);
@@ -96,22 +111,27 @@ public final class SaveState {
                 success = wallPositions.add(coord);
             }
             break;
+
         case GOAL:
             if (!wallPositions.contains(coord)) {
                 success = goalPositions.add(coord);
             }
             break;
+
         case PLAYER_ON_GOAL:
         case BOX_ON_GOAL:
             if (put(SokobanObject.GOAL, coord)) {
                 success = put(SokobanObject.getTopLayer(object), coord);
             }
             break;
+
         case SPACE:
             makeEmpty(coord);
             success = true;
             break;
-        default:    return false;
+
+        default:
+            success = false;
         }
 
         return success;
@@ -167,7 +187,7 @@ public final class SaveState {
             coordArrayList.addAll(boxPositions);
             Collections.sort(coordArrayList);
             coordArrayList.add(wPos.mult(-1));
-            int[] coordListXY = new int[coordArrayList.size()*2];
+            int[] coordListXY = new int[coordArrayList.size() * 2];
             int p = 0;
             for (int i = 0; i < coordArrayList.size(); i++) {
                 coordListXY[p] = coordArrayList.get(i).x;
@@ -177,11 +197,11 @@ public final class SaveState {
             }
             return Arrays.hashCode(coordListXY);
         }
-        return Arrays.hashCode(new Object[]{wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(), goalPositions.hashCode()});
+        return Arrays.hashCode(new Object[] { wPos.hashCode(), boxPositions.hashCode(), wallPositions.hashCode(),
+                goalPositions.hashCode() });
     }
 
     public boolean isSimple() {
         return simpleState;
     }
 }
-
