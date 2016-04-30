@@ -123,7 +123,7 @@ public class SingleThreadSolver implements Runnable {
         int currentStateIndex = 0;
         solving = true;
         boolean solved = false;
-        while (solving && currentStateIndex<seenStates.size()) {
+        while (!stopped && solving && currentStateIndex<seenStates.size()) {
             map.loadSimpleState(seenStates.get(currentStateIndex));
             List<Coordinate[]> validPushes = validPushes(currentStateIndex);
             for (int i=0; i<validPushes.size();i++) {
