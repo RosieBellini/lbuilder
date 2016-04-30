@@ -75,11 +75,21 @@ public class Coordinate implements Comparable<Coordinate>{
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof Coordinate)) {
-			return false;
-		}
-		Coordinate pos = (Coordinate) obj;
-		if (this.x == pos.x && this.y == pos.y) {
+
+        Coordinate position;
+        if (obj instanceof PathNode) {
+            position = ((PathNode) obj).getPosition();
+        } else if (obj instanceof Coordinate) {
+            position = (Coordinate) obj;
+        } else {
+            return false;
+        }
+
+        int x = this.x;
+        int y = this.y;
+
+
+		if (x == position.x && y == position.y) {
 			return true;
 		} else {
 			return false;

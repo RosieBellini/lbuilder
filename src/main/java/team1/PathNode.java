@@ -45,4 +45,36 @@ public class PathNode implements Comparable<PathNode> {
             return 0;
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+        Coordinate position;
+        if (obj instanceof PathNode) {
+            position = ((PathNode) obj).getPosition();
+        } else if (obj instanceof Coordinate) {
+            position = (Coordinate) obj;
+        } else {
+            return false;
+        }
+
+        int x = this.getPosition().x;
+        int y = this.getPosition().y;
+
+
+		if (x == position.x && y == position.y) {
+			return true;
+		} else {
+			return false;
+		}
+    }
+
+	@Override
+	public int hashCode()
+	{
+		return this.getPosition().hashCode();
+	}
 }
