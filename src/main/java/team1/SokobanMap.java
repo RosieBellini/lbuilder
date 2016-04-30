@@ -562,23 +562,30 @@ public class SokobanMap {
             throw new IllegalArgumentException("Move direction must have magnitude 1");
         }
 
+        boolean validMove = false;
         Coordinate playerPos = getState().getPlayerPos();
         Coordinate target = playerPos.add(direction);
         storeState();
 
         if (!put(SokobanObject.PLAYER, target)) {
             if (get(target) == SokobanObject.BOX || get(target) == SokobanObject.BOX_ON_GOAL) {
-                removeLayer(target);
-                put(SokobanObject.BOX, target.add(direction));
-                put(SokobanObject.PLAYER, target);
-            } else {
-                history.pop();
-                Toolkit.getDefaultToolkit().beep();
-                return false;
+                if (put(SokobanObject.BOX, target.add(direction))) {
+                    removeLayer(target);
+                    put(SokobanObject.PLAYER, target);
+                    validMove = true;
+                }
             }
+        } else {
+            validMove = true;
         }
 
-        clearRedoStack();
-        return true;
+        if (validMove) {
+            clearRedoStack();
+            return true;
+        } else {
+            history.pop();
+            Toolkit.getDefaultToolkit().beep();
+            return false;
+        }
     }
 }
