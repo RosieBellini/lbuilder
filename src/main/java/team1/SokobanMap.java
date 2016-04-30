@@ -516,10 +516,7 @@ public class SokobanMap {
             }
 
             for (PathNode neighbour : neighbours) {
-                boolean alreadySearched = closed.contains(neighbour);
-
-                if (!alreadySearched) {
-
+                if (!closed.contains(neighbour)) {
                     if (open.contains(neighbour)) {
                         PathNode searchedNode = open.get(open.indexOf(neighbour));
                         int gCost = neighbour.getGCost();
@@ -529,7 +526,6 @@ public class SokobanMap {
                             searchedNode.changeParent(neighbour);
                             searchedNode.updateCosts();
                         }
-
                     }
 
                     if (neighbour.getPosition().equals(target)) {
