@@ -463,6 +463,13 @@ public class SokobanMap {
      */
     public boolean moveTo(Coordinate target) throws InterruptedException {
         clearRedoStack();
+        
+        if (neighbors(target).contains(getState().getPlayerPos())){
+            move(target.add(getState().getPlayerPos().reverse()));
+            GamePanel.redraw();
+            return true;
+        }
+        
         ArrayList<Coordinate> path = findPath(target);
 
         if (path == null) {
