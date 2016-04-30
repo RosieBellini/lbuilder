@@ -432,28 +432,6 @@ public class SokobanMap {
         return croppedMap;
     }
 
-    /**
-     * Moves the object at a given position in the direction specified,
-     * respecting the rules of the game.
-     *
-     * @param iCoord        position of the object to move
-     * @param direction     direction in which to move it
-     * @return  true if the object was moved, false if this would violate the
-     *          rules of the game
-     */
-    public boolean teleport(Coordinate iCoord, Coordinate direction) {
-        Coordinate fCoord = iCoord.add(direction);
-        SokobanObject source = get(iCoord);
-        if (source != SokobanObject.WALL && source != SokobanObject.GOAL) {
-            if (put(SokobanObject.getTopLayer(source), fCoord)) {
-                if (source != SokobanObject.PLAYER_ON_GOAL) {
-                    removeLayer(iCoord);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
 
     class Mover extends Thread {
         private Coordinate target;
@@ -555,8 +533,7 @@ public class SokobanMap {
                     }
 
                     if (neighbour.equals(target)) {
-                        System.out.println("found it");
-                        System.out.println();
+                        System.out.println("Found target");
                         ArrayList<Coordinate> directions = new ArrayList<Coordinate>();
                         directions.add(target);
                         PathNode parent = open.get(open.indexOf(nodeNeighbourDummy)).getParent();
@@ -568,9 +545,6 @@ public class SokobanMap {
 
                         directions.remove(playerPos);
                         Collections.reverse(directions);
-                        for (PathNode node : open) {
-                            System.out.println(node.getGCost());
-                        }
 
                         return directions;
                     }
@@ -584,7 +558,7 @@ public class SokobanMap {
         }
 
 
-        System.out.println("no path found :(");
+        System.out.println("No path found");
         return new ArrayList<Coordinate>();
     }
 
@@ -592,41 +566,31 @@ public class SokobanMap {
      * Moves the player in the given direction, respecting the rules of the
      * game and pushing boxes when necessary.
      *
-     * TODO:    make sure this actually works when the magnitude of the direction
-     *          is more than 1
-     *
      * @param direction     the direction in which to move the player
      * @return true if the move is permitted, false otherwise
      */
     public boolean move(Coordinate direction) {
-        Coordinate wCoord = getState().getPlayerPos();
-        Coordinate nCoord = wCoord.add(direction);
+        int directionMagnitude = Math.abs(direction.x) + Math.abs(direction.y);
+        if (directionMagnitude != 1) {
+            throw new IllegalArgumentException("Move direction must have magnitude 1");
+        }
+
+        Coordinate playerPos = getState().getPlayerPos();
+        Coordinate target = playerPos.add(direction);
         storeState();
 
-        /*
-         * Try to move the player in the specified direction; if this fails,
-         * try to move the object in front of the player in the specified
-         * direction; if this succeeds, the player can be moved to the
-         * coordinates that the user specified.
-         */
-        if (!teleport(wCoord, direction)) {
-            if (teleport(nCoord, direction)) {
-                teleport(wCoord, direction);
+        if (!put(SokobanObject.PLAYER, target)) {
+            if (get(target) == SokobanObject.BOX || get(target) == SokobanObject.BOX_ON_GOAL) {
+                removeLayer(target);
+                put(SokobanObject.BOX, target.add(direction));
+                put(SokobanObject.PLAYER, target);
             } else {
-                /*
-                 * otherwise, undo the last move without sticking it in the redo stack
-                 * to avoid the undo stack getting filled up with identical states
-                 */
                 history.pop();
                 Toolkit.getDefaultToolkit().beep();
                 return false;
             }
         }
 
-        /*
-         * don't give the player the possibility of jumping to inaccessible
-         * states by reloading past states
-         */
         clearRedoStack();
         return true;
     }
