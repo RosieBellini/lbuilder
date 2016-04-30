@@ -21,13 +21,14 @@ public class SpriteLabel extends JLabel{
             {
                 if (!mapPanel.getPlayable()) {
                     modifyCell(me);
-                }
-                else {
-                    // mapPanel.getSokobanMap().findPath(position);
-                    try {
-                        mapPanel.getSokobanMap().moveTo(position);
-                    } catch (InterruptedException e) {
-
+                } else {
+                    SokobanMap map = mapPanel.getSokobanMap();
+                    if (map.neighbors(position).contains(map.getState().getPlayerPos())){
+                        map.move(position.add(map.getState().getPlayerPos().reverse()));
+                        GamePanel.redraw();
+                    } else {
+                        SokobanMap.Mover mover = map.new Mover(position, 75);
+                        mover.start();
                     }
                 }
             }

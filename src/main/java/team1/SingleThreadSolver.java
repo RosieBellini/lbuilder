@@ -1,10 +1,12 @@
 package team1;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public class SingleThreadSolver implements Runnable {
@@ -149,7 +151,7 @@ public class SingleThreadSolver implements Runnable {
         return allPushesString;
     }
 
-    public HashMap<SaveState, Coordinate[]> levelSolution() {
+    public Entry<HashMap<SaveState, Coordinate[]>, LinkedList<Coordinate[]>> levelSolution() {
         LinkedList<Coordinate[]> pushesToSolve = new LinkedList<Coordinate[]>();
         LinkedList<SaveState> statesToSolve = new LinkedList<SaveState>();
         HashMap<SaveState, Coordinate[]> solution = new HashMap<SaveState, Coordinate[]>();
@@ -174,6 +176,6 @@ public class SingleThreadSolver implements Runnable {
             return null;
         }
 
-        return solution;
+        return new SimpleEntry<HashMap<SaveState, Coordinate[]>, LinkedList<Coordinate[]>>(solution, pushesToSolve);
     }
 }

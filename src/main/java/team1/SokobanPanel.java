@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
@@ -66,6 +68,7 @@ public class SokobanPanel extends JPanel {
     private static SokobanMap lastOpenedMap;
     private static boolean autoScale = false;
     private static float autoScaleFactor = 1;
+    private static String programName;
 
     private static void startSolver() {
         solving = true;
@@ -103,18 +106,28 @@ public class SokobanPanel extends JPanel {
         dialog.setVisible(true);
 
         class solverWorker extends SwingWorker<Void, Object> {
-            HashMap<SaveState, Coordinate[]> solution;
+            Entry<HashMap<SaveState, Coordinate[]>, LinkedList<Coordinate[]>> solution;
 
             @Override
             protected void done() {
                 solving = false;
 
                 if (solution != null) {
-                    if (solution.size() > 0) {
+                    if (solution.getKey().size() > 0) {
                         GamePanel.getSpriteMap().reset();
-                        GamePanel.getSpriteMap().setSolution(solution);
+                        GamePanel.getSpriteMap().setSolution(solution.getKey());
                         GamePanel.redraw();
                         dialog.dispose();
+
+                        int result = JOptionPane.showConfirmDialog(frame, "A solution was found!\nWould you like " + programName + " to play it for you?", "Solution found", JOptionPane.YES_NO_OPTION);
+
+                        switch (result) {
+                            case JOptionPane.NO_OPTION:
+                            case JOptionPane.CLOSED_OPTION:
+                                return;
+                        }
+
+                        GamePanel.getSokobanMap().executeSolution(solution.getValue());
                     } else {
                         msgLabel.setText("This level is impossible!");
                         panel.remove(loadingCube);
@@ -702,7 +715,7 @@ public class SokobanPanel extends JPanel {
         Random randomGenerator = new Random();
         int index1 = randomGenerator.nextInt(boxWords.size());
         int index2 = randomGenerator.nextInt(pushWords.size());
-        String programName = boxWords.get(index1) + " " + pushWords.get(index2);
+        programName = boxWords.get(index1) + " " + pushWords.get(index2);
 
         frame = new JFrame(programName);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

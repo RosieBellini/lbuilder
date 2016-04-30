@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
@@ -454,36 +455,37 @@ public class SokobanMap {
         return false;
     }
 
-    /**
-     * Moves the player to the place specified if possible.
-     *
-     * @param   target      The Coordinate to move the player to
-     *
-     * @return              True if the move is allowed, false otherwise
-     */
-    public boolean moveTo(Coordinate target) throws InterruptedException {
-        clearRedoStack();
-        
-        if (neighbors(target).contains(getState().getPlayerPos())){
-            move(target.add(getState().getPlayerPos().reverse()));
-            GamePanel.redraw();
-            return true;
-        }
-        
-        ArrayList<Coordinate> path = findPath(target);
+    class Mover extends Thread {
+        private Coordinate target;
+        private ArrayList<Coordinate> path;
+        private int delay;
 
-        if (path == null) {
-            return false;
+        public Mover(Coordinate target, int delay) {
+            clearRedoStack();
+            this.target = target;
+            this.delay = delay;
         }
 
-        class Mover extends Thread {
-            public void run() {
+        public boolean checkValidity() {
+
+            path = findPath(target);
+
+            if (path == null) {
+                return false;
+            } else {
+                return true;
+            }
+
+        }
+
+        public void run() {
+            if (checkValidity()) {
                 for (Coordinate position : path) {
                     storeState();
                     put(SokobanObject.PLAYER, position);
                     GamePanel.redraw();
                     try {
-                        sleep(75);
+                        sleep(delay);
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -491,9 +493,30 @@ public class SokobanMap {
                 }
             }
         }
-        Mover mover = new Mover();
-        mover.start();
-        return true;
+    }
+
+    public void executeSolution(LinkedList<Coordinate[]> solution) {
+        class SolutionRunner extends Thread {
+            public void run() {
+                try {
+                    for (Coordinate[] instruction : solution) {
+                        System.out.println(instruction[0]);
+                        Mover mover = new Mover(instruction[0], 200);
+                        mover.start();
+                        mover.join();
+                        move(instruction[1]);
+                        GamePanel.redraw();
+                        sleep(200);
+                    }
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        SolutionRunner runner = new SolutionRunner();
+        runner.start();
     }
 
     public ArrayList<Coordinate> findPath(Coordinate target) {
@@ -533,7 +556,7 @@ public class SokobanMap {
                     }
 
                     if (neighbour.getPosition().equals(target)) {
-                        System.out.println("found it");
+                        // System.out.println("found it");
                         ArrayList<Coordinate> directions = new ArrayList<Coordinate>();
                         directions.add(target);
                         PathNode parent = neighbour.getParent();
@@ -545,7 +568,7 @@ public class SokobanMap {
 
                         directions.remove(playerPos);
                         Collections.reverse(directions);
-                        System.out.println(directions);
+                        // System.out.println(directions);
 
                         return directions;
                     }
