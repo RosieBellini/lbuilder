@@ -26,6 +26,7 @@ public class SokobanMap {
     private int xSize;
     private int ySize;
     private SaveState initialState;
+    private boolean isCurrentlyMoving;
 
     /**
      * Initialises a MapContainer of the given size filled with spaces
@@ -279,7 +280,7 @@ public class SokobanMap {
                         if (objectInPotentialEdge != SokobanObject.WALL){
                             if(objectInPotentialEdge != SokobanObject.BOX){
                                 if(objectInPotentialEdge != SokobanObject.BOX_ON_GOAL){
-                                newEdges.add(potentialEdge);
+                                    newEdges.add(potentialEdge);
                                 }
                             }
                         }
@@ -436,6 +437,7 @@ public class SokobanMap {
         private Coordinate target;
         private int delay;
 
+
         public Mover(Coordinate target, int delay) {
             clearRedoStack();
             this.target = target;
@@ -443,20 +445,23 @@ public class SokobanMap {
         }
 
         public void run() {
-            ArrayList<Coordinate> path = findPath(target);
-
-            if (path != null) {
-                for (Coordinate position : path) {
-                    storeState();
-                    put(SokobanObject.PLAYER, position);
-                    GamePanel.redraw();
-                    try {
-                        sleep(delay);
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+            if (!isCurrentlyMoving){
+                isCurrentlyMoving=true;
+                ArrayList<Coordinate> path = findPath(target);            
+                if (path != null) {
+                    for (Coordinate position : path) {
+                        storeState();
+                        put(SokobanObject.PLAYER, position);
+                        GamePanel.redraw();
+                        try {
+                            sleep(delay);
+                        } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
                 }
+                isCurrentlyMoving=false;
             }
         }
     }
