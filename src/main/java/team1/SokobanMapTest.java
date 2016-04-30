@@ -70,15 +70,31 @@ public class SokobanMapTest {
 		assertEquals("Should return the initial state of the map", stateTest, testMap.getInitialState());
 	}
 
+	/**
+	 * Mutator method test for setting the map's initial state:
+	 */
 	@Test
 	public void testSetInitialState() {
-		fail("Not yet implemented");
+		SaveState stateTest = new SaveState();
 	}
 
+	/**
+	 * Test accessor method for the history length (stack).
+	 */
 	@Test
 	public void testHistoryLength() {
 		assertEquals("History size should be 1 from the initial push:", 1, testMap.historyLength());
-		
+		testMap.storeState();
+		assertEquals("History size should now be 2 from the added state", 2, testMap.historyLength());
+		testMap.undo();
+		assertEquals("History size should now be 1 from the undo method", 1, testMap.historyLength());
+		testMap.redo();
+		assertEquals("History size should now be 2 from the undo method", 2, testMap.historyLength());
+		testMap.reset();
+		assertEquals("History size should now be 1 using the reset method, with only the initial state pushed", 1, testMap.historyLength());
+
 	}
+	
+	
 
 }
