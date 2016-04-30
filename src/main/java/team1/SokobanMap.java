@@ -171,6 +171,10 @@ public class SokobanMap {
         return history.size();
     }
 
+    public int totalHistoryLength() {
+        return history.getTotalSize();
+    }
+
     /**
      * Checks the positions of all boxes to see if they've been placed on a
      * goal
