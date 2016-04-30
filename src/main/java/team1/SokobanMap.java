@@ -469,11 +469,23 @@ public class SokobanMap {
             return false;
         }
 
-        for (Coordinate position : findPath(target)) {
-            storeState();
-            put(SokobanObject.PLAYER, position);
-            GamePanel.redraw();
+        class Mover extends Thread{
+            public void run(){
+                for (Coordinate position : findPath(target)) {
+                    storeState();
+                    put(SokobanObject.PLAYER, position);
+                    GamePanel.redraw();
+                    try {
+                        sleep(75);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
+        Mover mover = new Mover();
+        mover.start();
         return true;
     }
 
