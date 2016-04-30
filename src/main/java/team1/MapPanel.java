@@ -16,11 +16,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * The SpriteMap class provides a graphical representation of a SokobanMap as
+ * The MapPanel class provides a graphical representation of a SokobanMap as
  * as JPanel. It provides methods for importing tilesets and toggling between a
  * playable game mode and editor mode.
  */
-public class SpriteMap extends JPanel {
+public class MapPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private SokobanMap map;
     private int xSize;
@@ -37,12 +37,12 @@ public class SpriteMap extends JPanel {
     private final int tilesetCount = 4;
 
     /**
-     * SpriteMap constructor.
+     * MapPanel constructor.
      *
      * @param   map         The initial SokobanMap to display
      * @param   tilesetNum  The initial tileset to use
      */
-    public SpriteMap(SokobanMap map, int tilesetNum) {
+    public MapPanel(SokobanMap map, int tilesetNum) {
         panelHolder = new HashMap<Coordinate, JLabel>();
         iconMap = new HashMap<String, ImageIcon>();
         iconCountMap = new HashMap<String, Integer>();
@@ -72,7 +72,7 @@ public class SpriteMap extends JPanel {
         ArrayList<Coordinate> gridPositions
                 = Coordinate.allValidCoordinates(xSize, ySize);
         for (Coordinate position : gridPositions) {
-            panelHolder.put(position, new Cell(position, this));
+            panelHolder.put(position, new SpriteLabel(position, this));
             add(panelHolder.get(position));
         }
 
@@ -208,7 +208,7 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Returns the SokobanMap and this SpriteMap to their initial states.
+     * Returns the SokobanMap and this MapPanel to their initial states.
      */
     public void reset() {
         resetSolver();
@@ -224,9 +224,9 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Returns the mode of the SpriteMap.
+     * Returns the mode of the MapPanel.
      *
-     * @return      True if the SpriteMap is in game mode, false if in editor
+     * @return      True if the MapPanel is in game mode, false if in editor
      *              mode
      */
     public boolean getPlayable() {
@@ -234,7 +234,7 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Toggles the mode of the SpriteMap.
+     * Toggles the mode of the MapPanel.
      */
     public void toggleMode() {
         playable = !playable;
@@ -260,7 +260,7 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Returns the SokobanMap associated with this SpriteMap.
+     * Returns the SokobanMap associated with this MapPanel.
      *
      * @return      The value of map
      */
@@ -295,7 +295,7 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Returns the current icon scale used by this SpriteMap.
+     * Returns the current icon scale used by this MapPanel.
      *
      * @return      The value of scale
      */
@@ -304,7 +304,7 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Changes the scale used by icons in this SpriteMap.
+     * Changes the scale used by icons in this MapPanel.
      *
      * @param   scale       The new icon scale to use (1 is native)
      */

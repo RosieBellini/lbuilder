@@ -17,16 +17,13 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-/** Box Terminator main method. This class handles importing the level, drawing
- * the game screen and interpreting key presses.
- */
 
-@SuppressWarnings("serial")
-public class SokobanGame extends JPanel {
+public class GamePanel extends JPanel {
+    private static final long serialVersionUID = 1L;
     private static JLabel statusBar;
-    private static SpriteMap spriteMap;
+    private static MapPanel spriteMap;
     private static KeyListener listener;
-    private static SokobanGame instance;
+    private static GamePanel instance;
     private static boolean playable = true;
     private static JList<ImageIcon> list;
     private static final ImageIcon[] tiles = new ImageIcon[4];
@@ -39,7 +36,7 @@ public class SokobanGame extends JPanel {
      * A constructor to initialise the key listener which allows methods to be
      * run when key presses are detected
      */
-    private SokobanGame(SpriteMap spriteMap) {
+    private GamePanel(MapPanel spriteMap) {
         listener = new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -57,7 +54,7 @@ public class SokobanGame extends JPanel {
         addKeyListener(listener);
         setFocusable(true);
 
-        SokobanGame.spriteMap = spriteMap;
+        GamePanel.spriteMap = spriteMap;
 
         list = new JList<ImageIcon>(tiles);
         list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -111,9 +108,9 @@ public class SokobanGame extends JPanel {
         }
     }
 
-    public static SokobanGame getInstance(SpriteMap spriteMap) {
+    public static GamePanel getInstance(MapPanel spriteMap) {
         if (instance == null) {
-            instance = new SokobanGame(spriteMap);
+            instance = new GamePanel(spriteMap);
         }
         return instance;
     }
@@ -132,7 +129,7 @@ public class SokobanGame extends JPanel {
         redraw();
     }
 
-    public static SpriteMap getSpriteMap() {
+    public static MapPanel getSpriteMap() {
         return spriteMap;
     }
 
@@ -187,7 +184,7 @@ public class SokobanGame extends JPanel {
         spriteMap.placeSprites();
 
         if (playable && getSokobanMap().isDone()) {
-            BoxTerm.winDialog();
+            SokobanPanel.winDialog();
         }
     }
 
@@ -217,6 +214,6 @@ public class SokobanGame extends JPanel {
                     break;
         }
 
-        Cell.setPaletteState(paletteState);
+        SpriteLabel.setPaletteState(paletteState);
     }
 }

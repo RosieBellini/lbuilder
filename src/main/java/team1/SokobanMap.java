@@ -487,7 +487,7 @@ public class SokobanMap {
         for (Coordinate position : findPath(target)) {
             storeState();
             put(SokobanObject.PLAYER, position);
-            SokobanGame.redraw();
+            GamePanel.redraw();
         }
         return true;
     }

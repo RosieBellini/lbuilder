@@ -48,16 +48,12 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
-/** Box Terminator main method. This class handles importing the level, drawing
- * the game screen and interpreting key presses.
- */
-
 @SuppressWarnings("serial")
-public class BoxTerm extends JPanel {
+public class SokobanPanel extends JPanel {
     private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
-    private static SokobanGame game;
+    private static GamePanel game;
     private static JFrame frame;
-    private static BoxTerm boxTerm;
+    private static SokobanPanel sokobanPanel;
     private static JMenuBar menubar;
     private static JMenu gameMenu;
     private static JMenuItem toggleItem;
@@ -76,9 +72,9 @@ public class BoxTerm extends JPanel {
         final JDialog dialog = new JDialog();
         JPanel panel = new JPanel(new BorderLayout(5, 5));
 
-        ImageIcon spinnyCube = new ImageIcon(Toolkit.getDefaultToolkit().getImage(BoxTerm.class.getResource("/tileset01/cube.gif")));
+        ImageIcon spinnyCube = new ImageIcon(Toolkit.getDefaultToolkit().getImage(SokobanPanel.class.getResource("/tileset01/cube.gif")));
         JLabel loadingCube = new JLabel(spinnyCube);
-        ImageIcon impossibleCube = new ImageIcon(Toolkit.getDefaultToolkit().getImage(BoxTerm.class.getResource("/tileset01/IMPOSSIBLE.png")));
+        ImageIcon impossibleCube = new ImageIcon(Toolkit.getDefaultToolkit().getImage(SokobanPanel.class.getResource("/tileset01/IMPOSSIBLE.png")));
         JLabel badCube = new JLabel(impossibleCube);
         JLabel msgLabel = new JLabel("Calculating...");
         JButton b1 = new JButton("Cancel");
@@ -115,9 +111,9 @@ public class BoxTerm extends JPanel {
 
                 if (solution != null) {
                     if (solution.size() > 0) {
-                        SokobanGame.getSpriteMap().reset();
-                        SokobanGame.getSpriteMap().setSolution(solution);
-                        SokobanGame.redraw();
+                        GamePanel.getSpriteMap().reset();
+                        GamePanel.getSpriteMap().setSolution(solution);
+                        GamePanel.redraw();
                         dialog.dispose();
                     } else {
                         msgLabel.setText("This level is impossible!");
@@ -134,7 +130,7 @@ public class BoxTerm extends JPanel {
             @Override
             protected Void doInBackground() throws Exception {
                 solving = true;
-                SokobanMap mapToSolve = new SokobanMap(SokobanGame.getSokobanMap());
+                SokobanMap mapToSolve = new SokobanMap(GamePanel.getSokobanMap());
                 solver = new SingleThreadSolver(mapToSolve);
                 solution = solver.levelSolution();
                 return null;
@@ -174,11 +170,11 @@ public class BoxTerm extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (!hasChanged("make a new one?")) {
                     SokobanMap map = new SokobanMap(20, 20, 100);
-                    SokobanGame.getSpriteMap().updateMap(map);
-                    SokobanGame.getSokobanMap().put(SokobanObject.PLAYER, new Coordinate(5, 5));
+                    GamePanel.getSpriteMap().updateMap(map);
+                    GamePanel.getSokobanMap().put(SokobanObject.PLAYER, new Coordinate(5, 5));
                     changeMagnification(0);
-                    SokobanGame.getSpriteMap().placeSprites(true);
-                    SokobanGame.redraw();
+                    GamePanel.getSpriteMap().placeSprites(true);
+                    GamePanel.redraw();
                     frame.setSize(frame.getPreferredSize());
                     currentLevelIndex = -1;
                 }
@@ -205,7 +201,7 @@ public class BoxTerm extends JPanel {
         saveItem.setToolTipText("Save current map design to file");
         saveItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanMap map = SokobanGame.getSokobanMap();
+                SokobanMap map = GamePanel.getSokobanMap();
 
                 if (!map.validate()) {
                     int result = JOptionPane.showConfirmDialog(frame, "This "
@@ -289,8 +285,8 @@ public class BoxTerm extends JPanel {
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
         undo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanGame.getSokobanMap().undo();
-                SokobanGame.redraw();
+                GamePanel.getSokobanMap().undo();
+                GamePanel.redraw();
             }
         });
         gameMenu.add(undo);
@@ -299,8 +295,8 @@ public class BoxTerm extends JPanel {
         redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, SHORTCUT_MASK));
         redo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanGame.getSokobanMap().redo();
-                SokobanGame.redraw();
+                GamePanel.getSokobanMap().redo();
+                GamePanel.redraw();
             }
         });
         gameMenu.add(redo);
@@ -317,7 +313,7 @@ public class BoxTerm extends JPanel {
                     case JOptionPane.CLOSED_OPTION:
                         return;
                 }
-                SokobanGame.getSpriteMap().updateMap(SokobanMap.crop(SokobanGame.getSokobanMap()));
+                GamePanel.getSpriteMap().updateMap(SokobanMap.crop(GamePanel.getSokobanMap()));
                 changeMagnification(0);
                 frame.setSize(frame.getPreferredSize());
             }
@@ -333,8 +329,8 @@ public class BoxTerm extends JPanel {
         resetItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
         resetItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanGame.getSpriteMap().reset();
-                SokobanGame.redraw();
+                GamePanel.getSpriteMap().reset();
+                GamePanel.redraw();
             }
         });
         gameMenuItems.add(resetItem);
@@ -348,11 +344,11 @@ public class BoxTerm extends JPanel {
         tileItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, SHORTCUT_MASK));
         tileItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SpriteMap spriteMap = SokobanGame.getSpriteMap();
+                MapPanel spriteMap = GamePanel.getSpriteMap();
                 spriteMap.nextTileset();
                 spriteMap.loadSprites();
                 spriteMap.placeSprites(true);
-                SokobanGame.importPaletteIcons();
+                GamePanel.importPaletteIcons();
             }
         });
         viewMenu.add(tileItem);
@@ -412,7 +408,7 @@ public class BoxTerm extends JPanel {
                         + " starting position or boxes. \n\n2) Click on the map once you have"
                         + " selected something on the palette to begin designing your level."
                         + " \n\n3) You can save your map design at any point using File>Save.", "Map Editor Help", JOptionPane.PLAIN_MESSAGE,
-                        SokobanGame.getSpriteMap().getIconMap().get("BOX"));
+                        GamePanel.getSpriteMap().getIconMap().get("BOX"));
             }
         });
         editMenuItems.add(editorHelpItem);
@@ -421,14 +417,14 @@ public class BoxTerm extends JPanel {
         JMenuItem aboutItem = new JMenuItem("About Wonderful Sokoban");
         aboutItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(SokobanGame.getSpriteMap(), "A Sokoban clone.\n\nRosie Bellini\nJosh Gant\nDoris Hao\nHaiza Hazali\nLoki Li\nTom Picton\nMarcus Redgrave-Close\nJohn Zhuang", "Wonderful Sokoban", JOptionPane.PLAIN_MESSAGE, SokobanGame.getSpriteMap().getIconMap().get("BOX"));
+                JOptionPane.showMessageDialog(GamePanel.getSpriteMap(), "A Sokoban clone.\n\nRosie Bellini\nJosh Gant\nDoris Hao\nHaiza Hazali\nLoki Li\nTom Picton\nMarcus Redgrave-Close\nJohn Zhuang", "Wonderful Sokoban", JOptionPane.PLAIN_MESSAGE, GamePanel.getSpriteMap().getIconMap().get("BOX"));
             }
         });
         helpMenu.add(aboutItem);
     }
 
     private static void changeMagnification(int scaleDirection) {
-        SpriteMap spriteMap = SokobanGame.getSpriteMap();
+        MapPanel spriteMap = GamePanel.getSpriteMap();
 
         if (!autoScale) {
             float scale = spriteMap.getScale();
@@ -496,10 +492,10 @@ public class BoxTerm extends JPanel {
     }
 
     private static void toggleMode() {
-        boolean playable = SokobanGame.getSpriteMap().getPlayable();
+        boolean playable = GamePanel.getSpriteMap().getPlayable();
 
         if (!playable) {
-            if (SokobanGame.getSokobanMap().validate()) {
+            if (GamePanel.getSokobanMap().validate()) {
                 gameMenu.setText("Game");
                 toggleItem.setText("Start editor");
                 game.requestFocusInWindow();
@@ -516,12 +512,12 @@ public class BoxTerm extends JPanel {
             toggleItem.setText("Start game");
         }
 
-        SokobanGame.toggleMode();
+        GamePanel.toggleMode();
         updateContextMenu();
     }
 
     private static void updateContextMenu() {
-        boolean playable = SokobanGame.getSpriteMap().getPlayable();
+        boolean playable = GamePanel.getSpriteMap().getPlayable();
 
         for (JMenuItem item : gameMenuItems) {
             item.setVisible(playable);
@@ -533,7 +529,7 @@ public class BoxTerm extends JPanel {
     }
 
     private static void getBuiltinLevels() {
-        InputStream levelIndex = BoxTerm.class.getResourceAsStream("/levels/LEVEL_INDEX");
+        InputStream levelIndex = SokobanPanel.class.getResourceAsStream("/levels/LEVEL_INDEX");
         Scanner levelIndexScanner = new Scanner(levelIndex);
         while (levelIndexScanner.hasNextLine()) {
             String levelName = levelIndexScanner.nextLine();
@@ -551,12 +547,12 @@ public class BoxTerm extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.getWindowAncestor(button1).dispose();
                 currentLevelIndex++;
-                InputStream level = BoxTerm.class.getResourceAsStream("/levels/" + levels.get(currentLevelIndex));
+                InputStream level = SokobanPanel.class.getResourceAsStream("/levels/" + levels.get(currentLevelIndex));
                 SokobanMap map = SokobanMap.importLevel(level);
                 lastOpenedMap = new SokobanMap(map);
-                SokobanGame.getSpriteMap().updateMap(map);
+                GamePanel.getSpriteMap().updateMap(map);
                 changeMagnification(0);
-                SokobanGame.redraw();
+                GamePanel.redraw();
                 frame.pack();
             }
         });
@@ -591,12 +587,12 @@ public class BoxTerm extends JPanel {
                 JOptionPane.PLAIN_MESSAGE, JOptionPane.PLAIN_MESSAGE, null, buttons, buttons[0]);
         if (selectReturnVal == 0) {
             currentLevelIndex = list.getSelectedIndex();
-            InputStream level = BoxTerm.class.getResourceAsStream("/levels/" + levels.get(currentLevelIndex));
+            InputStream level = SokobanPanel.class.getResourceAsStream("/levels/" + levels.get(currentLevelIndex));
             map = SokobanMap.importLevel(level);
-            SokobanGame.getSpriteMap().updateMap(map);
+            GamePanel.getSpriteMap().updateMap(map);
             lastOpenedMap = new SokobanMap(map);
             changeMagnification(0);
-            SokobanGame.redraw();
+            GamePanel.redraw();
             frame.pack();
         } else if (selectReturnVal == 1) {
             try {
@@ -615,10 +611,10 @@ public class BoxTerm extends JPanel {
                             JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                SokobanGame.getSpriteMap().updateMap(map);
+                GamePanel.getSpriteMap().updateMap(map);
                 lastOpenedMap = new SokobanMap(map);
                 changeMagnification(0);
-                SokobanGame.redraw();
+                GamePanel.redraw();
                 currentLevelIndex = -1;
                 frame.pack();
             } catch (FileNotFoundException e1) {
@@ -635,10 +631,10 @@ public class BoxTerm extends JPanel {
     }
 
     private static boolean hasChanged(String reason) {
-        SokobanMap map = SokobanGame.getSokobanMap();
+        SokobanMap map = GamePanel.getSokobanMap();
         boolean changed;
 
-        if (SokobanGame.getSpriteMap().getPlayable()) {
+        if (GamePanel.getSpriteMap().getPlayable()) {
             changed = !map.getInitialState().equals(lastOpenedMap.getInitialState());
         } else {
             changed = !map.getState().equals(lastOpenedMap.getInitialState());
@@ -690,7 +686,7 @@ public class BoxTerm extends JPanel {
         ArrayList<String> boxWords = new ArrayList<String>();
         ArrayList<String> pushWords = new ArrayList<String>();
         ArrayList<String> activeDictionary = boxWords;
-        InputStream wordList = BoxTerm.class.getResourceAsStream("/WORDS");
+        InputStream wordList = SokobanPanel.class.getResourceAsStream("/WORDS");
         Scanner wordScanner = new Scanner(wordList);
         while (wordScanner.hasNextLine()) {
             String line = wordScanner.nextLine();
@@ -712,14 +708,14 @@ public class BoxTerm extends JPanel {
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         getBuiltinLevels();
-        SokobanMap map = SokobanMap.importLevel(BoxTerm.class.getResourceAsStream("/levels/" + levels.get(currentLevelIndex)));
+        SokobanMap map = SokobanMap.importLevel(SokobanPanel.class.getResourceAsStream("/levels/" + levels.get(currentLevelIndex)));
         lastOpenedMap = new SokobanMap(map);
-        game = SokobanGame.getInstance(new SpriteMap(map, 1));
+        game = GamePanel.getInstance(new MapPanel(map, 1));
         solver = new SingleThreadSolver(map);
 
-        boxTerm = new BoxTerm();
-        boxTerm.setLayout(new BoxLayout(boxTerm, BoxLayout.X_AXIS));
-        boxTerm.add(game, BorderLayout.CENTER);
+        sokobanPanel = new SokobanPanel();
+        sokobanPanel.setLayout(new BoxLayout(sokobanPanel, BoxLayout.X_AXIS));
+        sokobanPanel.add(game, BorderLayout.CENTER);
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -733,7 +729,7 @@ public class BoxTerm extends JPanel {
         makeMenuBar(frame);
         updateContextMenu();
         frame.setResizable(false);
-        frame.add(boxTerm);
+        frame.add(sokobanPanel);
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
