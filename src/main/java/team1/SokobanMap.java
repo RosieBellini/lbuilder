@@ -432,10 +432,8 @@ public class SokobanMap {
         return croppedMap;
     }
 
-
     class Mover extends Thread {
         private Coordinate target;
-        private ArrayList<Coordinate> path;
         private int delay;
 
         public Mover(Coordinate target, int delay) {
@@ -444,20 +442,10 @@ public class SokobanMap {
             this.delay = delay;
         }
 
-        public boolean checkValidity() {
-
-            path = findPath(target);
-
-            if (path == null) {
-                return false;
-            } else {
-                return true;
-            }
-
-        }
-
         public void run() {
-            if (checkValidity()) {
+            ArrayList<Coordinate> path = findPath(target);
+
+            if (path != null) {
                 for (Coordinate position : path) {
                     storeState();
                     put(SokobanObject.PLAYER, position);
@@ -555,7 +543,6 @@ public class SokobanMap {
             open.remove(activeNode);
             closed.add(activeNode);
         }
-
 
         System.out.println("No path found");
         return new ArrayList<Coordinate>();
