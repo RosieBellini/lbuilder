@@ -344,10 +344,10 @@ public class SokobanPanel extends JPanel {
         tileItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, SHORTCUT_MASK));
         tileItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                MapPanel spriteMap = GamePanel.getSpriteMap();
-                spriteMap.nextTileset();
-                spriteMap.loadSprites();
-                spriteMap.placeSprites(true);
+                MapPanel mapPanel = GamePanel.getSpriteMap();
+                mapPanel.nextTileset();
+                mapPanel.loadSprites();
+                mapPanel.placeSprites(true);
                 GamePanel.importPaletteIcons();
             }
         });
@@ -424,28 +424,28 @@ public class SokobanPanel extends JPanel {
     }
 
     private static void changeMagnification(int scaleDirection) {
-        MapPanel spriteMap = GamePanel.getSpriteMap();
+        MapPanel mapPanel = GamePanel.getSpriteMap();
 
         if (!autoScale) {
-            float scale = spriteMap.getScale();
+            float scale = mapPanel.getScale();
             scale = perfectPixelScaler(scale, scaleDirection);
-            int gameWidth = (int) (spriteMap.getIconSize() * spriteMap.getXSize() * scale);
+            int gameWidth = (int) (mapPanel.getIconSize() * mapPanel.getXSize() * scale);
 
             if (gameWidth > 220) {
-                spriteMap.setScale(scale);
-                spriteMap.loadSprites();
-                spriteMap.placeSprites(true);
+                mapPanel.setScale(scale);
+                mapPanel.loadSprites();
+                mapPanel.placeSprites(true);
             } else if (scaleDirection == 0) {
-                scale = 220 / ((float) (spriteMap.getIconSize() * spriteMap.getXSize()));
+                scale = 220 / ((float) (mapPanel.getIconSize() * mapPanel.getXSize()));
                 scale = (float) Math.ceil(scale);
-                spriteMap.setScale(scale);
-                spriteMap.loadSprites();
-                spriteMap.placeSprites(true);
+                mapPanel.setScale(scale);
+                mapPanel.loadSprites();
+                mapPanel.placeSprites(true);
             }
         } else {
             float scale = autoScaleFactor;
             double preferredHeight = 0.75 * autoScaleFactor * Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-            int unscaledGameHeight = spriteMap.getIconSize() * spriteMap.getYSize();
+            int unscaledGameHeight = mapPanel.getIconSize() * mapPanel.getYSize();
             float gameHeight = unscaledGameHeight * scale + 64;
 
             boolean getBigger = false;
@@ -467,9 +467,9 @@ public class SokobanPanel extends JPanel {
                 scale = perfectPixelScaler(scale, -1);
             }
 
-            spriteMap.setScale(scale);
-            spriteMap.loadSprites();
-            spriteMap.placeSprites(true);
+            mapPanel.setScale(scale);
+            mapPanel.loadSprites();
+            mapPanel.placeSprites(true);
         }
     }
 
