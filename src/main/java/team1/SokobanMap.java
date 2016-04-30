@@ -488,7 +488,6 @@ public class SokobanMap {
             storeState();
             put(SokobanObject.PLAYER, position);
             SokobanGame.redraw();
-            // Thread.sleep(100);
         }
         return true;
     }
@@ -533,7 +532,7 @@ public class SokobanMap {
 
                     }
 
-                    if (neighbour.equals(target)) {
+                    if (neighbour.getPosition().equals(target)) {
                         System.out.println("found it");
                         ArrayList<Coordinate> directions = new ArrayList<Coordinate>();
                         directions.add(target);
@@ -544,8 +543,8 @@ public class SokobanMap {
                             parent = parent.getParent();
                         }
 
+                        directions.remove(playerPos);
                         Collections.reverse(directions);
-
                         System.out.println(directions);
 
                         return directions;

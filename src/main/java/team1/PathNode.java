@@ -73,18 +73,12 @@ public class PathNode implements Comparable<PathNode> {
 			return true;
 		}
 
-        Coordinate position;
-        if (obj instanceof PathNode) {
-            position = ((PathNode) obj).getPosition();
-        } else if (obj instanceof Coordinate) {
-            position = (Coordinate) obj;
-        } else {
+        if (!(obj instanceof PathNode)) {
             return false;
         }
 
-        int x = this.getPosition().x;
-        int y = this.getPosition().y;
-
+        int x = ((PathNode) obj).getPosition().x;
+        int y = ((PathNode) obj).getPosition().y;
 
 		if (x == position.x && y == position.y) {
 			return true;
