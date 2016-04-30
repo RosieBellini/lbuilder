@@ -476,9 +476,9 @@ public class SokobanMap {
             return false;
         }
 
-        class Mover extends Thread{
-            public void run(){
-                for (Coordinate position : findPath(target)) {
+        class Mover extends Thread {
+            public void run() {
+                for (Coordinate position : path) {
                     storeState();
                     put(SokobanObject.PLAYER, position);
                     GamePanel.redraw();
