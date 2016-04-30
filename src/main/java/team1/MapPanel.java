@@ -80,10 +80,10 @@ public class MapPanel extends JPanel {
     }
 
     /**
-     * Updates cells according to the status of the SokobanMap.
+     * Updates SpriteLabels according to the status of the SokobanMap.
      *
-     * @param   redraw      True to redraw every cell, false to only update
-     *                      those that may have changed
+     * @param   redraw      True to redraw every SpriteLabel, false to only
+     *                      update those that may have changed
      */
     public void placeSprites(boolean redraw) {
         Set<Coordinate> grassPositions = map.inaccessibleSpaces();

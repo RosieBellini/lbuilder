@@ -7,25 +7,25 @@ import javax.swing.JLabel;
 
 public class SpriteLabel extends JLabel{
     private static final long serialVersionUID = 1L;
-    private MapPanel spriteMap;
+    private MapPanel mapPanel;
     private Coordinate position;
     private static SokobanObject paletteState = SokobanObject.WALL;
 
-    public SpriteLabel(Coordinate position, MapPanel spriteMap) {
+    public SpriteLabel(Coordinate position, MapPanel mapPanel) {
         super();
         this.position = position;
-        this.spriteMap = spriteMap;
+        this.mapPanel = mapPanel;
 
         addMouseListener(new MouseAdapter(){
             public void mousePressed(MouseEvent me)
             {
-                if (!spriteMap.getPlayable()) {
+                if (!mapPanel.getPlayable()) {
                     modifyCell(me);
                 }
                 else {
-                    // spriteMap.getSokobanMap().findPath(position);
+                    // mapPanel.getSokobanMap().findPath(position);
                     try {
-                        spriteMap.getSokobanMap().moveTo(position);
+                        mapPanel.getSokobanMap().moveTo(position);
                     } catch (InterruptedException e) {
 
                     }
@@ -33,10 +33,10 @@ public class SpriteLabel extends JLabel{
             }
 
             public void mouseEntered(MouseEvent me) {
-                if (!spriteMap.getPlayable()) {
+                if (!mapPanel.getPlayable()) {
                     if (me.getButton() == MouseEvent.NOBUTTON) {
-                        if (spriteMap.getSokobanMap().get(position) == SokobanObject.SPACE) {
-                            setIcon(spriteMap.getIconMap().get("DEFAULT_HOVER"));
+                        if (mapPanel.getSokobanMap().get(position) == SokobanObject.SPACE) {
+                            setIcon(mapPanel.getIconMap().get("DEFAULT_HOVER"));
                         }
                     } else {
                         modifyCell(me);
@@ -45,11 +45,11 @@ public class SpriteLabel extends JLabel{
             }
 
             public void mouseExited(MouseEvent me) {
-                if (!spriteMap.getPlayable()) {
-                    if (spriteMap.getSokobanMap().get(position) == SokobanObject.SPACE) {
-                        setIcon(spriteMap.getIconMap().get("DEFAULT"));
+                if (!mapPanel.getPlayable()) {
+                    if (mapPanel.getSokobanMap().get(position) == SokobanObject.SPACE) {
+                        setIcon(mapPanel.getIconMap().get("DEFAULT"));
                     } else {
-                        setIcon(spriteMap.getIconMap().get(spriteMap.getSokobanMap().get(position).name()));
+                        setIcon(mapPanel.getIconMap().get(mapPanel.getSokobanMap().get(position).name()));
                     }
                 }
             }
@@ -57,17 +57,17 @@ public class SpriteLabel extends JLabel{
     }
 
     private void modifyCell(MouseEvent me) {
-        spriteMap.getSokobanMap().storeState();
+        mapPanel.getSokobanMap().storeState();
         if (me.getButton() == MouseEvent.BUTTON1) {
-            spriteMap.getSokobanMap().put(paletteState, position);
+            mapPanel.getSokobanMap().put(paletteState, position);
         } else if (me.getButton() == MouseEvent.BUTTON3) {
-            if (spriteMap.getSokobanMap().get(position) != SokobanObject.PLAYER && spriteMap.getSokobanMap().get(position) != SokobanObject.PLAYER_ON_GOAL) {
-                spriteMap.getSokobanMap().removeLayer(position);
+            if (mapPanel.getSokobanMap().get(position) != SokobanObject.PLAYER && mapPanel.getSokobanMap().get(position) != SokobanObject.PLAYER_ON_GOAL) {
+                mapPanel.getSokobanMap().removeLayer(position);
             }
         }
 
         GamePanel.redraw();
-        spriteMap.getSokobanMap().clearRedoStack();
+        mapPanel.getSokobanMap().clearRedoStack();
     }
 
     public static void setPaletteState(SokobanObject paletteState) {

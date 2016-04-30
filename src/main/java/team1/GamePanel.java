@@ -21,7 +21,7 @@ import javax.swing.event.ListSelectionListener;
 public class GamePanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private static JLabel statusBar;
-    private static MapPanel spriteMap;
+    private static MapPanel mapPanel;
     private static KeyListener listener;
     private static GamePanel instance;
     private static boolean playable = true;
@@ -36,7 +36,7 @@ public class GamePanel extends JPanel {
      * A constructor to initialise the key listener which allows methods to be
      * run when key presses are detected
      */
-    private GamePanel(MapPanel spriteMap) {
+    private GamePanel(MapPanel mapPanel) {
         listener = new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -54,7 +54,7 @@ public class GamePanel extends JPanel {
         addKeyListener(listener);
         setFocusable(true);
 
-        GamePanel.spriteMap = spriteMap;
+        GamePanel.mapPanel = mapPanel;
 
         list = new JList<ImageIcon>(tiles);
         list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -91,7 +91,7 @@ public class GamePanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         statusBarContainer.add(statusBar);
         statusBarContainer.setPreferredSize(new Dimension(statusBarContainer.getSize().width, 48));
-        add(spriteMap);
+        add(mapPanel);
         add(statusBarContainer);
         add(tilePalette);
         redraw();
@@ -108,15 +108,15 @@ public class GamePanel extends JPanel {
         }
     }
 
-    public static GamePanel getInstance(MapPanel spriteMap) {
+    public static GamePanel getInstance(MapPanel mapPanel) {
         if (instance == null) {
-            instance = new GamePanel(spriteMap);
+            instance = new GamePanel(mapPanel);
         }
         return instance;
     }
 
     public static void toggleMode() {
-        SokobanMap map = spriteMap.getSokobanMap();
+        SokobanMap map = mapPanel.getSokobanMap();
         if (!playable) {
             map.setInitialState(map.getState());
         }
@@ -124,17 +124,17 @@ public class GamePanel extends JPanel {
         playable = !playable;
         tilePalette.setVisible(!playable);
         statusBarContainer.setVisible(playable);
-        spriteMap.resetSolver();
-        spriteMap.toggleMode();
+        mapPanel.resetSolver();
+        mapPanel.toggleMode();
         redraw();
     }
 
     public static MapPanel getSpriteMap() {
-        return spriteMap;
+        return mapPanel;
     }
 
     public static SokobanMap getSokobanMap() {
-        return spriteMap.getSokobanMap();
+        return mapPanel.getSokobanMap();
     }
 
     /**
@@ -181,7 +181,7 @@ public class GamePanel extends JPanel {
 
         statusBar.setText(Integer.toString(getSokobanMap().historyLength() -1));
 
-        spriteMap.placeSprites();
+        mapPanel.placeSprites();
 
         if (playable && getSokobanMap().isDone()) {
             SokobanPanel.winDialog();
@@ -189,12 +189,12 @@ public class GamePanel extends JPanel {
     }
 
     public static void importPaletteIcons() {
-        tiles[0] = spriteMap.getUnscaledIconMap().get("WALL");
-        tiles[1] = spriteMap.getUnscaledIconMap().get("BOX");
-        tiles[2] = spriteMap.getUnscaledIconMap().get("GOAL");
-        tiles[3] = spriteMap.getUnscaledIconMap().get("PLAYER");
-        list.setFixedCellHeight(spriteMap.getIconSize() + 4);
-        list.setFixedCellWidth(spriteMap.getIconSize() + 4);
+        tiles[0] = mapPanel.getUnscaledIconMap().get("WALL");
+        tiles[1] = mapPanel.getUnscaledIconMap().get("BOX");
+        tiles[2] = mapPanel.getUnscaledIconMap().get("GOAL");
+        tiles[3] = mapPanel.getUnscaledIconMap().get("PLAYER");
+        list.setFixedCellHeight(mapPanel.getIconSize() + 4);
+        list.setFixedCellWidth(mapPanel.getIconSize() + 4);
         list.repaint();
     }
 
