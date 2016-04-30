@@ -182,7 +182,7 @@ public class SokobanGame extends JPanel {
         boxLabel.setText("Boxes: " + boxCount);
         goalLabel.setText("Goals: " + goalCount);
 
-        statusBar.setText(Integer.toString(getSokobanMap().getMoveCounter()));
+        statusBar.setText(Integer.toString(getSokobanMap().totalHistoryLength() -1));
 
         spriteMap.placeSprites();
 

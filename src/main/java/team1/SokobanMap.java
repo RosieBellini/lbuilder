@@ -2,12 +2,9 @@ package team1;
 
 import java.awt.Toolkit;
 import java.io.InputStream;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
@@ -28,7 +25,6 @@ public class SokobanMap {
     private int xSize;
     private int ySize;
     private int maxUndos;
-    private Stack<Integer> moveCounter;
     private SaveState initialState;
 
     /**
@@ -38,8 +34,6 @@ public class SokobanMap {
         this.maxUndos = maxUndos;
         this.xSize = xSize;
         this.ySize = ySize;
-        moveCounter = new Stack<Integer>();
-        moveCounter.push(0);
         history = new FixedSizeStack<SaveState>(maxUndos);
         history.push(new SaveState());
         initialState = new SaveState();
@@ -140,7 +134,6 @@ public class SokobanMap {
         } else {
             prevRedoStackSize = redoStack.size();
             redoStack.push(state);
-            moveCounter.pop();
         }
     }
 
@@ -151,8 +144,6 @@ public class SokobanMap {
         if (redoStack.size() != 0) {
             prevRedoStackSize = redoStack.size();
             history.push(redoStack.pop());
-            //Todo make moveCounter redo stack.
-            moveCounter.push(moveCounter.peek() + 1);
         }
     }
 
@@ -163,8 +154,6 @@ public class SokobanMap {
     public void reset() {
         history.reset(initialState);
         clearRedoStack();
-        moveCounter.empty();
-        moveCounter.push(0);
     }
 
     private int historyLength() {
@@ -487,44 +476,29 @@ public class SokobanMap {
      *
      * @return              True if the move is allowed, false otherwise
      */
-    public boolean moveTo(Coordinate target) {
-        Coordinate playerPosition = new Coordinate(getState().getPlayerPos());
+    public boolean moveTo(Coordinate target) throws InterruptedException {
+        clearRedoStack();
+        ArrayList<Coordinate> path = findPath(target);
 
-        if (!accessibleSpaces(playerPosition, false).contains(target)) {
+        if (path == null) {
             return false;
-        } else {
-            int xDiff = playerPosition.x - target.x;
-            int yDiff = playerPosition.y - target.y;
-            if (xDiff < 0) {
-                xDiff = -xDiff;
-            }
-            if (yDiff < 0) {
-                yDiff = -yDiff;
-            }
-            int distanceToCover = xDiff + yDiff;
-            if (distanceToCover > 6) {
-                distanceToCover += (distanceToCover / 2);
-            }
+        }
+
+        for (Coordinate position : findPath(target)) {
             storeState();
-            clearRedoStack();
-            moveCounter.push(moveCounter.peek() + distanceToCover);
-            put(SokobanObject.PLAYER, target);
+            put(SokobanObject.PLAYER, position);
             SokobanGame.redraw();
+            // Thread.sleep(100);
         }
         return true;
     }
 
-    public int getMoveCounter() {
-        return moveCounter.peek();
-    }
-
-
     public ArrayList<Coordinate> findPath(Coordinate target) {
-        if ((get(target) != SokobanObject.SPACE) && (get(target) != SokobanObject.GOAL)) {
+        Coordinate playerPos = getState().getPlayerPos();
+
+        if ((get(target) != SokobanObject.SPACE) && (get(target) != SokobanObject.GOAL) || get(target) == SokobanObject.PLAYER || get(target) == SokobanObject.PLAYER_ON_GOAL || !accessibleSpaces(playerPos, false).contains(target)) {
             return null;
         }
-
-        Coordinate playerPos = getState().getPlayerPos();
 
         ArrayList<PathNode> closed = new ArrayList<PathNode>();
         ArrayList<PathNode> open = new ArrayList<PathNode>();
@@ -561,7 +535,6 @@ public class SokobanMap {
 
                     if (neighbour.equals(target)) {
                         System.out.println("found it");
-                        // return new ArrayList<Coordinate>();
                         ArrayList<Coordinate> directions = new ArrayList<Coordinate>();
                         directions.add(target);
                         PathNode parent = neighbour.getParent();
@@ -621,7 +594,6 @@ public class SokobanMap {
                  * to avoid the undo stack getting filled up with identical states
                  */
                 history.pop();
-                moveCounter.pop();
                 Toolkit.getDefaultToolkit().beep();
                 return false;
             }
@@ -631,7 +603,6 @@ public class SokobanMap {
          * don't give the player the possibility of jumping to inaccessible
          * states by reloading past states
          */
-        moveCounter.push(moveCounter.peek() + 1);
         clearRedoStack();
         return true;
     }

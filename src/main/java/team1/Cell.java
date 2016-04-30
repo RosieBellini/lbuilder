@@ -31,8 +31,12 @@ public class Cell extends JLabel{
                     modifyCell(me);
                 }
                 else {
-                    spriteMap.getSokobanMap().findPath(position);
-                    spriteMap.getSokobanMap().moveTo(position);
+                    // spriteMap.getSokobanMap().findPath(position);
+                    try {
+                        spriteMap.getSokobanMap().moveTo(position);
+                    } catch (InterruptedException e) {
+
+                    }
                 }
             }
 
