@@ -2,18 +2,35 @@ package team1;
 
 public class PathNode implements Comparable<PathNode> {
     private Coordinate position;
-    private Coordinate parent;
+    private PathNode parent;
+    private Coordinate target;
     private int hCost;
     private int gCost;
 
-    public PathNode(Coordinate position, Coordinate parent, Coordinate target) {
+    public PathNode(Coordinate position, PathNode parent, Coordinate target) {
         this.position = position;
         this.parent = parent;
-        this.hCost = manhattanDistance(position, target);
-        this.gCost = manhattanDistance(position, parent);
+        this.target = target;
+        updateCosts();
     }
 
-    private static int manhattanDistance(Coordinate source, Coordinate target) {
+    public PathNode(Coordinate position, Coordinate target) {
+        this.position = position;
+        this.parent = null;
+        this.hCost = manhattanDistance(position, target);
+        this.gCost = 0;
+    }
+
+    public void updateCosts() {
+        hCost = manhattanDistance(position, target);
+        gCost = manhattanDistance(position, parent.getPosition());
+    }
+
+    public void changeParent(PathNode parent) {
+        this.parent = parent;
+    }
+
+    public static int manhattanDistance(Coordinate source, Coordinate target) {
         Coordinate delta = source.subtract(target);
 
         return Math.abs(delta.x) + Math.abs(delta.y);
@@ -33,6 +50,10 @@ public class PathNode implements Comparable<PathNode> {
 
     public Coordinate getPosition() {
         return position;
+    }
+
+    public PathNode getParent() {
+        return parent;
     }
 
     @Override

@@ -2,8 +2,12 @@ package team1;
 
 import java.awt.Toolkit;
 import java.io.InputStream;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
@@ -508,6 +512,79 @@ public class SokobanMap {
 
     public int getMoveCounter() {
         return moveCounter.peek();
+    }
+
+
+    public ArrayList<Coordinate> findPath(Coordinate target) {
+        if ((get(target) != SokobanObject.SPACE) && (get(target) != SokobanObject.GOAL)) {
+            return null;
+        }
+
+        Coordinate playerPos = getState().getPlayerPos();
+
+        ArrayList<PathNode> closed = new ArrayList<PathNode>();
+        ArrayList<PathNode> open = new ArrayList<PathNode>();
+
+        open.add(new PathNode(playerPos, target));
+
+        while (open.size() > 0) {
+            PathNode activeNode = open.get(0);
+            ArrayList<PathNode> neighbours = new ArrayList<PathNode>();
+
+            for (Coordinate neighbour : neighbors(activeNode.getPosition())) {
+                if (getState().get(neighbour) == SokobanObject.SPACE
+                        || getState().get(neighbour) == SokobanObject.GOAL) {
+                    neighbours.add(new PathNode(neighbour, activeNode, target));
+                }
+            }
+
+            for (PathNode neighbour : neighbours) {
+                boolean alreadySearched = closed.contains(neighbour);
+
+                if (!alreadySearched) {
+
+                    if (open.contains(neighbour)) {
+                        PathNode searchedNode = open.get(open.indexOf(neighbour));
+                        int gCost = neighbour.getGCost();
+                        int maybeSmallerCost = gCost + PathNode.manhattanDistance(neighbour.getPosition(), searchedNode.getPosition());
+
+                        if (maybeSmallerCost < searchedNode.getGCost()) {
+                            searchedNode.changeParent(neighbour);
+                            searchedNode.updateCosts();
+                        }
+
+                    }
+
+                    if (neighbour.equals(target)) {
+                        System.out.println("found it");
+                        // return new ArrayList<Coordinate>();
+                        ArrayList<Coordinate> directions = new ArrayList<Coordinate>();
+                        directions.add(target);
+                        PathNode parent = neighbour.getParent();
+
+                        while (parent != null) {
+                            directions.add(parent.getPosition());
+                            parent = parent.getParent();
+                        }
+
+                        Collections.reverse(directions);
+
+                        System.out.println(directions);
+
+                        return directions;
+                    }
+
+                    open.add(new PathNode(neighbour.getPosition(), activeNode, target));
+                    Collections.sort(open);
+                }
+            }
+
+            closed.add(activeNode);
+            open.remove(activeNode);
+        }
+
+        System.out.println("no path found :(");
+        return new ArrayList<Coordinate>();
     }
 
     /**

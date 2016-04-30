@@ -35,7 +35,7 @@ public class PathNodeTest {
         }
 
         System.out.println(node1.equals(pos1));
-
-        System.out.println(list.contains(new Coordinate(3, 3)));
+        System.out.println(list.contains(pos1));
+        System.out.println(list.indexOf(pos1));
     }
 }
