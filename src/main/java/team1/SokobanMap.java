@@ -512,7 +512,7 @@ public class SokobanMap {
         open.add(activeNode);
 
         while (open.size() > 0) {
-            activeNode = open.get(0);
+            activeNode = open.get(open.size() - 1);
 
             for (Coordinate neighbour : neighbors(activeNode.getPosition())) {
                 PathNode nodeNeighbourDummy = new PathNode(neighbour, neighbour);
@@ -552,7 +552,6 @@ public class SokobanMap {
             }
 
             Collections.sort(open);
-            Collections.reverse(open);
             open.remove(activeNode);
             closed.add(activeNode);
         }
