@@ -461,28 +461,29 @@ public class SokobanMap {
         }
     }
 
-    public void executeSolution(LinkedList<Coordinate[]> solution) {
-        class SolutionRunner extends Thread {
-            public void run() {
-                try {
-                    for (Coordinate[] instruction : solution) {
-                        System.out.println(instruction[0]);
-                        Mover mover = new Mover(instruction[0], 200);
-                        mover.start();
-                        mover.join();
-                        move(instruction[1]);
-                        GamePanel.redraw();
-                        sleep(200);
-                    }
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
+    class SolutionRunner extends Thread {
+        LinkedList<Coordinate[]> solution;
+
+        public SolutionRunner(LinkedList<Coordinate[]> solution) {
+            this.solution = solution;
         }
 
-        SolutionRunner runner = new SolutionRunner();
-        runner.start();
+        public void run() {
+            try {
+                sleep(500);
+                for (Coordinate[] instruction : solution) {
+                    Mover mover = new Mover(instruction[0], 200);
+                    mover.start();
+                    mover.join();
+                    move(instruction[1]);
+                    GamePanel.redraw();
+                    sleep(200);
+                }
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 
     public ArrayList<Coordinate> findPath(Coordinate target) {

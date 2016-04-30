@@ -127,7 +127,8 @@ public class SokobanPanel extends JPanel {
                                 return;
                         }
 
-                        GamePanel.getSokobanMap().executeSolution(solution.getValue());
+                        SokobanMap.SolutionRunner runner = GamePanel.getSokobanMap().new SolutionRunner(solution.getValue());
+                        runner.start();
                     } else {
                         msgLabel.setText("This level is impossible!");
                         panel.remove(loadingCube);
