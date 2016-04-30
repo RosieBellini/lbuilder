@@ -169,7 +169,7 @@ public class SokobanPanel extends JPanel {
         newMapItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!hasChanged("make a new one?")) {
-                    SokobanMap map = new SokobanMap(20, 20, 100);
+                    SokobanMap map = new SokobanMap(20, 20);
                     GamePanel.getSpriteMap().updateMap(map);
                     GamePanel.getSokobanMap().put(SokobanObject.PLAYER, new Coordinate(5, 5));
                     changeMagnification(0);

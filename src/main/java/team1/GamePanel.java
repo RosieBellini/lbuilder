@@ -179,7 +179,7 @@ public class GamePanel extends JPanel {
         boxLabel.setText("Boxes: " + boxCount);
         goalLabel.setText("Goals: " + goalCount);
 
-        statusBar.setText(Integer.toString(getSokobanMap().totalHistoryLength() -1));
+        statusBar.setText(Integer.toString(getSokobanMap().historyLength() -1));
 
         spriteMap.placeSprites();
 

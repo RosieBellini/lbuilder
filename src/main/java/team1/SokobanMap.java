@@ -19,22 +19,20 @@ import java.util.Stack;
  * TODO: make the array of static objects immutable
  */
 public class SokobanMap {
-    private FixedSizeStack<SaveState> history;
+    private Stack<SaveState> history;
     private Stack<SaveState> redoStack;
     private int prevRedoStackSize;
     private int xSize;
     private int ySize;
-    private int maxUndos;
     private SaveState initialState;
 
     /**
      * Initialises a MapContainer of the given size filled with spaces
      */
-    public SokobanMap(int xSize, int ySize, int maxUndos) {
-        this.maxUndos = maxUndos;
+    public SokobanMap(int xSize, int ySize) {
         this.xSize = xSize;
         this.ySize = ySize;
-        history = new FixedSizeStack<SaveState>(maxUndos);
+        history = new Stack<SaveState>();
         history.push(new SaveState());
         initialState = new SaveState();
         redoStack = new Stack<SaveState>();
@@ -42,19 +40,13 @@ public class SokobanMap {
     }
 
     public SokobanMap(SokobanMap mapToCopy) {
-        this(mapToCopy.getXSize(), mapToCopy.getYSize(), mapToCopy.getMaxUndos());
+        this(mapToCopy.getXSize(), mapToCopy.getYSize());
         this.initialState = new SaveState(mapToCopy.getInitialState());
         this.reset();
     }
 
-    public SokobanMap(SokobanMap mapToCopy, int maxUndos) {
-        this(mapToCopy.getXSize(), mapToCopy.getYSize(), maxUndos);
-        this.initialState = new SaveState(mapToCopy.getInitialState());
-        this.reset();
-    }
-
-    public static SokobanMap shallowCopy(SokobanMap mapToCopy, int maxUndos) {
-        SokobanMap newMap = new SokobanMap(mapToCopy, maxUndos);
+    public static SokobanMap shallowCopy(SokobanMap mapToCopy) {
+        SokobanMap newMap = new SokobanMap(mapToCopy);
         newMap.setInitialState(mapToCopy.getState());
         newMap.reset();
         return newMap;
@@ -81,10 +73,6 @@ public class SokobanMap {
 
     public int getXSize() {
         return xSize;
-    }
-
-    public int getMaxUndos() {
-        return maxUndos;
     }
 
     public SaveState getInitialState() {
@@ -152,16 +140,13 @@ public class SokobanMap {
     }
 
     public void reset() {
-        history.reset(initialState);
+        history.clear();
+        history.push(initialState);
         clearRedoStack();
     }
 
-    private int historyLength() {
+    public int historyLength() {
         return history.size();
-    }
-
-    public int totalHistoryLength() {
-        return history.getTotalSize();
     }
 
     /**
@@ -237,7 +222,7 @@ public class SokobanMap {
 
     public Set<Coordinate> tilesToRedraw(boolean playable) {
         Set<Coordinate> changedPlaces = new HashSet<Coordinate>();
-        SaveState[] stateArray = new SaveState[maxUndos];
+        SaveState[] stateArray = new SaveState[history.size()];
         history.toArray(stateArray);
 
         if (history.size() < 2 && redoStack.size() == 0) {
@@ -363,7 +348,7 @@ public class SokobanMap {
             levelLines.add(line);
         }
         ySize = levelLines.size();
-        SokobanMap map = new SokobanMap(xSize, ySize, 20);
+        SokobanMap map = new SokobanMap(xSize, ySize);
 
         /*
          * Then convert the raw data into a SokobanMap using the static
@@ -436,7 +421,7 @@ public class SokobanMap {
         }
 
 
-        SokobanMap croppedMap = new SokobanMap(xEnd + 1 -xStart, yEnd + 1-yStart, mapToCrop.getMaxUndos());
+        SokobanMap croppedMap = new SokobanMap(xEnd + 1 -xStart, yEnd + 1 - yStart);
         for (int y = yStart; y <= yEnd; y++) {
             for (int x = xStart; x <= xEnd; x++) {
                 croppedMap.put(mapToCrop.get(new Coordinate(x, y)), new Coordinate(x - xStart, y - yStart));

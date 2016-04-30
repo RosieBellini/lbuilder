@@ -61,7 +61,7 @@ public class MapPanel extends JPanel {
      * @param   map         The new SokobanMap to display
      */
     public void updateMap(SokobanMap map) {
-        this.map = SokobanMap.shallowCopy(map, map.getMaxUndos());
+        this.map = SokobanMap.shallowCopy(map);
         resetSolver();
         xSize = map.getXSize();
         ySize = map.getYSize();
