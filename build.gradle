@@ -3,6 +3,6 @@ apply plugin: 'eclipse'
 
 jar {
     manifest {
-        attributes 'Main-Class': 'team1.BoxTerm'
+        attributes 'Main-Class': 'team1.SokobanPanel'
     }
 }
