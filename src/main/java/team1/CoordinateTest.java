@@ -2,6 +2,8 @@ package team1;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,11 +64,46 @@ public class CoordinateTest
 	@Test
 	public void testMult() {
 		Coordinate newCoords = test.mult(2);
+		assertEquals("Check that value are 2 times for x",  10, newCoords.x);
+		assertEquals("Check that value are 2 times for y",  20, newCoords.y);
 	}
 	
+	/**
+	 * Tests that the coordinate values are reversed by a multiple of -1
+	 */
 	@Test
 	public void testReverse() {
-		fail("Not yet implemented");
+		Coordinate newCoords = test.reverse();
+		assertEquals("Check the value are now reversed for x", -5, newCoords.x);
+		assertEquals("Check the value are now reversed for y", -10, newCoords.y);
+
 	}
+	
+	/**
+	 * Test method for inRange method. This method should return true if the inputted coordinates are within its bounds,
+	 * otherwise it will return false:
+	 */
+	@Test
+	public void testInRange() {
+		assertEquals("Check that the coordinates are within the bounds, should return true:", true, test.inRange(0, 0, 6, 11));
+		assertEquals("Check that the coordinates are within the bounds, this should return false as the upper bound for x is too low:", false, test.inRange(0, 0, 4, 11));
+		assertEquals("Check that the coordinates are within the bounds, this should return false as the upper bound for y is too low:", false, test.inRange(0, 0, 6, 9));
+
+	}
+	
+	
+	/**
+	 * Tests that the Array List returned is of the correct size for the static allValidCoordinates method.
+	 */
+	@Test
+	public void testArraySize() {
+		ArrayList<Coordinate> testValidCoords = Coordinate.allValidCoordinates(10, 20);
+		// The ArrayList should be of a size 200, as 10x20=200.
+		assertEquals("Check that the arraylist size is correct", 200, testValidCoords.size());
+
+	}
+	
+	
+
 
 }
