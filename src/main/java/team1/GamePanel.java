@@ -17,7 +17,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-
 public class GamePanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private static JLabel statusBar;
@@ -31,11 +30,9 @@ public class GamePanel extends JPanel {
     private static JPanel statusBarContainer;
     private static Label boxLabel;
     private static Label goalLabel;
+    private static final int BAR_HEIGHT = 48;
+    private static final int ICON_PADDING = 4;
 
-    /**
-     * A constructor to initialise the key listener which allows methods to be
-     * run when key presses are detected
-     */
     private GamePanel(MapPanel mapPanel) {
         listener = new KeyListener() {
             @Override
@@ -82,7 +79,9 @@ public class GamePanel extends JPanel {
         tilePalette.add(list, BorderLayout.CENTER);
         tilePalette.add(padding, BorderLayout.EAST);
         tilePalette.setVisible(false);
-        tilePalette.setPreferredSize(new Dimension(tilePalette.getSize().width, 48));
+        int tilePaletteWidth = tilePalette.getSize().width;
+        Dimension tilePaletteSize = new Dimension(tilePaletteWidth, BAR_HEIGHT);
+        tilePalette.setPreferredSize(tilePaletteSize);
         selectTile();
 
         statusBarContainer = new JPanel();
@@ -90,7 +89,9 @@ public class GamePanel extends JPanel {
         statusBar.setFont(new Font("Helvetica",Font.PLAIN , 24));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         statusBarContainer.add(statusBar);
-        statusBarContainer.setPreferredSize(new Dimension(statusBarContainer.getSize().width, 48));
+        int statusBarWidth = statusBarContainer.getSize().width;
+        Dimension statusBarSize = new Dimension(statusBarWidth, BAR_HEIGHT);
+        statusBarContainer.setPreferredSize(statusBarSize);
         add(mapPanel);
         add(statusBarContainer);
         add(tilePalette);
@@ -137,14 +138,6 @@ public class GamePanel extends JPanel {
         return mapPanel.getSokobanMap();
     }
 
-    /**
-     * Runs player movement methods when keypresses are detected, then checks
-     * to see if the level has been completed. If it has, displays "YOU WON!",
-     * else redraws the level.
-     *
-     * TODO:    Only check if win conditions have been met when a box is placed
-     *          on a goal rather than every time the player moves
-     */
     private static void movePlayer(KeyEvent e) {
         SokobanMap map = getSokobanMap();
 
@@ -179,9 +172,6 @@ public class GamePanel extends JPanel {
         redraw();
     }
 
-    /**
-     * Updates the contents of the game window
-     */
     public static void redraw() {
         int boxCount = getSokobanMap().getState().getBoxPositions().size();
         int goalCount = getSokobanMap().getState().getGoalPositions().size();
@@ -202,8 +192,8 @@ public class GamePanel extends JPanel {
         tiles[1] = mapPanel.getUnscaledIconMap().get("BOX");
         tiles[2] = mapPanel.getUnscaledIconMap().get("GOAL");
         tiles[3] = mapPanel.getUnscaledIconMap().get("PLAYER");
-        list.setFixedCellHeight(mapPanel.getIconSize() + 4);
-        list.setFixedCellWidth(mapPanel.getIconSize() + 4);
+        list.setFixedCellHeight(mapPanel.getIconSize() + ICON_PADDING);
+        list.setFixedCellWidth(mapPanel.getIconSize() + ICON_PADDING);
         list.repaint();
     }
 
