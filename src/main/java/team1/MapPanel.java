@@ -2,7 +2,6 @@ package team1;
 
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -149,19 +148,16 @@ public class MapPanel extends JPanel {
                         "BOX_ON_GOAL_LEFT"));
         iconMap.clear();
         iconCountMap.clear();
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
 
         for (String iconName : iconNames) {
             String iconPath = tilesetPath + iconName;
             URL iconURL = getClass().getResource(iconPath + ".png");
-            Image icon = toolkit.getImage(iconURL);
-            iconMap.put(iconName, new ImageIcon(icon));
+            iconMap.put(iconName, new ImageIcon(iconURL));
 
             int i = 2;
             iconURL = getClass().getResource(iconPath + i + ".png");
             while (iconURL != null) {
-                icon = toolkit.getImage(iconURL);
-                iconMap.put(iconName + i, new ImageIcon(icon));
+                iconMap.put(iconName + i, new ImageIcon(iconURL));
                 i++;
                 iconURL = getClass().getResource(iconPath + i + ".png");
             }
