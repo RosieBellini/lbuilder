@@ -17,6 +17,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+/**
+ * Class to control player interaction with a playable MapPanel and display
+ * information about the current mode in a status bar.
+ */
 public class GamePanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private static JLabel statusBar;
@@ -33,6 +37,11 @@ public class GamePanel extends JPanel {
     private static final int BAR_HEIGHT = 48;
     private static final int ICON_PADDING = 4;
 
+    /**
+     * GamePanel constructor. Privatised to maintain one instance only.
+     *
+     * @param   mapPanel        The MapPanel to display in this GamePanel
+     */
     private GamePanel(MapPanel mapPanel) {
         listener = new KeyListener() {
             @Override
@@ -99,6 +108,9 @@ public class GamePanel extends JPanel {
         setVisible(true);
     }
 
+    /**
+     * Subclass to detect clicking on the GamePanel's tile palette.
+     */
     class ListListener implements ListSelectionListener {
 
         @Override
@@ -109,6 +121,13 @@ public class GamePanel extends JPanel {
         }
     }
 
+    /**
+     * Gets the instance of GamePanel if it exists, otherwise creates a new one
+     * using the given MapPanel.
+     *
+     * @param   mapPanel        The MapPanel to use if the GamePanel hasn't been
+     *                          instantiated
+     */
     public static GamePanel getInstance(MapPanel mapPanel) {
         if (instance == null) {
             instance = new GamePanel(mapPanel);
@@ -116,6 +135,9 @@ public class GamePanel extends JPanel {
         return instance;
     }
 
+    /**
+     * Switches between game and editor modes.
+     */
     public static void toggleMode() {
         SokobanMap map = mapPanel.getSokobanMap();
         if (!playable) {
@@ -130,14 +152,30 @@ public class GamePanel extends JPanel {
         redraw();
     }
 
-    public static MapPanel getSpriteMap() {
+    /**
+     * Returns the MapPanel displayed in the GamePanel.
+     *
+     * @return      The MapPanel object used by the GamePanel
+     */
+    public static MapPanel getMapPanel() {
         return mapPanel;
     }
 
+    /**
+     * Returns the SokobanMap displayed in the GamePanel.
+     *
+     * @return      The SokobanMap used by the MapPanel
+     */
     public static SokobanMap getSokobanMap() {
         return mapPanel.getSokobanMap();
     }
 
+    /**
+     * Moves the player up/down/left/right when it receives WASD/arrow key
+     * input. Will interrupt mouse movement if necessary.
+     *
+     * @param   e       A KeyEvent for directional movement
+     */
     private static void movePlayer(KeyEvent e) {
         SokobanMap map = getSokobanMap();
 
@@ -172,6 +210,10 @@ public class GamePanel extends JPanel {
         redraw();
     }
 
+    /**
+     * Updates the MapPanel and status bars, and displays the "You won!"
+     * dialogue if the map has been completed.
+     */
     public static void redraw() {
         int boxCount = getSokobanMap().getState().getBoxPositions().size();
         int goalCount = getSokobanMap().getState().getGoalPositions().size();
@@ -187,6 +229,9 @@ public class GamePanel extends JPanel {
         }
     }
 
+    /**
+     * Updates the tile palette's icons with those of the active tileset.
+     */
     public static void importPaletteIcons() {
         tiles[0] = mapPanel.getUnscaledIconMap().get("WALL");
         tiles[1] = mapPanel.getUnscaledIconMap().get("BOX");
@@ -197,6 +242,10 @@ public class GamePanel extends JPanel {
         list.repaint();
     }
 
+    /**
+     * Sets the value of SpriteLabel.paletteState to the type of the currently
+     * selected tile.
+     */
     private static void selectTile() {
 
         int selection = list.getSelectedIndex();
