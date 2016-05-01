@@ -10,15 +10,6 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 
-/**
- * Represents a Sokoban level. "Static" objects (spaces, walls, goals) are
- * represented in an array of SokobanObjects whereas "dynamic" objects (boxes
- * and the player) are represented in a FixedSizeStack of SaveState objects.
- * This separation reduces the amount of information we need to store for the
- * undo command and solver.
- *
- * TODO: make the array of static objects immutable
- */
 public class SokobanMap {
     private Stack<SaveState> history;
     private Stack<SaveState> redoStack;
@@ -29,9 +20,6 @@ public class SokobanMap {
     private boolean isCurrentlyMoving;
     private boolean isDoingSolution;
 
-    /**
-     * Initialises a MapContainer of the given size filled with spaces
-     */
     public SokobanMap(int xSize, int ySize) {
         this.xSize = xSize;
         this.ySize = ySize;
@@ -55,10 +43,6 @@ public class SokobanMap {
         return newMap;
     }
 
-    /*
-     *  Is this right to do?  For a given state I want to set the map to that position so I can
-     *  use accessibleSpaces() to work out what boxes you can push from a given SaveState.
-     */
     public void loadSimpleState(SaveState state){
         if (!state.isSimple()){
             throw new IllegalArgumentException();
@@ -406,23 +390,11 @@ public class SokobanMap {
             int x = position.x;
             int y = position.y;
 
-            if (xStart > x) {
-                xStart = x;
-            }
-
-            if (xEnd < x) {
-                xEnd = x;
-            }
-
-            if (yStart > y) {
-                yStart = y;
-            }
-
-            if (yEnd < y) {
-                yEnd = y;
-            }
+            xStart = (xStart > x) ? x : xStart;
+            xEnd = (xEnd < x) ? x : xEnd;
+            yStart = (yStart > y) ? y : yStart;
+            yEnd = (xEnd < y) ? y : yEnd;
         }
-
 
         SokobanMap croppedMap = new SokobanMap(xEnd + 1 -xStart, yEnd + 1 - yStart);
         for (int y = yStart; y <= yEnd; y++) {
