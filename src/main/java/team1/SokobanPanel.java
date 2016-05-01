@@ -53,7 +53,9 @@ import javax.swing.WindowConstants;
 
 @SuppressWarnings("serial")
 public class SokobanPanel extends JPanel {
-    private static JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
+    private static JFileChooser fileChooser
+                            = new JFileChooser(System.getProperty("user.dir"));
+    private static Toolkit toolkit = Toolkit.getDefaultToolkit();
     private static GamePanel game;
     private static JFrame frame;
     private static SokobanPanel sokobanPanel;
@@ -172,7 +174,6 @@ public class SokobanPanel extends JPanel {
     }
 
     private static void makeMenuBar(JFrame frame) {
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
         final int SHORTCUT_MASK = toolkit.getMenuShortcutKeyMask();
 
         menubar = new JMenuBar();
@@ -497,27 +498,33 @@ public class SokobanPanel extends JPanel {
 
     private static void changeMagnification(int scaleDirection) {
         MapPanel mapPanel = GamePanel.getMapPanel();
+        int iconSize = mapPanel.getIconSize();
+        int xSize = mapPanel.getXSize();
+        int ySize = mapPanel.getYSize();
 
         if (!autoScale) {
             float scale = mapPanel.getScale();
             scale = perfectPixelScaler(scale, scaleDirection);
-            int gameWidth = (int) (mapPanel.getIconSize() * mapPanel.getXSize() * scale);
+            int gameWidth = (int) (iconSize * xSize * scale);
 
             if (gameWidth > 220) {
                 mapPanel.setScale(scale);
                 mapPanel.loadSprites();
                 mapPanel.placeSprites(true);
+
             } else if (scaleDirection == 0) {
-                scale = 220 / ((float) (mapPanel.getIconSize() * mapPanel.getXSize()));
+                scale = 220 / ((float) (iconSize * xSize));
                 scale = (float) Math.ceil(scale);
                 mapPanel.setScale(scale);
                 mapPanel.loadSprites();
                 mapPanel.placeSprites(true);
             }
+
         } else {
             float scale = autoScaleFactor;
-            double preferredHeight = 0.75 * autoScaleFactor * Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-            int unscaledGameHeight = mapPanel.getIconSize() * mapPanel.getYSize();
+            double screenHeight = toolkit.getScreenSize().getHeight();
+            double preferredHeight = 0.75 * autoScaleFactor * screenHeight;
+            int unscaledGameHeight = iconSize * ySize;
             float gameHeight = unscaledGameHeight * scale + 64;
 
             boolean getBigger = false;
@@ -547,17 +554,9 @@ public class SokobanPanel extends JPanel {
 
     private static float perfectPixelScaler(float input, int scaleDirection) {
         if (scaleDirection > 0) {
-            if (input > 1) {
-                input++;
-            } else {
-                input = input * 2;
-            }
+            input = input > 1 ? input + 1 : input * 2;
         } else if (scaleDirection < 0) {
-            if (input > 1) {
-                input--;
-            } else {
-                input = input / 2;
-            }
+            input = input > 1 ? input - 1 : input / 2;
         }
 
         return input;
@@ -572,11 +571,12 @@ public class SokobanPanel extends JPanel {
                 toggleItem.setText("Start editor");
                 game.requestFocusInWindow();
             } else {
-                JOptionPane.showMessageDialog(frame,
-                        "This level cannot be won" + ".\nMake sure that there are at least as many boxes"
-                        + " as goals\nand that there is at least one uncovered goal,\n"
-                        + "and that all goals are accessible to the player.",
-                        "Incomplete level", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "This level cannot be won."
+                        + "\nMake sure that there are at least as many boxes "
+                        + "as\ngoals, that there is at least one uncovered "
+                        + "goal,\nand that all goals are accessible to the "
+                        + "player.", "Incomplete level",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
         } else {
@@ -601,12 +601,15 @@ public class SokobanPanel extends JPanel {
     }
 
     private static void getBuiltinLevels() {
-        InputStream levelIndex = SokobanPanel.class.getResourceAsStream("/levels/LEVEL_INDEX");
+        InputStream levelIndex
+            = SokobanPanel.class.getResourceAsStream("/levels/LEVEL_INDEX");
         Scanner levelIndexScanner = new Scanner(levelIndex);
+
         while (levelIndexScanner.hasNextLine()) {
             String levelName = levelIndexScanner.nextLine();
             levels.add(levelName);
         }
+
         levelIndexScanner.close();
     }
 
@@ -619,8 +622,11 @@ public class SokobanPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.getWindowAncestor(button1).dispose();
                 currentLevelIndex++;
-                InputStream level = SokobanPanel.class.getResourceAsStream("/levels/" + levels.get(currentLevelIndex));
+                String levelURL = "/levels/" + levels.get(currentLevelIndex);
+                InputStream level
+                        = SokobanPanel.class.getResourceAsStream(levelURL);
                 SokobanMap map = SokobanMap.importLevel(level);
+
                 lastOpenedMap = new SokobanMap(map);
                 GamePanel.getMapPanel().updateMap(map);
                 changeMagnification(0);
@@ -642,9 +648,10 @@ public class SokobanPanel extends JPanel {
             button1.setEnabled(false);
         }
 
-        JOptionPane.showOptionDialog(frame, "You beat the level!\nWhat next?", "Congratulations!",
-                JOptionPane.PLAIN_MESSAGE, JOptionPane.PLAIN_MESSAGE, null, new JButton[] { button1, button2 },
-                button1);
+        JOptionPane.showOptionDialog(frame, "You beat the level!\nWhat next?",
+                "Congratulations!", JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.PLAIN_MESSAGE, null,
+                new JButton[] { button1, button2 }, button1);
     }
 
     private static void openDialog() {
@@ -656,48 +663,62 @@ public class SokobanPanel extends JPanel {
         list.setSelectedIndex(0);
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setPreferredSize(new Dimension(200, 256));
-        int selectReturnVal = JOptionPane.showOptionDialog(frame, scrollPane, "Select or import a level",
-                JOptionPane.PLAIN_MESSAGE, JOptionPane.PLAIN_MESSAGE, null, buttons, buttons[0]);
+
+        int selectReturnVal = JOptionPane.showOptionDialog(frame, scrollPane,
+                "Select or import a level", JOptionPane.PLAIN_MESSAGE,
+                JOptionPane.PLAIN_MESSAGE, null, buttons, buttons[0]);
+
         if (selectReturnVal == 0) {
             currentLevelIndex = list.getSelectedIndex();
-            InputStream level = SokobanPanel.class.getResourceAsStream("/levels/" + levels.get(currentLevelIndex));
+            String levelURL = "/levels/" + levels.get(currentLevelIndex);
+            InputStream level
+                            = SokobanPanel.class.getResourceAsStream(levelURL);
             map = SokobanMap.importLevel(level);
+
             GamePanel.getMapPanel().updateMap(map);
             lastOpenedMap = new SokobanMap(map);
             changeMagnification(0);
             GamePanel.redraw();
             frame.pack();
+
         } else if (selectReturnVal == 1) {
             try {
                 int returnVal = fileChooser.showOpenDialog(null);
+
                 if (returnVal != JFileChooser.APPROVE_OPTION) {
-                    return; // cancelled
+                    return;
                 }
+
                 File selectedFile = fileChooser.getSelectedFile();
                 InputStream stream = new FileInputStream(selectedFile);
                 map = SokobanMap.importLevel(stream);
                 if (!map.validate()) {
                     JOptionPane.showMessageDialog(frame,
-                            "This level cannot be beaten.\n You may want "
-                            + "to load it in the level editor and correct " + "it.",
+                            "This level cannot be beaten.\n You may want to "
+                            + "load it in the level editor and correct it.",
                             "Invalid level", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
+
                 GamePanel.getMapPanel().updateMap(map);
                 lastOpenedMap = new SokobanMap(map);
                 changeMagnification(0);
                 GamePanel.redraw();
                 currentLevelIndex = -1;
                 frame.pack();
+
             } catch (FileNotFoundException e1) {
                 System.out.println("BAD LEVEL");
                 e1.printStackTrace();
+
             } catch (IllegalArgumentException e2) {
-                JOptionPane.showMessageDialog(frame,
-                        "Invalid level." + "\nMake sure that the file you have selected " + "uses the standard format.",
-                        "Invalid level", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Invalid level.\nMake sure"
+                        + " that the file you have selected uses the standard "
+                        + "format.", "Invalid level",
+                        JOptionPane.WARNING_MESSAGE);
             }
         }
+
         frame.pack();
     }
 
@@ -705,10 +726,11 @@ public class SokobanPanel extends JPanel {
         SokobanMap map = GamePanel.getSokobanMap();
 
         if (!map.validate()) {
-            int result = JOptionPane.showConfirmDialog(frame,
-                    "This " + "level is incomplete.\nYou may save it and "
-                    + "resume editing later,\nbut it won't be " + "playable.\nContinue?",
-                    "Save level", JOptionPane.YES_NO_OPTION);
+            int result = JOptionPane.showConfirmDialog(frame, "This level is "
+                    + "incomplete.\nYou may save it and resume editing later,\n"
+                    + "but it won't be playable.\nContinue?", "Save level",
+                    JOptionPane.YES_NO_OPTION);
+
             switch (result) {
                 case JOptionPane.NO_OPTION:
                 case JOptionPane.CLOSED_OPTION:
@@ -720,9 +742,12 @@ public class SokobanPanel extends JPanel {
             @Override
             public void approveSelection() {
                 File file = getSelectedFile();
+
                 if (file.exists() && getDialogType() == SAVE_DIALOG) {
-                    int result = JOptionPane.showConfirmDialog(this, file + " already exists. Overwrite it?",
+                    int result = JOptionPane.showConfirmDialog(this, file
+                            + " already exists. Overwrite it?",
                             "Overwrite file", JOptionPane.YES_NO_OPTION);
+
                     switch (result) {
                         case JOptionPane.YES_OPTION:
                             super.approveSelection();
@@ -732,15 +757,19 @@ public class SokobanPanel extends JPanel {
                             return;
                     }
                 }
+
                 super.approveSelection();
             }
         };
 
         if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
+
             if (file != null) {
                 Path newFile = Paths.get(file.getPath());
-                List<String> contents = Arrays.asList(map.toString().split("\\n"));
+                String mapString = map.toString();
+                List<String> contents = Arrays.asList(mapString.split("\\n"));
+
                 try {
                     Files.write(newFile, contents);
                     map.setInitialState(map.getState());
@@ -755,18 +784,20 @@ public class SokobanPanel extends JPanel {
 
     private static boolean hasChanged(String reason) {
         SokobanMap map = GamePanel.getSokobanMap();
+        SaveState lastInitialState = lastOpenedMap.getInitialState();
         boolean changed;
 
         if (GamePanel.getMapPanel().getPlayable()) {
-            changed = !map.getInitialState().equals(lastOpenedMap.getInitialState());
+            changed = !map.getInitialState().equals(lastInitialState);
         } else {
-            changed = !map.getState().equals(lastOpenedMap.getInitialState());
+            changed = !map.getState().equals(lastInitialState);
         }
 
         if (changed) {
-            int result = JOptionPane.showConfirmDialog(frame,
-                    "Your level has unsaved changes.\n" + "Are you sure you want to " + reason, "Unsaved changes",
-                    JOptionPane.YES_NO_OPTION);
+            int result = JOptionPane.showConfirmDialog(frame, "Your level has "
+                    + "unsaved changes.\nAre you sure you want to " + reason,
+                    "Unsaved changes", JOptionPane.YES_NO_OPTION);
+
             if (result != 0) {
                 return true;
             }
@@ -776,15 +807,17 @@ public class SokobanPanel extends JPanel {
     }
 
     private static boolean confirmCancelSolver(String reason) {
-        int result = JOptionPane.showConfirmDialog(frame,
-                "The assistant is " + "trying to find a solution for this level.\nWould you like "
+        int result = JOptionPane.showConfirmDialog(frame, "The assistant is "
+                + "trying to find a solution for this level.\nWould you like "
                 + "to cancel it in order to " + reason + "?",
                 "Cancel solving level", JOptionPane.YES_NO_OPTION);
+
         if (result == 0) {
             solver.stopSolving();
             solving = false;
             return true;
         }
+
         return false;
     }
 
@@ -799,7 +832,8 @@ public class SokobanPanel extends JPanel {
         } catch (IllegalAccessException e) {
             System.out.println("IllegalAccessException: " + e.getMessage());
         } catch (UnsupportedLookAndFeelException e) {
-            System.out.println("UnsupportedLookAndFeelException: " + e.getMessage());
+            System.out.println("UnsupportedAndLookFeelException: "
+                                + e.getMessage());
         }
 
         ArrayList<String> boxWords = new ArrayList<String>();
@@ -807,6 +841,7 @@ public class SokobanPanel extends JPanel {
         ArrayList<String> activeDictionary = boxWords;
         InputStream wordList = SokobanPanel.class.getResourceAsStream("/WORDS");
         Scanner wordScanner = new Scanner(wordList);
+
         while (wordScanner.hasNextLine()) {
             String line = wordScanner.nextLine();
             if (line.equals("BOX") || line.toCharArray()[0] == '#') {
@@ -818,6 +853,7 @@ public class SokobanPanel extends JPanel {
             }
         }
         wordScanner.close();
+
         Random randomGenerator = new Random();
         int index1 = randomGenerator.nextInt(boxWords.size());
         int index2 = randomGenerator.nextInt(pushWords.size());
@@ -827,8 +863,10 @@ public class SokobanPanel extends JPanel {
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         getBuiltinLevels();
-        SokobanMap map = SokobanMap
-            .importLevel(SokobanPanel.class.getResourceAsStream("/levels/" + levels.get(currentLevelIndex)));
+        String levelURL = "/levels/" + levels.get(currentLevelIndex);
+        InputStream level = SokobanPanel.class.getResourceAsStream(levelURL);
+        SokobanMap map = SokobanMap.importLevel(level);
+
         lastOpenedMap = new SokobanMap(map);
         game = GamePanel.getInstance(new MapPanel(map, 1));
         solver = new SingleThreadSolver(map);
