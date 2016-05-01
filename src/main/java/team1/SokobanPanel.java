@@ -109,7 +109,7 @@ public class SokobanPanel extends JPanel {
         panel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
 
         dialog.getContentPane().add(panel);
-        dialog.setTitle("Solver");
+        dialog.setTitle("Assistant");
         dialog.setResizable(false);
         dialog.pack();
         dialog.setSize(200, dialog.getHeight());
@@ -197,19 +197,23 @@ public class SokobanPanel extends JPanel {
 
         // New map
         JMenuItem newMapItem = new JMenuItem("New", KeyEvent.VK_N);
-        newMapItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
+        newMapItem.setAccelerator(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
         newMapItem.setToolTipText("Start a new map design");
+
         newMapItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!hasChanged("make a new one?")) {
                     SokobanMap map = new SokobanMap(20, 20);
-                    GamePanel.getMapPanel().updateMap(map);
-                    GamePanel.getSokobanMap().put(SokobanObject.PLAYER, new Coordinate(5, 5));
+                    MapPanel mapPanel = GamePanel.getMapPanel();
+                    map.put(SokobanObject.PLAYER, new Coordinate(5, 5));
+
+                    mapPanel.updateMap(map);
                     changeMagnification(0);
-                    GamePanel.getMapPanel().placeSprites(true);
+                    mapPanel.placeSprites(true);
                     GamePanel.redraw();
-                    frame.setSize(frame.getPreferredSize());
                     currentLevelIndex = -1;
+                    frame.pack();
                 }
             }
         });
@@ -220,7 +224,9 @@ public class SokobanPanel extends JPanel {
 
         // Open map
         JMenuItem openItem = new JMenuItem("Open");
-        openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
+        openItem.setAccelerator(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
+
         openItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!solving || confirmCancelSolver("open a new level")) {
@@ -236,8 +242,10 @@ public class SokobanPanel extends JPanel {
 
         // Save map
         JMenuItem saveItem = new JMenuItem("Save", KeyEvent.VK_S);
-        saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
+        saveItem.setAccelerator(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
         saveItem.setToolTipText("Save current map design to file");
+
         saveItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 saveDialog();
@@ -250,7 +258,9 @@ public class SokobanPanel extends JPanel {
 
         // Toggle mode
         toggleItem = new JMenuItem("Start editor");
-        toggleItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, SHORTCUT_MASK));
+        toggleItem.setAccelerator(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_E, SHORTCUT_MASK));
+
         toggleItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!solving || confirmCancelSolver("edit the current level")) {
@@ -264,7 +274,9 @@ public class SokobanPanel extends JPanel {
 
         // Quit
         JMenuItem quitItem = new JMenuItem("Quit");
-        quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, SHORTCUT_MASK));
+        quitItem.setAccelerator(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_Q, SHORTCUT_MASK));
+
         quitItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!hasChanged("exit?")) {
@@ -272,6 +284,7 @@ public class SokobanPanel extends JPanel {
                 }
             }
         });
+
         fileMenu.add(quitItem);
 
 
@@ -281,7 +294,9 @@ public class SokobanPanel extends JPanel {
 
         // Undo
         JMenuItem undo = new JMenuItem("Undo", KeyEvent.VK_Z);
-        undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
+        undo.setAccelerator(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
+
         undo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 GamePanel.getSokobanMap().undo();
@@ -294,7 +309,9 @@ public class SokobanPanel extends JPanel {
 
         // Redo
         JMenuItem redo = new JMenuItem("Redo", KeyEvent.VK_Y);
-        redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, SHORTCUT_MASK));
+        redo.setAccelerator(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_Y, SHORTCUT_MASK));
+
         redo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 GamePanel.getSokobanMap().redo();
@@ -307,19 +324,26 @@ public class SokobanPanel extends JPanel {
 
         // Crop
         JMenuItem cropItem = new JMenuItem("Crop");
+
         cropItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int result = JOptionPane.showConfirmDialog(frame,
-                        "This is a " + "potentially destructive\noperation.\n\nAre you sure" + " you want to crop?",
-                        "Crop", JOptionPane.YES_NO_OPTION);
+                int result = JOptionPane.showConfirmDialog(frame, "This is a "
+                        + "potentially destructive\noperation.\n\nAre you sure"
+                        + " you want to crop?", "Crop",
+                        JOptionPane.YES_NO_OPTION);
+
                 switch (result) {
                     case JOptionPane.NO_OPTION:
                     case JOptionPane.CLOSED_OPTION:
                         return;
                 }
-                GamePanel.getMapPanel().updateMap(SokobanMap.crop(GamePanel.getSokobanMap()));
+
+                SokobanMap map = GamePanel.getSokobanMap();
+                MapPanel mapPanel = GamePanel.getMapPanel();
+
+                mapPanel.updateMap(SokobanMap.crop(map));
                 changeMagnification(0);
-                frame.setSize(frame.getPreferredSize());
+                frame.pack();
             }
         });
 
@@ -333,13 +357,16 @@ public class SokobanPanel extends JPanel {
 
         // Reset
         JMenuItem resetItem = new JMenuItem("Reset level");
-        resetItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
+        resetItem.setAccelerator(KeyStroke.getKeyStroke(
+                                                KeyEvent.VK_R, SHORTCUT_MASK));
+
         resetItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 GamePanel.getMapPanel().reset();
                 GamePanel.redraw();
             }
         });
+
         gameMenuItems.add(resetItem);
         gameMenu.add(resetItem);
 
@@ -350,7 +377,9 @@ public class SokobanPanel extends JPanel {
 
         // Change tileset
         JMenuItem tileItem = new JMenuItem("Change Tileset");
-        tileItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, SHORTCUT_MASK));
+        tileItem.setAccelerator(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_T, SHORTCUT_MASK));
+
         tileItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MapPanel mapPanel = GamePanel.getMapPanel();
@@ -366,7 +395,9 @@ public class SokobanPanel extends JPanel {
 
         // Increase magnification
         JMenuItem magnifyItem = new JMenuItem("Increase Magnification");
-        magnifyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, SHORTCUT_MASK));
+        magnifyItem.setAccelerator(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, SHORTCUT_MASK));
+
         magnifyItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 changeMagnification(1);
@@ -379,7 +410,9 @@ public class SokobanPanel extends JPanel {
 
         // Decrease magnification
         JMenuItem deMagnifyItem = new JMenuItem("Decrease Magnification");
-        deMagnifyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, SHORTCUT_MASK));
+        deMagnifyItem.setAccelerator(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, SHORTCUT_MASK));
+
         deMagnifyItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 changeMagnification(-1);
@@ -391,7 +424,9 @@ public class SokobanPanel extends JPanel {
 
 
         // Enable autoscale
-        JCheckBoxMenuItem autoScaleItem = new JCheckBoxMenuItem("Enable autoscale", false);
+        JCheckBoxMenuItem autoScaleItem
+                            = new JCheckBoxMenuItem("Enable autoscale", false);
+
         autoScaleItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (autoScaleItem.getState()) {
@@ -427,14 +462,16 @@ public class SokobanPanel extends JPanel {
         JMenuItem editorHelpItem = new JMenuItem("Editor help");
         editorHelpItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null,
-                        " This map editor can be used to"
-                        + " design your own Sokoban levels (maximum 20x20). \n\n1) Use the"
-                        + " palette at the bottom to select either walls, goals, player"
-                        + " starting position or boxes. \n\n2) Click on the map once you have"
-                        + " selected something on the palette to begin designing your level."
-                        + " \n\n3) You can save your map design at any point using File>Save.",
-                        "Map Editor Help", JOptionPane.PLAIN_MESSAGE, GamePanel.getMapPanel().getIconMap().get("BOX"));
+                JOptionPane.showMessageDialog(null, " This map editor can be "
+                        + "used to design your own Sokoban levels (maximum "
+                        + "20x20).\n\n1) Use the palette at the bottom to "
+                        + "select walls, goals, player starting position or "
+                        + "boxes.\n\n2) Click or drag on the map to begin "
+                        + "designing your level.\n\n3) Save your map by "
+                        + "selecting File > Save, or play it by selecting File "
+                        + "> Start Game.", "Map Editor Help",
+                        JOptionPane.PLAIN_MESSAGE,
+                        GamePanel.getMapPanel().getIconMap().get("BOX"));
             }
         });
 
@@ -447,8 +484,10 @@ public class SokobanPanel extends JPanel {
         aboutItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(GamePanel.getMapPanel(),
-                        "A Sokoban clone.\n\nRosie Bellini\nJosh Gant\nDoris Hao\nHaiza Hazali\nLoki Li\nTom Picton\nMarcus Redgrave-Close\nJohn Zhuang",
-                        "Wonderful Sokoban", JOptionPane.PLAIN_MESSAGE,
+                        "A Sokoban clone.\n\nRosie Bellini\nJosh Gant\nDoris"
+                        + " Hao\nHaiza Hazali\nLoki Li\nTom Picton\nMarcus "
+                        + "Redgrave-Close\nJohn Zhuang", "Wonderful Sokoban",
+                        JOptionPane.PLAIN_MESSAGE,
                         GamePanel.getMapPanel().getIconMap().get("BOX"));
             }
         });
