@@ -43,14 +43,23 @@ public class SokobanMap {
         return newMap;
     }
 
-    public void loadSimpleState(SaveState state){
-        if (!state.isSimple()){
+    /*
+     * Is this right to do? For a given state I want to set the map to that
+     * position so I can use accessibleSpaces() to work out what boxes you can
+     * push from a given SaveState.
+     */
+    public void loadSimpleState(SaveState state) {
+        if (!state.isSimple()) {
             throw new IllegalArgumentException();
         }
-        SaveState stateToLoad = new SaveState(state.getPlayerPos(),
-                state.getBoxPositions(),
-                this.getState().getWallPositions(),
-                this.getState().getGoalPositions());
+
+        Coordinate playerPosition = state.getPlayerPos();
+        Set<Coordinate> boxPositions = state.getBoxPositions();
+        Set<Coordinate> wallPositions = getState().getWallPositions();
+        Set<Coordinate> goalPositions = getState().getGoalPositions();
+
+        SaveState stateToLoad = new SaveState(playerPosition, boxPositions,
+                                                wallPositions, goalPositions);
         history.push(stateToLoad);
     }
 
@@ -75,32 +84,41 @@ public class SokobanMap {
     }
 
     /**
-     * Returns a SaveState object that contains the upper leftmost accessible square and the box positions.
-     * This will be used to determine a state of the map independent of the players exact position.
-     * @return a SaveState which represents a state of the game for the solving algorithm to use.
+     * Returns a SaveState object that contains the upper leftmost accessible
+     * square and the box positions. This will be used to determine a state of
+     * the map independent of the players exact position.
+     *
+     * @return a SaveState which represents a state of the game for the solving
+     *         algorithm to use.
      */
     public SaveState getSimpleState() {
-        Set<Coordinate> accessibleSpaces = accessibleSpaces(getState().getPlayerPos(), false);
-        Coordinate potentialTopLeftSpace = new Coordinate(xSize,ySize);
-        for (Coordinate potential : Coordinate.allValidCoordinates(xSize, ySize)) {
+        Coordinate playerPosition = getState().getPlayerPos();
+        Set<Coordinate> boxPositions = getState().getBoxPositions();
+
+        Set<Coordinate> accessibleSpaces
+                = accessibleSpaces(playerPosition, false);
+        ArrayList<Coordinate> allSpaces
+                = Coordinate.allValidCoordinates(xSize, ySize);
+
+        Coordinate potentialTopLeftSpace = new Coordinate(xSize, ySize);
+        for (Coordinate potential : allSpaces) {
             potentialTopLeftSpace = potential;
             if (accessibleSpaces.contains(potentialTopLeftSpace)) {
                 break;
             }
         }
 
-        return new SaveState(potentialTopLeftSpace, getState().getBoxPositions());
+        return new SaveState(potentialTopLeftSpace, boxPositions);
     }
-
 
     /**
      * Pops a SaveState out of the history stack. If the stack is then empty,
      * the SaveState is put back in place as we require that there is always one
      * state to represent the positions of dynamic objects.
      *
-     * @param sendToRedoStack   whether or not to place the popped SaveState
-     *                          into the redo stack e.g. when the user inputs a
-     *                          command
+     * @param sendToRedoStack
+     *            whether or not to place the popped SaveState into the redo
+     *            stack e.g. when the user inputs a command
      */
     public void undo() {
         SaveState state = history.pop();
@@ -137,9 +155,9 @@ public class SokobanMap {
     }
 
     /**
-     * Checks the positions of all boxes to see if they've been placed on a
-     * goal
-     * @return  true if all boxes are on a goal, false otherwise
+     * Checks the positions of all boxes to see if they've been placed on a goal
+     *
+     * @return true if all boxes are on a goal, false otherwise
      */
     public boolean isDone() {
         for (Coordinate coord : getState().getGoalPositions()) {
@@ -147,6 +165,7 @@ public class SokobanMap {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -159,13 +178,15 @@ public class SokobanMap {
      * documentation for an explanation of how objects are stored. Respects the
      * rules of the game e.g. can't place a PLAYER on top of a WALL.
      *
-     * @param object    the object to be stored
-     * @param coord     the coordinate at which to place it
-     * @return          true if successful, false otherwise
+     * @param object
+     *            the object to be stored
+     * @param coord
+     *            the coordinate at which to place it
+     * @return true if successful, false otherwise
      */
-    public boolean put(SokobanObject object, Coordinate coord) {
-        if (coord.x >= 0 && coord.x < xSize && coord.y >= 0 && coord.y < ySize){
-            return getState().put(object, coord);
+    public boolean put(SokobanObject object, Coordinate position) {
+        if (position.inRange(0, 0, xSize, ySize)) {
+            return getState().put(object, position);
         } else {
             return false;
         }
@@ -175,7 +196,8 @@ public class SokobanMap {
      * Removes a "layer" from the given coordinate. If there is a BOX or PLAYER
      * on a SPACE or GOAL, remove it; otherwise, make the coordinate a SPACE.
      *
-     * @param coord     the coordinate to remove a layer from
+     * @param coord
+     *            the coordinate to remove a layer from
      */
     public void removeLayer(Coordinate coord) {
         getState().removeLayer(coord);
@@ -186,9 +208,9 @@ public class SokobanMap {
      * SokobanObject documentation for an explanation of how objects are stored
      * and returned.
      */
-    public SokobanObject get(Coordinate coord) {
-        if (coord.x >= 0 && coord.x < xSize && coord.y >= 0 && coord.y < ySize){
-            return getState().get(coord);
+    public SokobanObject get(Coordinate position) {
+        if (position.inRange(0, 0, xSize, ySize)) {
+            return getState().get(position);
         } else {
             return SokobanObject.WALL;
         }
@@ -204,6 +226,7 @@ public class SokobanMap {
             mapLine = mapLine + "\n";
 
         }
+
         return mapLine;
     }
 
@@ -241,30 +264,34 @@ public class SokobanMap {
     }
 
     /**
-     * Takes a coordinate and returns the set of coordinates which are accessible from there.
-     * Accessible meaning not blocked by a WALL.
-     * @param origin The coordinate space from which to start the search for accessible spaces.
-     * @param ignoreBoxes true if you want to ignore boxes in the search.
+     * Takes a coordinate and returns the set of coordinates which are
+     * accessible from there. Accessible meaning not blocked by a WALL.
+     *
+     * @param origin
+     *            The coordinate space from which to start the search for
+     *            accessible spaces.
+     * @param ignoreBoxes
+     *            true if you want to ignore boxes in the search.
      */
-    public Set<Coordinate> accessibleSpaces(Coordinate origin,boolean ignoreBoxes) {
+    public Set<Coordinate> accessibleSpaces(Coordinate origin, boolean ignoreBoxes) {
         Set<Coordinate> edges = new HashSet<Coordinate>();
         Set<Coordinate> accessible = new HashSet<Coordinate>();
         Set<Coordinate> newEdges = new HashSet<Coordinate>();
         edges.add(origin);
         while (edges.size() != 0) {
-            for (Coordinate edge: edges) {
+            for (Coordinate edge : edges) {
                 accessible.add(edge);
                 for (Coordinate potentialEdge : neighbors(edge)) {
-                    SokobanObject objectInPotentialEdge=get(potentialEdge);
-                    if (ignoreBoxes){
+                    SokobanObject objectInPotentialEdge = get(potentialEdge);
+                    if (ignoreBoxes) {
                         if (objectInPotentialEdge != SokobanObject.WALL) {
                             newEdges.add(potentialEdge);
                         }
                     }
-                    if(!ignoreBoxes){
-                        if (objectInPotentialEdge != SokobanObject.WALL){
-                            if(objectInPotentialEdge != SokobanObject.BOX){
-                                if(objectInPotentialEdge != SokobanObject.BOX_ON_GOAL){
+                    if (!ignoreBoxes) {
+                        if (objectInPotentialEdge != SokobanObject.WALL) {
+                            if (objectInPotentialEdge != SokobanObject.BOX) {
+                                if (objectInPotentialEdge != SokobanObject.BOX_ON_GOAL) {
                                     newEdges.add(potentialEdge);
                                 }
                             }
@@ -279,16 +306,17 @@ public class SokobanMap {
     }
 
     /**
-     * Takes a coordinate and returns its orthogonal neighbors (avoiding out of bounds areas).
+     * Takes a coordinate and returns its orthogonal neighbors (avoiding out of
+     * bounds areas).
      */
-    public Set<Coordinate> neighbors(Coordinate origin){
+    public Set<Coordinate> neighbors(Coordinate origin) {
         Set<Coordinate> potentialNeighbors = new HashSet<Coordinate>();
         Set<Coordinate> neighbors = new HashSet<Coordinate>();
-        potentialNeighbors.add(origin.add(new Coordinate(1,0)));
-        potentialNeighbors.add(origin.add(new Coordinate(-1,0)));
-        potentialNeighbors.add(origin.add(new Coordinate(0,1)));
-        potentialNeighbors.add(origin.add(new Coordinate(0,-1)));
-        for(Coordinate potentialNeighbor : potentialNeighbors){
+        potentialNeighbors.add(origin.add(new Coordinate(1, 0)));
+        potentialNeighbors.add(origin.add(new Coordinate(-1, 0)));
+        potentialNeighbors.add(origin.add(new Coordinate(0, 1)));
+        potentialNeighbors.add(origin.add(new Coordinate(0, -1)));
+        for (Coordinate potentialNeighbor : potentialNeighbors) {
             if (potentialNeighbor.inRange(0, 0, xSize, ySize)) {
                 neighbors.add(potentialNeighbor);
             }
@@ -297,15 +325,17 @@ public class SokobanMap {
     }
 
     /**
-     * Takes a coordinate of the map and returns all the spaces
-     * which the player could access from that coordinate (ignoring boxes).
-     * @return a Set of all the inaccessible coordinates from the given position.
+     * Takes a coordinate of the map and returns all the spaces which the player
+     * could access from that coordinate (ignoring boxes).
+     *
+     * @return a Set of all the inaccessible coordinates from the given
+     *         position.
      */
     public Set<Coordinate> inaccessibleSpaces() {
         ArrayList<Coordinate> potentialGrass = Coordinate.allValidCoordinates(xSize, ySize);
         Set<Coordinate> inaccessibleSpaces = new HashSet<Coordinate>();
-        potentialGrass.removeAll(accessibleSpaces(getState().getPlayerPos(),true));
-        for(Coordinate potentialGrassSpace : potentialGrass){
+        potentialGrass.removeAll(accessibleSpaces(getState().getPlayerPos(), true));
+        for (Coordinate potentialGrassSpace : potentialGrass) {
             if (get(potentialGrassSpace) == SokobanObject.SPACE || get(potentialGrassSpace) == SokobanObject.GOAL) {
                 inaccessibleSpaces.add(potentialGrassSpace);
             }
@@ -338,11 +368,11 @@ public class SokobanMap {
         SokobanMap map = new SokobanMap(xSize, ySize);
 
         /*
-         * Then convert the raw data into a SokobanMap using the static
-         * method charToSokobanObject from the SokobanObject class
+         * Then convert the raw data into a SokobanMap using the static method
+         * charToSokobanObject from the SokobanObject class
          */
-        for (String line: levelLines) {
-            for (char ch: line.toCharArray()) {
+        for (String line : levelLines) {
+            for (char ch : line.toCharArray()) {
                 Coordinate coord = new Coordinate(x, y);
                 SokobanObject object = SokobanObject.charToSokobanObject(ch);
                 map.put(object, coord);
@@ -396,7 +426,7 @@ public class SokobanMap {
             yEnd = (xEnd < y) ? y : yEnd;
         }
 
-        SokobanMap croppedMap = new SokobanMap(xEnd + 1 -xStart, yEnd + 1 - yStart);
+        SokobanMap croppedMap = new SokobanMap(xEnd + 1 - xStart, yEnd + 1 - yStart);
         for (int y = yStart; y <= yEnd; y++) {
             for (int x = xStart; x <= xEnd; x++) {
                 croppedMap.put(mapToCrop.get(new Coordinate(x, y)), new Coordinate(x - xStart, y - yStart));
@@ -409,7 +439,6 @@ public class SokobanMap {
     class Mover extends Thread {
         private Coordinate target;
         private int delay;
-
 
         public Mover(Coordinate target, int delay) {
             clearRedoStack();
@@ -487,7 +516,6 @@ public class SokobanMap {
     public ArrayList<Coordinate> findPath(Coordinate target) {
         Coordinate playerPos = getState().getPlayerPos();
 
-
         if (!accessibleSpaces(playerPos, false).contains(target) || get(target) == SokobanObject.PLAYER) {
             System.out.println("Can't move here");
             return null;
@@ -539,10 +567,11 @@ public class SokobanMap {
     }
 
     /**
-     * Moves the player in the given direction, respecting the rules of the
-     * game and pushing boxes when necessary.
+     * Moves the player in the given direction, respecting the rules of the game
+     * and pushing boxes when necessary.
      *
-     * @param direction     the direction in which to move the player
+     * @param direction
+     *            the direction in which to move the player
      * @return true if the move is permitted, false otherwise
      */
     public boolean move(Coordinate direction) {
