@@ -11,6 +11,8 @@ public class SpriteLabel extends JLabel{
     private Coordinate position;
     private static SokobanObject paletteState = SokobanObject.WALL;
     private static SokobanMap.Mover mover;
+    private static boolean mouseDown = false;
+    private static boolean rightMouseDown = false;
 
     public SpriteLabel(Coordinate position, MapPanel mapPanel) {
         super();
@@ -19,34 +21,36 @@ public class SpriteLabel extends JLabel{
 
         addMouseListener(new MouseAdapter(){
             public void mousePressed(MouseEvent me)
-            {
+            {       
                 if (!mapPanel.getPlayable()) {
+                    if (me.getButton()==MouseEvent.BUTTON1){
+                        mouseDown=true;
+                    }
+                    if (me.getButton()==MouseEvent.BUTTON3){
+                        rightMouseDown=true;
+                    }         
                     modifyCell(me);
                 } else {
-                    SokobanMap map = mapPanel.getSokobanMap();
-                    if (map.neighbours(position).contains(map.getState().getPlayerPos())){
-                        map.move(position.add(map.getState().getPlayerPos().reverse()));
-                        GamePanel.redraw();
-                    } else {
-                        if (!(map.getIsCurrentlyMoving() || map.getIsDoingSolution())) {
-                            mover = map.new Mover(position, 75);
-                            mover.start();
-                        } else if (map.getIsCurrentlyMoving() && !map.getIsDoingSolution()) {
-                            mover.interrupt();
+                    move();
+                }
+            }
 
-                            while (!mover.isInterrupted()) {
-                                mover.interrupt();
-                            }
-
-                            mover = map.new Mover(position, 75);
-                            mover.start();
-                        }
+            public void mouseReleased(MouseEvent me){
+                if (!mapPanel.getPlayable()){
+                    if (me.getButton()==MouseEvent.BUTTON1){
+                        mouseDown=false;
                     }
+                    if (me.getButton()==MouseEvent.BUTTON3){
+                        rightMouseDown=false;
+                    }               
                 }
             }
 
             public void mouseEntered(MouseEvent me) {
                 if (!mapPanel.getPlayable()) {
+                    if (mouseDown || rightMouseDown){
+                        modifyCell(me);
+                    }
                     if (me.getButton() == MouseEvent.NOBUTTON) {
                         if (mapPanel.getSokobanMap().get(position) == SokobanObject.SPACE) {
                             setIcon(mapPanel.getIconMap().get("DEFAULT_HOVER"));
@@ -71,14 +75,13 @@ public class SpriteLabel extends JLabel{
 
     private void modifyCell(MouseEvent me) {
         mapPanel.getSokobanMap().storeState();
-        if (me.getButton() == MouseEvent.BUTTON1) {
+        if (mouseDown || me.getButton() == MouseEvent.BUTTON1) {
             mapPanel.getSokobanMap().put(paletteState, position);
-        } else if (me.getButton() == MouseEvent.BUTTON3) {
+        } else if (rightMouseDown || me.getButton() == MouseEvent.BUTTON3) {
             if (mapPanel.getSokobanMap().get(position) != SokobanObject.PLAYER && mapPanel.getSokobanMap().get(position) != SokobanObject.PLAYER_ON_GOAL) {
                 mapPanel.getSokobanMap().removeLayer(position);
             }
         }
-
         GamePanel.redraw();
         mapPanel.getSokobanMap().clearRedoStack();
     }
@@ -90,4 +93,27 @@ public class SpriteLabel extends JLabel{
     public static SokobanMap.Mover getMover() {
         return mover;
     }
+
+    private void move(){
+        SokobanMap map = mapPanel.getSokobanMap();
+        if (map.neighbours(position).contains(map.getState().getPlayerPos())){
+            map.move(position.add(map.getState().getPlayerPos().reverse()));
+            GamePanel.redraw();
+        } else {
+            if (!(map.getIsCurrentlyMoving() || map.getIsDoingSolution())) {
+                mover = map.new Mover(position, 75);
+                mover.start();
+            } else if (map.getIsCurrentlyMoving() && !map.getIsDoingSolution()) {
+                mover.interrupt();
+
+                while (!mover.isInterrupted()) {
+                    mover.interrupt();
+                }
+
+                mover = map.new Mover(position, 75);
+                mover.start();
+            }
+        }
+    }
+
 }
