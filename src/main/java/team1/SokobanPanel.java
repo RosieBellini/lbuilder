@@ -69,6 +69,11 @@ public class SokobanPanel extends JPanel {
     private static boolean autoScale = false;
     private static float autoScaleFactor = 1;
     private static String programName;
+    private static SokobanMap.SolutionRunner runner;
+
+    public static SokobanMap.SolutionRunner getRunner() {
+        return runner;
+    }
 
     private static void startSolver() {
         solving = true;
@@ -127,7 +132,7 @@ public class SokobanPanel extends JPanel {
                                 return;
                         }
 
-                        SokobanMap.SolutionRunner runner = GamePanel.getSokobanMap().new SolutionRunner(solution.getValue());
+                        runner = GamePanel.getSokobanMap().new SolutionRunner(solution.getValue());
                         runner.start();
                     } else {
                         msgLabel.setText("This level is impossible!");

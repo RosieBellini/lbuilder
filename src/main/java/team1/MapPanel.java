@@ -211,6 +211,21 @@ public class MapPanel extends JPanel {
      * Returns the SokobanMap and this MapPanel to their initial states.
      */
     public void reset() {
+        if (map.getIsCurrentlyMoving() && !map.getIsDoingSolution()) {
+            SpriteLabel.getMover().interrupt();
+
+            while (!SpriteLabel.getMover().isInterrupted()) {
+                SpriteLabel.getMover().interrupt();
+            }
+        } else if (map.getIsDoingSolution()) {
+            SokobanPanel.getRunner().interrupt();
+
+            while (!SokobanPanel.getRunner().isInterrupted()) {
+                SokobanPanel.getRunner().interrupt();
+            }
+
+        }
+
         resetSolver();
         map.reset();
         placeSprites(true);

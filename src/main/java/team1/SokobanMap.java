@@ -475,20 +475,27 @@ public class SokobanMap {
 
         public void run() {
             isDoingSolution = true;
+
             try {
                 sleep(500);
-                for (Coordinate[] instruction : solution) {
+            } catch (InterruptedException e) {
+                isDoingSolution = false;
+                return;
+            }
+
+            for (Coordinate[] instruction : solution) {
+                try {
                     Mover mover = new Mover(instruction[0], 200);
                     mover.start();
                     mover.join();
                     move(instruction[1]);
                     GamePanel.redraw();
                     sleep(200);
+                } catch (InterruptedException e) {
+                    break;
                 }
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
+
             isDoingSolution = false;
         }
     }
