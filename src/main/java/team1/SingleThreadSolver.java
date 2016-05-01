@@ -52,7 +52,7 @@ public class SingleThreadSolver implements Runnable {
         List<Coordinate[]> validPushes = new ArrayList<Coordinate[]>();
 
         for (Coordinate box : state.getBoxPositions()) {
-            for (Coordinate spaceNextToBox : map.neighbors(box)) {
+            for (Coordinate spaceNextToBox : map.neighbours(box)) {
                 SokobanObject thingOppositeBox = map.get(box.add(box.add(spaceNextToBox.reverse())));
                 if (accessibleSpaces.contains(spaceNextToBox)
                         && (thingOppositeBox == SokobanObject.SPACE

@@ -24,7 +24,7 @@ public class SpriteLabel extends JLabel{
                     modifyCell(me);
                 } else {
                     SokobanMap map = mapPanel.getSokobanMap();
-                    if (map.neighbors(position).contains(map.getState().getPlayerPos())){
+                    if (map.neighbours(position).contains(map.getState().getPlayerPos())){
                         map.move(position.add(map.getState().getPlayerPos().reverse()));
                         GamePanel.redraw();
                     } else {
