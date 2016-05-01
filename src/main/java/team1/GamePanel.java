@@ -148,8 +148,16 @@ public class GamePanel extends JPanel {
     private static void movePlayer(KeyEvent e) {
         SokobanMap map = getSokobanMap();
 
-        if (!playable || map.playerIsMoving()) {
+        if (!playable || map.getIsDoingSolution()) {
             return;
+        }
+
+        if (map.getIsCurrentlyMoving() && !map.getIsDoingSolution()) {
+            SpriteLabel.getMover().interrupt();
+
+            while (!SpriteLabel.getMover().isInterrupted()) {
+                SpriteLabel.getMover().interrupt();
+            }
         }
 
         switch (e.getKeyCode()) {

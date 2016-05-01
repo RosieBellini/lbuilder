@@ -86,4 +86,8 @@ public class SpriteLabel extends JLabel{
     public static void setPaletteState(SokobanObject paletteState) {
         SpriteLabel.paletteState = paletteState;
     }
+
+    public static SokobanMap.Mover getMover() {
+        return mover;
+    }
 }
