@@ -528,7 +528,7 @@ public class SokobanMap {
         open.add(activeNode);
 
         while (open.size() > 0) {
-            activeNode = open.get(open.size() - 1);
+            activeNode = open.get(0);
 
             for (Coordinate neighbour : neighbors(activeNode.getPosition())) {
                 PathNode nodeNeighbourDummy = new PathNode(neighbour, neighbour);
