@@ -48,7 +48,7 @@ public class GamePanel extends JPanel {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                moveWorker(e);
+                movePlayer(e);
             }
         };
         addKeyListener(listener);
@@ -145,12 +145,12 @@ public class GamePanel extends JPanel {
      * TODO:    Only check if win conditions have been met when a box is placed
      *          on a goal rather than every time the player moves
      */
-    private static void moveWorker(KeyEvent e) {
-        if (!playable) {
+    private static void movePlayer(KeyEvent e) {
+        SokobanMap map = getSokobanMap();
+
+        if (!playable || map.playerIsMoving()) {
             return;
         }
-
-        SokobanMap map = getSokobanMap();
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
@@ -167,6 +167,7 @@ public class GamePanel extends JPanel {
                                     break;
             default:                return;
         }
+
         redraw();
     }
 
