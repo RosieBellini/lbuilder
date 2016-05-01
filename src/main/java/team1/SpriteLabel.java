@@ -27,8 +27,10 @@ public class SpriteLabel extends JLabel{
                         map.move(position.add(map.getState().getPlayerPos().reverse()));
                         GamePanel.redraw();
                     } else {
-                        SokobanMap.Mover mover = map.new Mover(position, 75);
-                        mover.start();
+                        if (!map.playerIsMoving()) {
+                            SokobanMap.Mover mover = map.new Mover(position, 75);
+                            mover.start();
+                        }
                     }
                 }
             }

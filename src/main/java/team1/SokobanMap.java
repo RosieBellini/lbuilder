@@ -27,6 +27,7 @@ public class SokobanMap {
     private int ySize;
     private SaveState initialState;
     private boolean isCurrentlyMoving;
+    private boolean isDoingSolution;
 
     /**
      * Initialises a MapContainer of the given size filled with spaces
@@ -445,24 +446,22 @@ public class SokobanMap {
         }
 
         public void run() {
-            if (!isCurrentlyMoving){
-                isCurrentlyMoving=true;
-                ArrayList<Coordinate> path = findPath(target);            
-                if (path != null) {
-                    for (Coordinate position : path) {
-                        storeState();
-                        put(SokobanObject.PLAYER, position);
-                        GamePanel.redraw();
-                        try {
-                            sleep(delay);
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+            isCurrentlyMoving = true;
+            ArrayList<Coordinate> path = findPath(target);
+            if (path != null) {
+                for (Coordinate position : path) {
+                    storeState();
+                    put(SokobanObject.PLAYER, position);
+                    GamePanel.redraw();
+                    try {
+                        sleep(delay);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                 }
-                isCurrentlyMoving=false;
             }
+            isCurrentlyMoving = false;
         }
     }
 
@@ -474,6 +473,7 @@ public class SokobanMap {
         }
 
         public void run() {
+            isDoingSolution = true;
             try {
                 sleep(500);
                 for (Coordinate[] instruction : solution) {
@@ -488,7 +488,12 @@ public class SokobanMap {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+            isDoingSolution = false;
         }
+    }
+
+    public boolean playerIsMoving() {
+        return isCurrentlyMoving || isDoingSolution;
     }
 
     public ArrayList<Coordinate> findPath(Coordinate target) {
