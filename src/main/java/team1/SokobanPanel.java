@@ -118,7 +118,9 @@ public class SokobanPanel extends JPanel {
         dialog.setVisible(true);
 
         class solverWorker extends SwingWorker<Void, Object> {
-            Entry<HashMap<SaveState, Coordinate[]>, LinkedList<Coordinate[]>> solution;
+            Entry<HashMap<SaveState, Coordinate[]>,
+                LinkedList<Coordinate[]>> solution;
+            SokobanMap map = GamePanel.getSokobanMap();
 
             @Override
             protected void done() {
@@ -132,7 +134,8 @@ public class SokobanPanel extends JPanel {
                         dialog.dispose();
 
                         int result = JOptionPane.showConfirmDialog(frame,
-                                "A solution was found!\nWould you like " + programName + " to play it for you?",
+                                "A solution was found!\nWould you like "
+                                + programName + " to play it for you?",
                                 "Solution found", JOptionPane.YES_NO_OPTION);
 
                         switch (result) {
@@ -141,7 +144,8 @@ public class SokobanPanel extends JPanel {
                                 return;
                         }
 
-                        runner = GamePanel.getSokobanMap().new SolutionRunner(solution.getValue());
+                        map = GamePanel.getSokobanMap();
+                        runner = map.new SolutionRunner(solution.getValue());
                         runner.start();
                     } else {
                         msgLabel.setText("This level is impossible!");
@@ -158,19 +162,18 @@ public class SokobanPanel extends JPanel {
             @Override
             protected Void doInBackground() throws Exception {
                 solving = true;
-                SokobanMap mapToSolve = new SokobanMap(GamePanel.getSokobanMap());
-                solver = new SingleThreadSolver(mapToSolve);
+                solver = new SingleThreadSolver(map);
                 solution = solver.levelSolution();
                 return null;
             }
         }
-        ;
 
         (new solverWorker()).execute();
     }
 
     private static void makeMenuBar(JFrame frame) {
-        final int SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        final int SHORTCUT_MASK = toolkit.getMenuShortcutKeyMask();
 
         menubar = new JMenuBar();
         frame.setJMenuBar(menubar);
@@ -187,8 +190,12 @@ public class SokobanPanel extends JPanel {
         JMenu helpMenu = new JMenu("Help");
         menubar.add(helpMenu);
 
+
+
+        // =====================================================================
         // File menu
 
+        // New map
         JMenuItem newMapItem = new JMenuItem("New", KeyEvent.VK_N);
         newMapItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, SHORTCUT_MASK));
         newMapItem.setToolTipText("Start a new map design");
@@ -206,9 +213,12 @@ public class SokobanPanel extends JPanel {
                 }
             }
         });
+
         editMenuItems.add(newMapItem);
         fileMenu.add(newMapItem);
 
+
+        // Open map
         JMenuItem openItem = new JMenuItem("Open");
         openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, SHORTCUT_MASK));
         openItem.addActionListener(new ActionListener() {
@@ -220,67 +230,25 @@ public class SokobanPanel extends JPanel {
                 }
             }
         });
+
         fileMenu.add(openItem);
 
+
+        // Save map
         JMenuItem saveItem = new JMenuItem("Save", KeyEvent.VK_S);
         saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, SHORTCUT_MASK));
         saveItem.setToolTipText("Save current map design to file");
         saveItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SokobanMap map = GamePanel.getSokobanMap();
-
-                if (!map.validate()) {
-                    int result = JOptionPane.showConfirmDialog(frame,
-                            "This " + "level is incomplete.\nYou may save it and "
-                            + "resume editing later,\nbut it won't be " + "playable.\nContinue?",
-                            "Save level", JOptionPane.YES_NO_OPTION);
-                    switch (result) {
-                        case JOptionPane.NO_OPTION:
-                        case JOptionPane.CLOSED_OPTION:
-                            return;
-                    }
-                }
-
-                JFileChooser fileChooser = new JFileChooser() {
-                    @Override
-                    public void approveSelection() {
-                        File file = getSelectedFile();
-                        if (file.exists() && getDialogType() == SAVE_DIALOG) {
-                            int result = JOptionPane.showConfirmDialog(this, file + " already exists. Overwrite it?",
-                                    "Overwrite file", JOptionPane.YES_NO_OPTION);
-                            switch (result) {
-                                case JOptionPane.YES_OPTION:
-                                    super.approveSelection();
-                                    return;
-                                case JOptionPane.NO_OPTION:
-                                case JOptionPane.CLOSED_OPTION:
-                                    return;
-                            }
-                        }
-                        super.approveSelection();
-                    }
-                };
-
-                if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-                    File file = fileChooser.getSelectedFile();
-                    if (file != null) {
-                        Path newFile = Paths.get(file.getPath());
-                        List<String> contents = Arrays.asList(map.toString().split("\\n"));
-                        try {
-                            Files.write(newFile, contents);
-                            map.setInitialState(map.getState());
-                            map.reset();
-                            lastOpenedMap = new SokobanMap(map);
-                        } catch (IOException io) {
-                            System.out.println("Couldn't save");
-                        }
-                    }
-                }
+                saveDialog();
             }
         });
+
         editMenuItems.add(saveItem);
         fileMenu.add(saveItem);
 
+
+        // Toggle mode
         toggleItem = new JMenuItem("Start editor");
         toggleItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, SHORTCUT_MASK));
         toggleItem.addActionListener(new ActionListener() {
@@ -290,8 +258,11 @@ public class SokobanPanel extends JPanel {
                 }
             }
         });
+
         fileMenu.add(toggleItem);
 
+
+        // Quit
         JMenuItem quitItem = new JMenuItem("Quit");
         quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, SHORTCUT_MASK));
         quitItem.addActionListener(new ActionListener() {
@@ -303,8 +274,12 @@ public class SokobanPanel extends JPanel {
         });
         fileMenu.add(quitItem);
 
+
+
+        // =====================================================================
         // Edit menu
 
+        // Undo
         JMenuItem undo = new JMenuItem("Undo", KeyEvent.VK_Z);
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, SHORTCUT_MASK));
         undo.addActionListener(new ActionListener() {
@@ -313,8 +288,11 @@ public class SokobanPanel extends JPanel {
                 GamePanel.redraw();
             }
         });
+
         gameMenu.add(undo);
 
+
+        // Redo
         JMenuItem redo = new JMenuItem("Redo", KeyEvent.VK_Y);
         redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, SHORTCUT_MASK));
         redo.addActionListener(new ActionListener() {
@@ -323,8 +301,11 @@ public class SokobanPanel extends JPanel {
                 GamePanel.redraw();
             }
         });
+
         gameMenu.add(redo);
 
+
+        // Crop
         JMenuItem cropItem = new JMenuItem("Crop");
         cropItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -341,11 +322,16 @@ public class SokobanPanel extends JPanel {
                 frame.setSize(frame.getPreferredSize());
             }
         });
+
         editMenuItems.add(cropItem);
         gameMenu.add(cropItem);
 
+
+
+        // =====================================================================
         // Game menu
 
+        // Reset
         JMenuItem resetItem = new JMenuItem("Reset level");
         resetItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, SHORTCUT_MASK));
         resetItem.addActionListener(new ActionListener() {
@@ -357,8 +343,12 @@ public class SokobanPanel extends JPanel {
         gameMenuItems.add(resetItem);
         gameMenu.add(resetItem);
 
+
+
+        // =====================================================================
         // View menu
 
+        // Change tileset
         JMenuItem tileItem = new JMenuItem("Change Tileset");
         tileItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, SHORTCUT_MASK));
         tileItem.addActionListener(new ActionListener() {
@@ -370,8 +360,11 @@ public class SokobanPanel extends JPanel {
                 GamePanel.importPaletteIcons();
             }
         });
+
         viewMenu.add(tileItem);
 
+
+        // Increase magnification
         JMenuItem magnifyItem = new JMenuItem("Increase Magnification");
         magnifyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, SHORTCUT_MASK));
         magnifyItem.addActionListener(new ActionListener() {
@@ -380,8 +373,11 @@ public class SokobanPanel extends JPanel {
                 frame.pack();
             }
         });
+
         viewMenu.add(magnifyItem);
 
+
+        // Decrease magnification
         JMenuItem deMagnifyItem = new JMenuItem("Decrease Magnification");
         deMagnifyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, SHORTCUT_MASK));
         deMagnifyItem.addActionListener(new ActionListener() {
@@ -390,8 +386,11 @@ public class SokobanPanel extends JPanel {
                 frame.pack();
             }
         });
+
         viewMenu.add(deMagnifyItem);
 
+
+        // Enable autoscale
         JCheckBoxMenuItem autoScaleItem = new JCheckBoxMenuItem("Enable autoscale", false);
         autoScaleItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -404,20 +403,28 @@ public class SokobanPanel extends JPanel {
                 }
             }
         });
+
         viewMenu.add(autoScaleItem);
 
+
+
+        // =====================================================================
         // Help menu
 
-        JMenuItem assistItem = new JMenuItem("Solver");
+        // Assistant
+        JMenuItem assistItem = new JMenuItem("Assistant");
         assistItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 startSolver();
             }
         });
+
         gameMenuItems.add(assistItem);
         helpMenu.add(assistItem);
 
-        JMenuItem editorHelpItem = new JMenuItem("Builder help");
+
+        // Editor help
+        JMenuItem editorHelpItem = new JMenuItem("Editor help");
         editorHelpItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null,
@@ -430,9 +437,12 @@ public class SokobanPanel extends JPanel {
                         "Map Editor Help", JOptionPane.PLAIN_MESSAGE, GamePanel.getMapPanel().getIconMap().get("BOX"));
             }
         });
+
         editMenuItems.add(editorHelpItem);
         helpMenu.add(editorHelpItem);
 
+
+        // About
         JMenuItem aboutItem = new JMenuItem("About Wonderful Sokoban");
         aboutItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -442,6 +452,7 @@ public class SokobanPanel extends JPanel {
                         GamePanel.getMapPanel().getIconMap().get("BOX"));
             }
         });
+
         helpMenu.add(aboutItem);
     }
 
@@ -649,6 +660,58 @@ public class SokobanPanel extends JPanel {
             }
         }
         frame.pack();
+    }
+
+    private static void saveDialog() {
+        SokobanMap map = GamePanel.getSokobanMap();
+
+        if (!map.validate()) {
+            int result = JOptionPane.showConfirmDialog(frame,
+                    "This " + "level is incomplete.\nYou may save it and "
+                    + "resume editing later,\nbut it won't be " + "playable.\nContinue?",
+                    "Save level", JOptionPane.YES_NO_OPTION);
+            switch (result) {
+                case JOptionPane.NO_OPTION:
+                case JOptionPane.CLOSED_OPTION:
+                    return;
+            }
+        }
+
+        JFileChooser fileChooser = new JFileChooser() {
+            @Override
+            public void approveSelection() {
+                File file = getSelectedFile();
+                if (file.exists() && getDialogType() == SAVE_DIALOG) {
+                    int result = JOptionPane.showConfirmDialog(this, file + " already exists. Overwrite it?",
+                            "Overwrite file", JOptionPane.YES_NO_OPTION);
+                    switch (result) {
+                        case JOptionPane.YES_OPTION:
+                            super.approveSelection();
+                            return;
+                        case JOptionPane.NO_OPTION:
+                        case JOptionPane.CLOSED_OPTION:
+                            return;
+                    }
+                }
+                super.approveSelection();
+            }
+        };
+
+        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            if (file != null) {
+                Path newFile = Paths.get(file.getPath());
+                List<String> contents = Arrays.asList(map.toString().split("\\n"));
+                try {
+                    Files.write(newFile, contents);
+                    map.setInitialState(map.getState());
+                    map.reset();
+                    lastOpenedMap = new SokobanMap(map);
+                } catch (IOException io) {
+                    System.out.println("Couldn't save");
+                }
+            }
+        }
     }
 
     private static boolean hasChanged(String reason) {
