@@ -10,6 +10,7 @@ public class SpriteLabel extends JLabel{
     private MapPanel mapPanel;
     private Coordinate position;
     private static SokobanObject paletteState = SokobanObject.WALL;
+    private static SokobanMap.Mover mover;
 
     public SpriteLabel(Coordinate position, MapPanel mapPanel) {
         super();
@@ -28,7 +29,16 @@ public class SpriteLabel extends JLabel{
                         GamePanel.redraw();
                     } else {
                         if (!map.playerIsMoving()) {
-                            SokobanMap.Mover mover = map.new Mover(position, 75);
+                            mover = map.new Mover(position, 75);
+                            mover.start();
+                        } else if (map.getIsCurrentlyMoving() && !map.getIsDoingSolution()) {
+                            mover.interrupt();
+
+                            while (!mover.isInterrupted()) {
+                                mover.interrupt();
+                            }
+
+                            mover = map.new Mover(position, 75);
                             mover.start();
                         }
                     }

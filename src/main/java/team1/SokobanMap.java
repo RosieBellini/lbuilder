@@ -447,20 +447,21 @@ public class SokobanMap {
 
         public void run() {
             isCurrentlyMoving = true;
+
             ArrayList<Coordinate> path = findPath(target);
             if (path != null) {
                 for (Coordinate position : path) {
-                    storeState();
-                    put(SokobanObject.PLAYER, position);
-                    GamePanel.redraw();
                     try {
+                        storeState();
+                        put(SokobanObject.PLAYER, position);
+                        GamePanel.redraw();
                         sleep(delay);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        break;
                     }
                 }
             }
+
             isCurrentlyMoving = false;
         }
     }
@@ -496,11 +497,20 @@ public class SokobanMap {
         return isCurrentlyMoving || isDoingSolution;
     }
 
+    public boolean getIsDoingSolution() {
+        return isDoingSolution;
+    }
+
+    public boolean getIsCurrentlyMoving() {
+        return isCurrentlyMoving;
+    }
+
     public ArrayList<Coordinate> findPath(Coordinate target) {
         Coordinate playerPos = getState().getPlayerPos();
 
 
         if (!accessibleSpaces(playerPos, false).contains(target) || get(target) == SokobanObject.PLAYER) {
+            System.out.println("Can't move here");
             return null;
         }
 
@@ -532,7 +542,6 @@ public class SokobanMap {
                     }
 
                     if (neighbour.equals(target)) {
-                        System.out.println("Found target");
                         ArrayList<Coordinate> directions = new ArrayList<Coordinate>();
                         directions.add(target);
                         PathNode parent = open.get(open.indexOf(nodeNeighbourDummy)).getParent();
