@@ -112,7 +112,7 @@ public class SingleThreadSolver implements Runnable {
         map.undo();
 
         triedPushes++;
-        if (triedPushes%1000 == 0) {
+        if (triedPushes%10000 == 0) {
             System.out.println(triedPushes);
         }
 

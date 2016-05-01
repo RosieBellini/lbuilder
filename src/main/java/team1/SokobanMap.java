@@ -277,31 +277,29 @@ public class SokobanMap {
         Set<Coordinate> edges = new HashSet<Coordinate>();
         Set<Coordinate> accessible = new HashSet<Coordinate>();
         Set<Coordinate> newEdges = new HashSet<Coordinate>();
+
         edges.add(origin);
-        while (edges.size() != 0) {
+        while (edges.size() > 0) {
             for (Coordinate edge : edges) {
                 accessible.add(edge);
                 for (Coordinate potentialEdge : neighbors(edge)) {
-                    SokobanObject objectInPotentialEdge = get(potentialEdge);
-                    if (ignoreBoxes) {
-                        if (objectInPotentialEdge != SokobanObject.WALL) {
-                            newEdges.add(potentialEdge);
-                        }
-                    }
-                    if (!ignoreBoxes) {
-                        if (objectInPotentialEdge != SokobanObject.WALL) {
-                            if (objectInPotentialEdge != SokobanObject.BOX) {
-                                if (objectInPotentialEdge != SokobanObject.BOX_ON_GOAL) {
-                                    newEdges.add(potentialEdge);
-                                }
-                            }
-                        }
+                    SokobanObject object = get(potentialEdge);
+
+                    if (ignoreBoxes && object != SokobanObject.WALL) {
+                        newEdges.add(potentialEdge);
+                    } else if (!ignoreBoxes
+                            && object != SokobanObject.WALL
+                            && object != SokobanObject.BOX
+                            && object != SokobanObject.BOX_ON_GOAL) {
+                        newEdges.add(potentialEdge);
                     }
                 }
             }
+
             edges.addAll(newEdges);
             edges.removeAll(accessible);
         }
+
         return accessible;
     }
 
@@ -312,34 +310,40 @@ public class SokobanMap {
     public Set<Coordinate> neighbors(Coordinate origin) {
         Set<Coordinate> potentialNeighbors = new HashSet<Coordinate>();
         Set<Coordinate> neighbors = new HashSet<Coordinate>();
+
         potentialNeighbors.add(origin.add(new Coordinate(1, 0)));
         potentialNeighbors.add(origin.add(new Coordinate(-1, 0)));
         potentialNeighbors.add(origin.add(new Coordinate(0, 1)));
         potentialNeighbors.add(origin.add(new Coordinate(0, -1)));
+
         for (Coordinate potentialNeighbor : potentialNeighbors) {
             if (potentialNeighbor.inRange(0, 0, xSize, ySize)) {
                 neighbors.add(potentialNeighbor);
             }
         }
+
         return neighbors;
     }
 
     /**
-     * Takes a coordinate of the map and returns all the spaces which the player
-     * could access from that coordinate (ignoring boxes).
      *
      * @return a Set of all the inaccessible coordinates from the given
      *         position.
      */
     public Set<Coordinate> inaccessibleSpaces() {
-        ArrayList<Coordinate> potentialGrass = Coordinate.allValidCoordinates(xSize, ySize);
+        ArrayList<Coordinate> potentialGrass =
+                                Coordinate.allValidCoordinates(xSize, ySize);
+        Coordinate playerPosition = getState().getPlayerPos();
         Set<Coordinate> inaccessibleSpaces = new HashSet<Coordinate>();
-        potentialGrass.removeAll(accessibleSpaces(getState().getPlayerPos(), true));
+        potentialGrass.removeAll(accessibleSpaces(playerPosition, true));
+
         for (Coordinate potentialGrassSpace : potentialGrass) {
-            if (get(potentialGrassSpace) == SokobanObject.SPACE || get(potentialGrassSpace) == SokobanObject.GOAL) {
+            if (get(potentialGrassSpace) == SokobanObject.SPACE
+                    || get(potentialGrassSpace) == SokobanObject.GOAL) {
                 inaccessibleSpaces.add(potentialGrassSpace);
             }
         }
+
         return inaccessibleSpaces;
     }
 
@@ -359,11 +363,10 @@ public class SokobanMap {
         Scanner level = new Scanner(levelFile);
         while (level.hasNextLine()) {
             String line = level.nextLine();
-            if (line.length() > xSize) {
-                xSize = line.length();
-            }
+            xSize = line.length() > xSize ? line.length() : xSize;
             levelLines.add(line);
         }
+
         ySize = levelLines.size();
         SokobanMap map = new SokobanMap(xSize, ySize);
 
@@ -378,9 +381,11 @@ public class SokobanMap {
                 map.put(object, coord);
                 x++;
             }
+
             x = 0;
             y++;
         }
+
         level.close();
         map.initialState = map.getState();
         return map;
@@ -389,25 +394,23 @@ public class SokobanMap {
     public boolean validate() {
         int boxCount = 0;
         int goalCount = 0;
-        boolean inaccessibleGoal = false;
 
         for (Coordinate position : inaccessibleSpaces()) {
             if (get(position) == SokobanObject.GOAL) {
-                inaccessibleGoal = true;
-                break;
+                return false;
             }
         }
 
-        for (Coordinate position : accessibleSpaces(getState().getPlayerPos(), true)) {
+        Coordinate playerPosition = getState().getPlayerPos();
+        for (Coordinate position : accessibleSpaces(playerPosition, true)) {
             if (get(position) == SokobanObject.BOX) {
                 boxCount++;
-            }
-
-            if (get(position) == SokobanObject.GOAL) {
+            } else if (get(position) == SokobanObject.GOAL) {
                 goalCount++;
             }
         }
-        return boxCount >= goalCount && !isDone() && !inaccessibleGoal && goalCount > 0;
+
+        return boxCount >= goalCount && !isDone() && goalCount > 0;
     }
 
     public static SokobanMap crop(SokobanMap mapToCrop) {
@@ -420,16 +423,21 @@ public class SokobanMap {
             int x = position.x;
             int y = position.y;
 
-            xStart = (xStart > x) ? x : xStart;
-            xEnd = (xEnd < x) ? x : xEnd;
-            yStart = (yStart > y) ? y : yStart;
-            yEnd = (xEnd < y) ? y : yEnd;
+            xStart = xStart > x ? x : xStart;
+            xEnd = xEnd < x ? x : xEnd;
+            yStart = yStart > y ? y : yStart;
+            yEnd = xEnd < y ? y : yEnd;
         }
 
-        SokobanMap croppedMap = new SokobanMap(xEnd + 1 - xStart, yEnd + 1 - yStart);
+        int newXSize = xEnd - xStart + 1;
+        int newYSize = yEnd - yStart + 1;
+        SokobanMap croppedMap = new SokobanMap(newXSize, newYSize);
+
         for (int y = yStart; y <= yEnd; y++) {
             for (int x = xStart; x <= xEnd; x++) {
-                croppedMap.put(mapToCrop.get(new Coordinate(x, y)), new Coordinate(x - xStart, y - yStart));
+                SokobanObject sourceObj = mapToCrop.get(new Coordinate(x, y));
+                Coordinate newPosition = new Coordinate(x - xStart, y - yStart);
+                croppedMap.put(sourceObj, newPosition);
             }
         }
 
@@ -458,6 +466,7 @@ public class SokobanMap {
                         GamePanel.redraw();
                         sleep(delay);
                     } catch (InterruptedException e) {
+                        System.out.println("Mover interrupted");
                         break;
                     }
                 }
@@ -493,16 +502,13 @@ public class SokobanMap {
                     GamePanel.redraw();
                     sleep(200);
                 } catch (InterruptedException e) {
+                    System.out.println("SolutionRunner interrupted");
                     break;
                 }
             }
 
             isDoingSolution = false;
         }
-    }
-
-    public boolean playerIsMoving() {
-        return isCurrentlyMoving || isDoingSolution;
     }
 
     public boolean getIsDoingSolution() {
@@ -516,8 +522,8 @@ public class SokobanMap {
     public ArrayList<Coordinate> findPath(Coordinate target) {
         Coordinate playerPos = getState().getPlayerPos();
 
-        if (!accessibleSpaces(playerPos, false).contains(target) || get(target) == SokobanObject.PLAYER) {
-            System.out.println("Can't move here");
+        if (!accessibleSpaces(playerPos, false).contains(target)
+                || get(target) == SokobanObject.PLAYER) {
             return null;
         }
 
@@ -531,18 +537,25 @@ public class SokobanMap {
             activeNode = open.get(0);
 
             for (Coordinate neighbour : neighbors(activeNode.getPosition())) {
-                PathNode nodeNeighbourDummy = new PathNode(neighbour, neighbour);
-                if ((getState().get(neighbour) == SokobanObject.SPACE
-                        || getState().get(neighbour) == SokobanObject.GOAL) && !closed.contains(nodeNeighbourDummy)) {
+                PathNode nodeDummy = new PathNode(neighbour, neighbour);
 
-                    if (!open.contains(nodeNeighbourDummy)) {
-                        open.add(new PathNode(neighbour, activeNode, target, activeNode.getGCost() + 10));
+                if ((getState().get(neighbour) == SokobanObject.SPACE
+                        || getState().get(neighbour) == SokobanObject.GOAL)
+                        && !closed.contains(nodeDummy)) {
+
+                    if (!open.contains(nodeDummy)) {
+                        int gCost = activeNode.getGCost() + 10;
+                        PathNode thisNode = new PathNode(neighbour, activeNode,
+                                                                target, gCost);
+                        open.add(thisNode);
                     }
 
                     if (neighbour.equals(target)) {
-                        ArrayList<Coordinate> directions = new ArrayList<Coordinate>();
+                        ArrayList<Coordinate> directions
+                                    = new ArrayList<Coordinate>();
                         directions.add(target);
-                        PathNode parent = open.get(open.indexOf(nodeNeighbourDummy)).getParent();
+                        int nodeIndex = open.indexOf(nodeDummy);
+                        PathNode parent = open.get(nodeIndex).getParent();
 
                         while (parent != null) {
                             directions.add(parent.getPosition());
@@ -577,7 +590,8 @@ public class SokobanMap {
     public boolean move(Coordinate direction) {
         int directionMagnitude = Math.abs(direction.x) + Math.abs(direction.y);
         if (directionMagnitude != 1) {
-            throw new IllegalArgumentException("Move direction must have magnitude 1");
+            throw new IllegalArgumentException(
+                                    "Move direction must have magnitude 1");
         }
 
         boolean validMove = false;
@@ -586,7 +600,8 @@ public class SokobanMap {
         storeState();
 
         if (!put(SokobanObject.PLAYER, target)) {
-            if (get(target) == SokobanObject.BOX || get(target) == SokobanObject.BOX_ON_GOAL) {
+            if (get(target) == SokobanObject.BOX
+                    || get(target) == SokobanObject.BOX_ON_GOAL) {
                 if (put(SokobanObject.BOX, target.add(direction))) {
                     removeLayer(target);
                     put(SokobanObject.PLAYER, target);

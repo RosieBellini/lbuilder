@@ -28,7 +28,7 @@ public class SpriteLabel extends JLabel{
                         map.move(position.add(map.getState().getPlayerPos().reverse()));
                         GamePanel.redraw();
                     } else {
-                        if (!map.playerIsMoving()) {
+                        if (!(map.getIsCurrentlyMoving() || map.getIsDoingSolution())) {
                             mover = map.new Mover(position, 75);
                             mover.start();
                         } else if (map.getIsCurrentlyMoving() && !map.getIsDoingSolution()) {
