@@ -20,10 +20,6 @@ public class PathNode implements Comparable<PathNode> {
         this.gCost = 0;
     }
 
-    public void changeParent(PathNode parent) {
-        this.parent = parent;
-    }
-
     public static int manhattanDistance(Coordinate source, Coordinate target) {
         Coordinate delta = source.subtract(target);
 
@@ -36,10 +32,6 @@ public class PathNode implements Comparable<PathNode> {
 
     public int getGCost() {
         return gCost;
-    }
-
-    public void setGCost(int gCost) {
-        this.gCost = gCost;
     }
 
     public int getFCost() {

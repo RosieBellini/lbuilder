@@ -535,16 +535,7 @@ public class SokobanMap {
                 if ((getState().get(neighbour) == SokobanObject.SPACE
                         || getState().get(neighbour) == SokobanObject.GOAL) && !closed.contains(nodeNeighbourDummy)) {
 
-                    if (open.contains(nodeNeighbourDummy)) {
-                        PathNode searchedNode = open.get(open.indexOf(nodeNeighbourDummy));
-                        int maybeSmallerCost = activeNode.getGCost() + 10;
-
-                        if (maybeSmallerCost < searchedNode.getGCost()) {
-                            System.out.println("I found a cheaper route. Tell Tom!");
-                            searchedNode.changeParent(activeNode);
-                            searchedNode.setGCost(maybeSmallerCost);
-                        }
-                    } else {
+                    if (!open.contains(nodeNeighbourDummy)) {
                         open.add(new PathNode(neighbour, activeNode, target, activeNode.getGCost() + 10));
                     }
 
