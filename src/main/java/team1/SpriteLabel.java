@@ -170,4 +170,12 @@ public class SpriteLabel extends JLabel {
         }
     }
 
+    /**
+     * Forces the status of the mouse buttons to "up" until they are pressed
+     * again.
+     */
+    public static void disableButtons() {
+        mouseDown = false;
+        rightMouseDown = false;
+    }
 }

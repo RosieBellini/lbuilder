@@ -249,6 +249,7 @@ public class MapPanel extends JPanel {
      */
     public void toggleMode() {
         playable = !playable;
+        SpriteLabel.disableButtons();
         placeSprites(true);
     }
 
