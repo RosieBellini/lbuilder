@@ -11,9 +11,30 @@ import java.util.Set;
 
 public class SingleThreadSolver implements Runnable {
     private SokobanMap map;
+    /**
+     * A list of all the permutations of boxes and player positions
+     * that the Solver encounters whilst trying to find a solution.
+     */
     private List<SaveState> seenStates;
+    /**
+     * A set of all the hashcodes representing the different states
+     * of the map that the Solver has seen.
+     * Used to check whether a push progresses the level somehow.
+     */
     private Set<Integer> seenStatesValues;
+    /**
+     * A list of integers which represent the index location of the 
+     * state from which the state at the current index in seenStates originated.
+     * Used to iterate backwards through seenStates and donePushes
+     * to return a solution once one has been found.
+     */
     private List<Integer> stateOrigins;
+    /**
+     * A list of all the pushes performed to get to a solution,
+     * a push is represented by an array of Coordinates.
+     * One coordinate represents the location from which the push is performed.
+     * The second coordinate is the direction which the push moves a box.
+     */
     private List<Coordinate[]> donePushes;
     private boolean solving;
     private boolean stopped;
@@ -45,6 +66,13 @@ public class SingleThreadSolver implements Runnable {
         return solving;
     }
 
+    /**
+     * For a given index, looks in the collection of all seen game states in the 
+     * seenStates list and returns all the pushes that the player can perform from
+     * the area that he can currently access.
+     * @param stateIndex The number of the state for which you are finding all the possible pushes.
+     * @return A list of Coordinate[] representing the location and direction of each push.
+     */
     private List<Coordinate[]> validPushes(int stateIndex) {
         map.loadSimpleState(seenStates.get(stateIndex));
         SaveState state = seenStates.get(stateIndex);
@@ -72,6 +100,13 @@ public class SingleThreadSolver implements Runnable {
         return validPushes;
     }
 
+    /**
+     * For a given push (a coordinate and a direction to push towards)
+     * checks if that push would put the level into a deadlocked state
+     * that would prevent the level from then being completed.
+     * @param aPush The push to perform.
+     * @return A boolean, true if the push is safe and would not put a box in a corner.
+     */
     private boolean isSafePush(Coordinate[] aPush) {
         Coordinate spaceBehindPush = (aPush[0].add(aPush[1].mult(3)));
         SokobanObject objectBehindPush = map.get(spaceBehindPush);
@@ -98,6 +133,16 @@ public class SingleThreadSolver implements Runnable {
         }
     }
 
+    /**
+     * Takes a given level state (containing the position of all boxes and the player)
+     * and performs a single push from a given coordinate.
+     * If that push was successful and generated a new unseen state of the level:
+     * it is added to the list of all seenStates.
+     * If that push also solved the level then the method returns true.
+     * @param stateIndex The position of the state to push from in the seenStates list.
+     * @param aPush The coordinate to push from and direction to push.
+     * @return True if the push completed the level.
+     */
     private boolean tryPush(int stateIndex, Coordinate[] aPush) {
         map.put(SokobanObject.PLAYER, aPush[0]);
         map.move(aPush[1]);
@@ -120,6 +165,13 @@ public class SingleThreadSolver implements Runnable {
         return isDone;
     }
 
+    /**
+     * Repeatedly performs the validPushes() method on map and performs all the returned pushes
+     * if no solution is found it moves to the next state in seenStates and again pushes every box it can.
+     * The method continues until either a solution is found or it has seen every possible
+     * state of the map, in which case it returns false.
+     * @return True if the level has been solved.  False if the level is found impossible.
+     */
     public boolean solveLevel() {
         int currentStateIndex = 0;
         solving = true;
@@ -143,16 +195,14 @@ public class SingleThreadSolver implements Runnable {
         return solved;
     }
 
-    public String validPushesTestString() {
-        List<Coordinate[]> validPushes = validPushes(0);
-        String allPushesString = "";
-        for (int i = 0; i < validPushes.size(); i++) {
-            allPushesString += (validPushes.get(i)[0] + "    Direction: "
-                                + validPushes.get(i)[1] + "\n");
-        }
-        return allPushesString;
-    }
-
+    /**
+     * Runs the solveLevel() method to completion.
+     * If solveLevel() successfully completes the level then
+     * a List containing all the pushes that the player needs to perform
+     * to complete the level, and all the various states that the level
+     * will be in during the performance of the returned solution.
+     * @return A collection representing the solution for the level.
+     */
     public Entry<HashMap<SaveState, Coordinate[]>, LinkedList<Coordinate[]>> levelSolution() {
         LinkedList<Coordinate[]> pushesToSolve = new LinkedList<Coordinate[]>();
         LinkedList<SaveState> statesToSolve = new LinkedList<SaveState>();
