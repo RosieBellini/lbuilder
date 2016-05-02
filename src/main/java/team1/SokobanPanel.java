@@ -51,6 +51,10 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+/**
+ * Sokoban main class. Handles creating the main frame and menubar plus its
+ * associated functions.
+ */
 @SuppressWarnings("serial")
 public class SokobanPanel extends JPanel {
     private static JFileChooser fileChooser
@@ -59,7 +63,6 @@ public class SokobanPanel extends JPanel {
     private static GamePanel game;
     private static JFrame frame;
     private static SokobanPanel sokobanPanel;
-    private static JMenuBar menubar;
     private static JMenu gameMenu;
     private static JMenuItem toggleItem;
     private static Set<JMenuItem> editMenuItems = new HashSet<JMenuItem>();
@@ -71,13 +74,24 @@ public class SokobanPanel extends JPanel {
     private static SokobanMap lastOpenedMap;
     private static boolean autoScale = false;
     private static float autoScaleFactor = 1;
-    private static String programName;
     private static SokobanMap.SolutionRunner runner;
+    private static final int FRAME_MIN_WIDTH = 220;
+    private static final int FRAME_BORDER_PAD = 64;
 
+    /**
+     * Returns the SolutionRunner used by the assistant.
+     *
+     * @return      The SokobanMap.SolutionRunner object used in this frame
+     */
     public static SokobanMap.SolutionRunner getRunner() {
         return runner;
     }
 
+    /**
+     * Starts running the solver on the open level and displays a dialogue
+     * allowing the user to cancel the operation or see the level played out,
+     * and to warn them if the level is impossible.
+     */
     private static void startSolver() {
         solving = true;
         final JDialog dialog = new JDialog();
@@ -136,8 +150,8 @@ public class SokobanPanel extends JPanel {
                         dialog.dispose();
 
                         int result = JOptionPane.showConfirmDialog(frame,
-                                "A solution was found!\nWould you like "
-                                + programName + " to play it for you?",
+                                "A solution was found!\nWould you like the "
+                                + "assistant to play it for you?",
                                 "Solution found", JOptionPane.YES_NO_OPTION);
 
                         switch (result) {
@@ -173,11 +187,13 @@ public class SokobanPanel extends JPanel {
         (new solverWorker()).execute();
     }
 
-    private static void makeMenuBar(JFrame frame) {
+    /**
+     * Creates the Sokoban menubar and populates it with MenuItems.
+     */
+    private static JMenuBar makeMenuBar() {
         final int SHORTCUT_MASK = toolkit.getMenuShortcutKeyMask();
 
-        menubar = new JMenuBar();
-        frame.setJMenuBar(menubar);
+        JMenuBar menubar = new JMenuBar();
 
         JMenu fileMenu = new JMenu("File");
         menubar.add(fileMenu);
@@ -494,9 +510,27 @@ public class SokobanPanel extends JPanel {
         });
 
         helpMenu.add(aboutItem);
+
+        return menubar;
     }
 
+    /**
+     * Changes the magnification level of the MapPanel. Also handles autoscale,
+     * which attempts to keep the game window to fill 75% of the screen's
+     * vertical resolution. Limits the horizontal width of the main frame to
+     * FRAME_MIN_WIDTH.
+     *
+     * @param   scaleDirection      1 to increase the magnification,
+     *                              -1 to decrease the magnification,
+     *                              0 to update the minimum allowed
+     *                              magnification for the current map
+     */
     private static void changeMagnification(int scaleDirection) {
+        if (Math.abs(scaleDirection) != 1 && scaleDirection != 0) {
+            throw new IllegalArgumentException("changeMagnification parameter "
+                    + "must be -1, 0 or 1");
+        }
+
         MapPanel mapPanel = GamePanel.getMapPanel();
         int iconSize = mapPanel.getIconSize();
         int xSize = mapPanel.getXSize();
@@ -507,13 +541,13 @@ public class SokobanPanel extends JPanel {
             scale = perfectPixelScaler(scale, scaleDirection);
             int gameWidth = (int) (iconSize * xSize * scale);
 
-            if (gameWidth > 220) {
+            if (gameWidth > FRAME_MIN_WIDTH) {
                 mapPanel.setScale(scale);
                 mapPanel.loadSprites();
                 mapPanel.placeSprites(true);
 
             } else if (scaleDirection == 0) {
-                scale = 220 / ((float) (iconSize * xSize));
+                scale = FRAME_MIN_WIDTH / ((float) (iconSize * xSize));
                 scale = (float) Math.ceil(scale);
                 mapPanel.setScale(scale);
                 mapPanel.loadSprites();
@@ -525,20 +559,20 @@ public class SokobanPanel extends JPanel {
             double screenHeight = toolkit.getScreenSize().getHeight();
             double preferredHeight = 0.75 * autoScaleFactor * screenHeight;
             int unscaledGameHeight = iconSize * ySize;
-            float gameHeight = unscaledGameHeight * scale + 64;
+            float gameHeight = unscaledGameHeight * scale + FRAME_BORDER_PAD;
 
             boolean getBigger = false;
 
             while (gameHeight < preferredHeight) {
                 getBigger = true;
                 scale = perfectPixelScaler(scale, 1);
-                gameHeight = unscaledGameHeight * scale + 64;
+                gameHeight = unscaledGameHeight * scale + FRAME_BORDER_PAD;
             }
 
             if (!getBigger) {
                 while (gameHeight > preferredHeight) {
                     scale = perfectPixelScaler(scale, -1);
-                    gameHeight = unscaledGameHeight * scale + 64;
+                    gameHeight = unscaledGameHeight * scale + FRAME_BORDER_PAD;
                 }
             }
 
@@ -552,6 +586,17 @@ public class SokobanPanel extends JPanel {
         }
     }
 
+    /**
+     * Returns multiples of a value that permit nearest-neighbour scaling
+     * without artifacts. Results are either a whole integer if above 1, or
+     * a power of 0.5 if below.
+     *
+     * @param   input               The number to adjust
+     * @param   scaleDirection      1 to increase the scale of the input, -1
+     *                              to decrease it
+     *
+     * @return                      The scaled input
+     */
     private static float perfectPixelScaler(float input, int scaleDirection) {
         if (scaleDirection > 0) {
             input = input > 1 ? input + 1 : input * 2;
@@ -562,6 +607,11 @@ public class SokobanPanel extends JPanel {
         return input;
     }
 
+    /**
+     * Switches the frame between game and editor modes. Changes context
+     * sensitive menubar items and prompts the user if they have unsaved changes
+     * in the open map.
+     */
     private static void toggleMode() {
         boolean playable = GamePanel.getMapPanel().getPlayable();
 
@@ -588,6 +638,10 @@ public class SokobanPanel extends JPanel {
         updateContextMenu();
     }
 
+    /**
+     * Sets the MenuItems relevant to the active mode visible and hides those
+     * that aren't.
+     */
     private static void updateContextMenu() {
         boolean playable = GamePanel.getMapPanel().getPlayable();
 
@@ -600,6 +654,10 @@ public class SokobanPanel extends JPanel {
         }
     }
 
+    /**
+     * Initialises the levels ArrayList by loading the text files listed in the
+     * LEVELS_INDEX file.
+     */
     private static void getBuiltinLevels() {
         InputStream levelIndex
             = SokobanPanel.class.getResourceAsStream("/levels/LEVEL_INDEX");
@@ -613,6 +671,10 @@ public class SokobanPanel extends JPanel {
         levelIndexScanner.close();
     }
 
+    /**
+     * Displays a dialogue from which the user may advance to the next level in
+     * the set of built in levels or start the "Open" dialogue.
+     */
     public static void winDialog() {
         solver.stopSolving();
         solving = false;
@@ -654,6 +716,10 @@ public class SokobanPanel extends JPanel {
                 new JButton[] { button1, button2 }, button1);
     }
 
+    /**
+     * Displays a dialogue prompting the user to select one of the built in
+     * levels or to import their own from the filesystem.
+     */
     private static void openDialog() {
         SokobanMap map;
 
@@ -722,6 +788,10 @@ public class SokobanPanel extends JPanel {
         frame.pack();
     }
 
+    /**
+     * Displays a dialogue prompting the user to choose a file in which to save
+     * the open level. Warns the user if this file already exists.
+     */
     private static void saveDialog() {
         SokobanMap map = GamePanel.getSokobanMap();
 
@@ -782,6 +852,15 @@ public class SokobanPanel extends JPanel {
         }
     }
 
+    /**
+     * Displays a dialogue warning the user if modifications to the open map
+     * have not been saved.
+     *
+     * @param   reason      An explanation that will be appended to "Are you
+     *                      sure you want to..." in the dialogue
+     *
+     * @return              True if the user wishes to proceed, false otherwise
+     */
     private static boolean hasChanged(String reason) {
         SokobanMap map = GamePanel.getSokobanMap();
         SaveState lastInitialState = lastOpenedMap.getInitialState();
@@ -806,6 +885,16 @@ public class SokobanPanel extends JPanel {
         return false;
     }
 
+    /**
+     * Displays a dialogue warning the user that the operation they are
+     * attempting will cancel the assistant if it's running.
+     *
+     * @param   reason      An explanation that will be appended to "Would you
+     *                      like to cancel [the assistant] in order to..." in
+     *                      the dialogue
+     *
+     * @return              True if the user wishes to proceed, false otherwise
+     */
     private static boolean confirmCancelSolver(String reason) {
         int result = JOptionPane.showConfirmDialog(frame, "The assistant is "
                 + "trying to find a solution for this level.\nWould you like "
@@ -821,21 +910,15 @@ public class SokobanPanel extends JPanel {
         return false;
     }
 
-    public static void main(String[] args) {
-        try {
-            System.setProperty("apple.laf.useScreenMenuBar", "true");
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            System.out.println("ClassNotFoundException: " + e.getMessage());
-        } catch (InstantiationException e) {
-            System.out.println("InstantiationException: " + e.getMessage());
-        } catch (IllegalAccessException e) {
-            System.out.println("IllegalAccessException: " + e.getMessage());
-        } catch (UnsupportedLookAndFeelException e) {
-            System.out.println("UnsupportedAndLookFeelException: "
-                                + e.getMessage());
-        }
-
+    /**
+     * Randomly generates a title for the game. The candidates words are stored
+     * in the resource WORDS. The available first words are delimited by "BOX"
+     * and the available second words by "PUSH".
+     *
+     * @return      A randomly generated game title of the form
+     *              [storage-related noun] [profession]
+     */
+    private static String generateTitle() {
         ArrayList<String> boxWords = new ArrayList<String>();
         ArrayList<String> pushWords = new ArrayList<String>();
         ArrayList<String> activeDictionary = boxWords;
@@ -857,9 +940,27 @@ public class SokobanPanel extends JPanel {
         Random randomGenerator = new Random();
         int index1 = randomGenerator.nextInt(boxWords.size());
         int index2 = randomGenerator.nextInt(pushWords.size());
-        programName = boxWords.get(index1) + " " + pushWords.get(index2);
+        return boxWords.get(index1) + " " + pushWords.get(index2);
+    }
 
-        frame = new JFrame(programName);
+    /**
+     * Main method. Creates the main frame and loads the first level.
+     */
+    public static void main(String[] args) {
+        try {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+
+        frame = new JFrame(generateTitle());
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         getBuiltinLevels();
@@ -884,7 +985,7 @@ public class SokobanPanel extends JPanel {
             }
         });
 
-        makeMenuBar(frame);
+        frame.setJMenuBar(makeMenuBar());
         updateContextMenu();
         frame.setResizable(false);
         frame.add(sokobanPanel);
