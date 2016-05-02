@@ -76,6 +76,7 @@ public class SingleThreadSolver implements Runnable {
         Coordinate spaceToPushInto = (aPush[0].add(aPush[1].mult(2)));
         SokobanObject objectToPushInto = map.get(spaceToPushInto);
         if (objectToPushInto == SokobanObject.GOAL ||
+                objectToPushInto == SokobanObject.PLAYER_ON_GOAL ||
                 objectBehindPush!=SokobanObject.WALL) {
             return true;
         }
