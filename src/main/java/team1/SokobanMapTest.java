@@ -17,7 +17,7 @@ public class SokobanMapTest {
 	@Before
 	public void setUp() throws Exception 
 	{
-		testMap =  new SokobanMap(15, 20, 300);
+		testMap =  new SokobanMap(15, 20);
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class SokobanMapTest {
 	@Test
 	public void testShallowCopy() 
 	{
-		SokobanMap newMapCopy = SokobanMap.shallowCopy(testMap, 300);
+		SokobanMap newMapCopy = SokobanMap.shallowCopy(testMap);
 		assertEquals("Check new map is a copy for x value:", testMap.getXSize(), newMapCopy.getXSize());
 		assertEquals("Check new map is a copy for y value:", testMap.getYSize(), newMapCopy.getYSize());
 		assertEquals("Check new map is a copy for initial state:", testMap.getInitialState(), newMapCopy.getInitialState());
