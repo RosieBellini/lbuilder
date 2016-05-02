@@ -2,7 +2,6 @@ package team1;
 
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,11 +15,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * The SpriteMap class provides a graphical representation of a SokobanMap as
+ * The MapPanel class provides a graphical representation of a SokobanMap as
  * as JPanel. It provides methods for importing tilesets and toggling between a
  * playable game mode and editor mode.
  */
-public class SpriteMap extends JPanel {
+public class MapPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private SokobanMap map;
     private int xSize;
@@ -37,12 +36,12 @@ public class SpriteMap extends JPanel {
     private final int tilesetCount = 4;
 
     /**
-     * SpriteMap constructor.
+     * MapPanel constructor.
      *
      * @param   map         The initial SokobanMap to display
      * @param   tilesetNum  The initial tileset to use
      */
-    public SpriteMap(SokobanMap map, int tilesetNum) {
+    public MapPanel(SokobanMap map, int tilesetNum) {
         panelHolder = new HashMap<Coordinate, JLabel>();
         iconMap = new HashMap<String, ImageIcon>();
         iconCountMap = new HashMap<String, Integer>();
@@ -61,7 +60,7 @@ public class SpriteMap extends JPanel {
      * @param   map         The new SokobanMap to display
      */
     public void updateMap(SokobanMap map) {
-        this.map = SokobanMap.shallowCopy(map, map.getMaxUndos());
+        this.map = SokobanMap.shallowCopy(map);
         resetSolver();
         xSize = map.getXSize();
         ySize = map.getYSize();
@@ -72,7 +71,7 @@ public class SpriteMap extends JPanel {
         ArrayList<Coordinate> gridPositions
                 = Coordinate.allValidCoordinates(xSize, ySize);
         for (Coordinate position : gridPositions) {
-            panelHolder.put(position, new Cell(position, this));
+            panelHolder.put(position, new SpriteLabel(position, this));
             add(panelHolder.get(position));
         }
 
@@ -80,10 +79,10 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Updates cells according to the status of the SokobanMap.
+     * Updates SpriteLabels according to the status of the SokobanMap.
      *
-     * @param   redraw      True to redraw every cell, false to only update
-     *                      those that may have changed
+     * @param   redraw      True to redraw every SpriteLabel, false to only
+     *                      update those that may have changed
      */
     public void placeSprites(boolean redraw) {
         Set<Coordinate> grassPositions = map.inaccessibleSpaces();
@@ -103,7 +102,7 @@ public class SpriteMap extends JPanel {
             ImageIcon icon;
             if (!playable && object == SokobanObject.SPACE) {
                 icon = iconMap.get("DEFAULT");
-            } else if (grassPositions.contains(position)) {
+            } else if (playable && grassPositions.contains(position)) {
                 icon = randomIcon("GRASS");
             } else {
                 icon = randomIcon(object.name());
@@ -149,19 +148,16 @@ public class SpriteMap extends JPanel {
                         "BOX_ON_GOAL_LEFT"));
         iconMap.clear();
         iconCountMap.clear();
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
 
         for (String iconName : iconNames) {
             String iconPath = tilesetPath + iconName;
             URL iconURL = getClass().getResource(iconPath + ".png");
-            Image icon = toolkit.getImage(iconURL);
-            iconMap.put(iconName, new ImageIcon(icon));
+            iconMap.put(iconName, new ImageIcon(iconURL));
 
             int i = 2;
             iconURL = getClass().getResource(iconPath + i + ".png");
             while (iconURL != null) {
-                icon = toolkit.getImage(iconURL);
-                iconMap.put(iconName + i, new ImageIcon(icon));
+                iconMap.put(iconName + i, new ImageIcon(iconURL));
                 i++;
                 iconURL = getClass().getResource(iconPath + i + ".png");
             }
@@ -208,10 +204,24 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Returns the SokobanMap and this SpriteMap to their initial states.
+     * Returns the SokobanMap and this MapPanel to their initial states.
      */
     public void reset() {
-        resetSolver();
+        if (map.getIsCurrentlyMoving() && !map.getIsDoingSolution()) {
+            SpriteLabel.getMover().interrupt();
+
+            while (!SpriteLabel.getMover().isInterrupted()) {
+                SpriteLabel.getMover().interrupt();
+            }
+        } else if (map.getIsDoingSolution()) {
+            SokobanPanel.getRunner().interrupt();
+
+            while (!SokobanPanel.getRunner().isInterrupted()) {
+                SokobanPanel.getRunner().interrupt();
+            }
+
+        }
+
         map.reset();
         placeSprites(true);
     }
@@ -224,9 +234,9 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Returns the mode of the SpriteMap.
+     * Returns the mode of the MapPanel.
      *
-     * @return      True if the SpriteMap is in game mode, false if in editor
+     * @return      True if the MapPanel is in game mode, false if in editor
      *              mode
      */
     public boolean getPlayable() {
@@ -234,10 +244,11 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Toggles the mode of the SpriteMap.
+     * Toggles the mode of the MapPanel.
      */
     public void toggleMode() {
         playable = !playable;
+        SpriteLabel.disableButtons();
         placeSprites(true);
     }
 
@@ -260,7 +271,7 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Returns the SokobanMap associated with this SpriteMap.
+     * Returns the SokobanMap associated with this MapPanel.
      *
      * @return      The value of map
      */
@@ -287,6 +298,16 @@ public class SpriteMap extends JPanel {
     }
 
     /**
+     * Returns the unscaled box icon.
+     *
+     * @return      The value of the "BOX" key in the unscaledIconMap
+     */
+    public ImageIcon getBoxIcon() {
+        ImageIcon boxIcon = unscaledIconMap.get("BOX");
+        return boxIcon;
+    }
+
+    /**
      * Advances the value of tilesetNum to the next valid one. Loops back to
      * zero.
      */
@@ -295,7 +316,7 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Returns the current icon scale used by this SpriteMap.
+     * Returns the current icon scale used by this MapPanel.
      *
      * @return      The value of scale
      */
@@ -304,7 +325,7 @@ public class SpriteMap extends JPanel {
     }
 
     /**
-     * Changes the scale used by icons in this SpriteMap.
+     * Changes the scale used by icons in this MapPanel.
      *
      * @param   scale       The new icon scale to use (1 is native)
      */

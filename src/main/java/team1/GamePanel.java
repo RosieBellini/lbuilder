@@ -17,16 +17,16 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-/** Box Terminator main method. This class handles importing the level, drawing
- * the game screen and interpreting key presses.
+/**
+ * Class to control player interaction with a playable MapPanel and display
+ * information about the current mode in a status bar.
  */
-
-@SuppressWarnings("serial")
-public class SokobanGame extends JPanel {
+public class GamePanel extends JPanel {
+    private static final long serialVersionUID = 1L;
     private static JLabel statusBar;
-    private static SpriteMap spriteMap;
+    private static MapPanel mapPanel;
     private static KeyListener listener;
-    private static SokobanGame instance;
+    private static GamePanel instance;
     private static boolean playable = true;
     private static JList<ImageIcon> list;
     private static final ImageIcon[] tiles = new ImageIcon[4];
@@ -34,12 +34,15 @@ public class SokobanGame extends JPanel {
     private static JPanel statusBarContainer;
     private static Label boxLabel;
     private static Label goalLabel;
+    private static final int BAR_HEIGHT = 48;
+    private static final int ICON_PADDING = 4;
 
     /**
-     * A constructor to initialise the key listener which allows methods to be
-     * run when key presses are detected
+     * GamePanel constructor. Privatised to maintain one instance only.
+     *
+     * @param   mapPanel        The MapPanel to display in this GamePanel
      */
-    private SokobanGame(SpriteMap spriteMap) {
+    private GamePanel(MapPanel mapPanel) {
         listener = new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -51,13 +54,13 @@ public class SokobanGame extends JPanel {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                moveWorker(e);
+                movePlayer(e);
             }
         };
         addKeyListener(listener);
         setFocusable(true);
 
-        SokobanGame.spriteMap = spriteMap;
+        GamePanel.mapPanel = mapPanel;
 
         list = new JList<ImageIcon>(tiles);
         list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -85,7 +88,9 @@ public class SokobanGame extends JPanel {
         tilePalette.add(list, BorderLayout.CENTER);
         tilePalette.add(padding, BorderLayout.EAST);
         tilePalette.setVisible(false);
-        tilePalette.setPreferredSize(new Dimension(tilePalette.getSize().width, 48));
+        int tilePaletteWidth = tilePalette.getSize().width;
+        Dimension tilePaletteSize = new Dimension(tilePaletteWidth, BAR_HEIGHT);
+        tilePalette.setPreferredSize(tilePaletteSize);
         selectTile();
 
         statusBarContainer = new JPanel();
@@ -93,14 +98,19 @@ public class SokobanGame extends JPanel {
         statusBar.setFont(new Font("Helvetica",Font.PLAIN , 24));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         statusBarContainer.add(statusBar);
-        statusBarContainer.setPreferredSize(new Dimension(statusBarContainer.getSize().width, 48));
-        add(spriteMap);
+        int statusBarWidth = statusBarContainer.getSize().width;
+        Dimension statusBarSize = new Dimension(statusBarWidth, BAR_HEIGHT);
+        statusBarContainer.setPreferredSize(statusBarSize);
+        add(mapPanel);
         add(statusBarContainer);
         add(tilePalette);
         redraw();
         setVisible(true);
     }
 
+    /**
+     * Subclass to detect clicking on the GamePanel's tile palette.
+     */
     class ListListener implements ListSelectionListener {
 
         @Override
@@ -111,15 +121,25 @@ public class SokobanGame extends JPanel {
         }
     }
 
-    public static SokobanGame getInstance(SpriteMap spriteMap) {
+    /**
+     * Gets the instance of GamePanel if it exists, otherwise creates a new one
+     * using the given MapPanel.
+     *
+     * @param   mapPanel        The MapPanel to use if the GamePanel hasn't been
+     *                          instantiated
+     */
+    public static GamePanel getInstance(MapPanel mapPanel) {
         if (instance == null) {
-            instance = new SokobanGame(spriteMap);
+            instance = new GamePanel(mapPanel);
         }
         return instance;
     }
 
+    /**
+     * Switches between game and editor modes.
+     */
     public static void toggleMode() {
-        SokobanMap map = spriteMap.getSokobanMap();
+        SokobanMap map = mapPanel.getSokobanMap();
         if (!playable) {
             map.setInitialState(map.getState());
         }
@@ -127,33 +147,49 @@ public class SokobanGame extends JPanel {
         playable = !playable;
         tilePalette.setVisible(!playable);
         statusBarContainer.setVisible(playable);
-        spriteMap.resetSolver();
-        spriteMap.toggleMode();
+        mapPanel.resetSolver();
+        mapPanel.toggleMode();
         redraw();
     }
 
-    public static SpriteMap getSpriteMap() {
-        return spriteMap;
-    }
-
-    public static SokobanMap getSokobanMap() {
-        return spriteMap.getSokobanMap();
+    /**
+     * Returns the MapPanel displayed in the GamePanel.
+     *
+     * @return      The MapPanel object used by the GamePanel
+     */
+    public static MapPanel getMapPanel() {
+        return mapPanel;
     }
 
     /**
-     * Runs player movement methods when keypresses are detected, then checks
-     * to see if the level has been completed. If it has, displays "YOU WON!",
-     * else redraws the level.
+     * Returns the SokobanMap displayed in the GamePanel.
      *
-     * TODO:    Only check if win conditions have been met when a box is placed
-     *          on a goal rather than every time the player moves
+     * @return      The SokobanMap used by the MapPanel
      */
-    private static void moveWorker(KeyEvent e) {
-        if (!playable) {
+    public static SokobanMap getSokobanMap() {
+        return mapPanel.getSokobanMap();
+    }
+
+    /**
+     * Moves the player up/down/left/right when it receives WASD/arrow key
+     * input. Will interrupt mouse movement if necessary.
+     *
+     * @param   e       A KeyEvent for directional movement
+     */
+    private static void movePlayer(KeyEvent e) {
+        SokobanMap map = getSokobanMap();
+
+        if (!playable || map.getIsDoingSolution()) {
             return;
         }
 
-        SokobanMap map = getSokobanMap();
+        if (map.getIsCurrentlyMoving() && !map.getIsDoingSolution()) {
+            SpriteLabel.getMover().interrupt();
+
+            while (!SpriteLabel.getMover().isInterrupted()) {
+                SpriteLabel.getMover().interrupt();
+            }
+        }
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
@@ -170,11 +206,13 @@ public class SokobanGame extends JPanel {
                                     break;
             default:                return;
         }
+
         redraw();
     }
 
     /**
-     * Updates the contents of the game window
+     * Updates the MapPanel and status bars, and displays the "You won!"
+     * dialogue if the map has been completed.
      */
     public static void redraw() {
         int boxCount = getSokobanMap().getState().getBoxPositions().size();
@@ -182,25 +220,32 @@ public class SokobanGame extends JPanel {
         boxLabel.setText("Boxes: " + boxCount);
         goalLabel.setText("Goals: " + goalCount);
 
-        statusBar.setText(Integer.toString(getSokobanMap().totalHistoryLength() -1));
+        statusBar.setText(Integer.toString(getSokobanMap().historyLength() -1));
 
-        spriteMap.placeSprites();
+        mapPanel.placeSprites();
 
         if (playable && getSokobanMap().isDone()) {
-            BoxTerm.winDialog();
+            SokobanPanel.winDialog();
         }
     }
 
+    /**
+     * Updates the tile palette's icons with those of the active tileset.
+     */
     public static void importPaletteIcons() {
-        tiles[0] = spriteMap.getUnscaledIconMap().get("WALL");
-        tiles[1] = spriteMap.getUnscaledIconMap().get("BOX");
-        tiles[2] = spriteMap.getUnscaledIconMap().get("GOAL");
-        tiles[3] = spriteMap.getUnscaledIconMap().get("PLAYER");
-        list.setFixedCellHeight(spriteMap.getIconSize() + 4);
-        list.setFixedCellWidth(spriteMap.getIconSize() + 4);
+        tiles[0] = mapPanel.getUnscaledIconMap().get("WALL");
+        tiles[1] = mapPanel.getUnscaledIconMap().get("BOX");
+        tiles[2] = mapPanel.getUnscaledIconMap().get("GOAL");
+        tiles[3] = mapPanel.getUnscaledIconMap().get("PLAYER");
+        list.setFixedCellHeight(mapPanel.getIconSize() + ICON_PADDING);
+        list.setFixedCellWidth(mapPanel.getIconSize() + ICON_PADDING);
         list.repaint();
     }
 
+    /**
+     * Sets the value of SpriteLabel.paletteState to the type of the currently
+     * selected tile.
+     */
     private static void selectTile() {
 
         int selection = list.getSelectedIndex();
@@ -217,6 +262,6 @@ public class SokobanGame extends JPanel {
                     break;
         }
 
-        Cell.setPaletteState(paletteState);
+        SpriteLabel.setPaletteState(paletteState);
     }
 }

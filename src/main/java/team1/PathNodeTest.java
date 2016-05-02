@@ -13,29 +13,29 @@ public class PathNodeTest {
         Coordinate pos4 = new Coordinate(1, 1);
         Coordinate target = new Coordinate(5, 5);
 
-        PathNode node1 = new PathNode(pos1, pos1, target);
-        PathNode node2 = new PathNode(pos2, pos1, target);
-        PathNode node3 = new PathNode(pos3, pos2, target);
-        PathNode node4 = new PathNode(pos4, pos2, target);
+        // PathNode node1 = new PathNode(pos1, pos1, target);
+        // PathNode node2 = new PathNode(pos2, pos1, target);
+        // PathNode node3 = new PathNode(pos3, pos2, target);
+        // PathNode node4 = new PathNode(pos4, pos2, target);
 
-        list.add(node2);
-        list.add(node4);
-        list.add(node1);
-        list.add(node3);
+        // list.add(node2);
+        // list.add(node4);
+        // list.add(node1);
+        // list.add(node3);
 
-        for (PathNode node : list) {
-            System.out.println(node.getPosition());
-        }
+        // for (PathNode node : list) {
+        //     System.out.println(node.getPosition());
+        // }
 
-        Collections.sort(list);
-        System.out.println();
+        // Collections.sort(list);
+        // System.out.println();
 
-        for (PathNode node : list) {
-            System.out.println(node.getPosition());
-        }
+        // for (PathNode node : list) {
+        //     System.out.println(node.getPosition());
+        // }
 
-        System.out.println(node1.equals(pos1));
-        System.out.println(list.contains(pos1));
-        System.out.println(list.indexOf(pos1));
+        // System.out.println(node1.equals(pos1));
+        // System.out.println(list.contains(pos1));
+        // System.out.println(list.indexOf(pos1));
     }
 }
