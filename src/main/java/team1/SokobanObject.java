@@ -1,14 +1,14 @@
 package team1;
 
 /**
- * Represents the various objects in a Sokoban level. Note that the PLAYER,
+ * Represents the various objects in a Sokoban level. The SPACE,
  * PLAYER_ON_GOAL and BOX_ON_GOAL objects can be thought of as "meta-objects".
  * They aren't actually stored in this form when placed in a level; the
- * PLAYER_ON_GOAL and BOX_ON_GOAL objects represent that a given coordinate has
- * a GOAL object in the array of static objects and either a PLAYER or BOX in
- * the current SaveState, and likewise for the PLAYER object with a SPACE and
- * the worker's position. For example, placing a BOX_ON_GOAL object will add a
- * BOX object to the current savestate and a GOAL to the static object array.
+ * PLAYER_ON_GOAL and BOX_ON_GOAL objects represent that a given Coordinate has
+ * both a GOAL and either a PLAYER or BOX in the current SaveState, and the
+ * SPACE object represents that no other object is in that Coordinate. For
+ * example, placing a BOX_ON_GOAL object at a given position will add that
+ * position to the SaveState's boxPositions and goalPositions Sets.
  *
  */
 
@@ -16,9 +16,10 @@ public enum SokobanObject {
     SPACE, WALL, GOAL, BOX, BOX_ON_GOAL, PLAYER, PLAYER_ON_GOAL;
 
     /**
-     * Converts a SokobanObject to a String
+     * Converts a SokobanObject to its String representation in the standard
+     * Sokoban map format.
      *
-     * @return  string representation of this SokobanObject
+     * @return      A String representation of this SokobanObject
      */
     public String toString() {
         switch(this) {
@@ -34,13 +35,16 @@ public enum SokobanObject {
     }
 
     /**
-     * Converts a char to a SokobanObject
+     * Converts a char to a SokobanObject based on the standard Sokoban map
+     * format.
      *
-     * @param ch    the character to be converted
-     * @return      the resulting SokobanObject
+     * @param   ch      The character to be converted to a SokobanObject
+     *
+     * @return          The resulting SokobanObject
      */
     public static SokobanObject charToSokobanObject(char ch) {
         SokobanObject object = null;
+
         switch(ch) {
             case '@':   object = SokobanObject.PLAYER;
                         break;
@@ -58,16 +62,25 @@ public enum SokobanObject {
                         break;
             default:    throw new IllegalArgumentException("Invalid character");
         }
+
         return object;
     }
 
+    /**
+     * Returns the topmost object if the given SokobanObject represents two
+     * objects at the same position, or the input object otherwise.
+     *
+     * @return      SokobanObject.PLAYER if the input is PLAYER_ON_GOAL,
+     *              SokobanObject.BOX if the input is BOX_ON_GOAL,
+     *              the input object otherwise
+     */
     public static SokobanObject getTopLayer(SokobanObject object) {
         if (object == SokobanObject.PLAYER_ON_GOAL) {
             object = SokobanObject.PLAYER;
         } else if (object == SokobanObject.BOX_ON_GOAL) {
             object = SokobanObject.BOX;
         }
+
         return object;
     }
-
 }
