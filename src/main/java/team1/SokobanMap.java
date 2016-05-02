@@ -593,6 +593,7 @@ public class SokobanMap {
      */
     class SolutionRunner extends Thread {
         LinkedList<Coordinate[]> solution;
+        Mover mover;
 
         /**
          * SolutionRunner constructor.
@@ -623,7 +624,7 @@ public class SokobanMap {
 
             for (Coordinate[] instruction : solution) {
                 try {
-                    Mover mover = new Mover(instruction[0], ASSISTANT_DELAY);
+                    mover = new Mover(instruction[0], ASSISTANT_DELAY);
                     mover.start();
                     mover.join();
                     move(instruction[1]);
@@ -631,6 +632,15 @@ public class SokobanMap {
                     sleep(ASSISTANT_DELAY);
                 } catch (InterruptedException e) {
                     System.out.println("SolutionRunner interrupted");
+
+                    if (getIsCurrentlyMoving()) {
+                        mover.interrupt();
+
+                        while (!mover.isInterrupted()) {
+                            mover.interrupt();
+                        }
+                    }
+
                     break;
                 }
             }
