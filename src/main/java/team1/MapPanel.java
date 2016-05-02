@@ -102,7 +102,7 @@ public class MapPanel extends JPanel {
             ImageIcon icon;
             if (!playable && object == SokobanObject.SPACE) {
                 icon = iconMap.get("DEFAULT");
-            } else if (grassPositions.contains(position)) {
+            } else if (playable && grassPositions.contains(position)) {
                 icon = randomIcon("GRASS");
             } else {
                 icon = randomIcon(object.name());
