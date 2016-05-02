@@ -488,7 +488,7 @@ public class SokobanPanel extends JPanel {
                         + "selecting File > Save, or play it by selecting File "
                         + "> Start Game.", "Map Editor Help",
                         JOptionPane.PLAIN_MESSAGE,
-                        GamePanel.getMapPanel().getIconMap().get("BOX"));
+                        GamePanel.getMapPanel().getBoxIcon());
             }
         });
 
@@ -503,9 +503,10 @@ public class SokobanPanel extends JPanel {
                 JOptionPane.showMessageDialog(GamePanel.getMapPanel(),
                         "A Sokoban clone.\n\nRosie Bellini\nJosh Gant\nDoris"
                         + " Hao\nHaiza Hazali\nLoki Li\nTom Picton\nMarcus "
-                        + "Redgrave-Close\nJohn Zhuang", "Wonderful Sokoban",
+                        + "Redgrave-Close\nJohn Zhuang\n\nLevels designed by "
+                        + "Lee J. Haywood", "Wonderful Sokoban",
                         JOptionPane.PLAIN_MESSAGE,
-                        GamePanel.getMapPanel().getIconMap().get("BOX"));
+                        GamePanel.getMapPanel().getBoxIcon());
             }
         });
 

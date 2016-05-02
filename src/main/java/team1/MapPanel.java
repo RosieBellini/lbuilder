@@ -298,6 +298,16 @@ public class MapPanel extends JPanel {
     }
 
     /**
+     * Returns the unscaled box icon.
+     *
+     * @return      The value of the "BOX" key in the unscaledIconMap
+     */
+    public ImageIcon getBoxIcon() {
+        ImageIcon boxIcon = unscaledIconMap.get("BOX");
+        return boxIcon;
+    }
+
+    /**
      * Advances the value of tilesetNum to the next valid one. Loops back to
      * zero.
      */
