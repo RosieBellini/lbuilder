@@ -17,7 +17,7 @@ public class SokobanMapTest {
 	@Before
 	public void setUp() throws Exception 
 	{
-		testMap =  new SokobanMap(15, 20);
+		testMap =  new SokobanMap(15, 20, 300);
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class SokobanMapTest {
 	@Test
 	public void testShallowCopy() 
 	{
-		SokobanMap newMapCopy = SokobanMap.shallowCopy(testMap);
+		SokobanMap newMapCopy = SokobanMap.shallowCopy(testMap, 300);
 		assertEquals("Check new map is a copy for x value:", testMap.getXSize(), newMapCopy.getXSize());
 		assertEquals("Check new map is a copy for y value:", testMap.getYSize(), newMapCopy.getYSize());
 		assertEquals("Check new map is a copy for initial state:", testMap.getInitialState(), newMapCopy.getInitialState());
@@ -78,23 +78,6 @@ public class SokobanMapTest {
 		SaveState stateTest = new SaveState();
 	}
 
-	/**
-	 * Test accessor method for the history length (stack).
-	 */
-	@Test
-	public void testHistoryLength() {
-		assertEquals("History size should be 1 from the initial push:", 1, testMap.historyLength());
-		testMap.storeState();
-		assertEquals("History size should now be 2 from the added state", 2, testMap.historyLength());
-		testMap.undo();
-		assertEquals("History size should now be 1 from the undo method", 1, testMap.historyLength());
-		testMap.redo();
-		assertEquals("History size should now be 2 from the undo method", 2, testMap.historyLength());
-		testMap.reset();
-		assertEquals("History size should now be 1 using the reset method, with only the initial state pushed", 1, testMap.historyLength());
-
 	}
 	
-	
 
-}
