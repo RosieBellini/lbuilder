@@ -23,11 +23,6 @@ public class PathNode implements Comparable<PathNode> {
             throw new IllegalArgumentException("gCost must be positive");
         }
 
-        if (target == null) {
-            throw new IllegalArgumentException("Target must be a non-null "
-                                                + "PathNode");
-        }
-
         this.position = position;
         this.parent = parent;
         this.gCost = gCost;
