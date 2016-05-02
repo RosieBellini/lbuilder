@@ -19,6 +19,10 @@ public class PathNode implements Comparable<PathNode> {
      */
     public PathNode(Coordinate position, PathNode parent,
                             Coordinate target, int gCost) {
+        if (gCost < 0) {
+            throw new IllegalArgumentException("gCost must be positive");
+        }
+
         this.position = position;
         this.parent = parent;
         this.gCost = gCost;
