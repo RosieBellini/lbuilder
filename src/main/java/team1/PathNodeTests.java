@@ -55,6 +55,15 @@ public class PathNodeTests {
 	{
 		PathNode nodeTest = new PathNode(coords1, node2, coords3, -100);
 	}
+	
+	/**
+	 * Test to ensure null parameters are not allowed in constructor.
+	 */
+	@Test (expected = NullPointerException.class)
+	public void testNullParameters()
+	{
+		PathNode nodeTest = new PathNode(null, node2, coords3, 10);
+	}
 
 	/**
 	 * Test method to check for the manhattan distance between two coordinates.
