@@ -28,7 +28,7 @@ public class SingleThreadSolver implements Runnable {
         stateOrigins = new ArrayList<Integer>();
         stateOrigins.add(-1);
         donePushes = new ArrayList<Coordinate[]>();
-        Coordinate[] emptyPush = {new Coordinate(0,0),new Coordinate(0,0)};
+        Coordinate[] emptyPush = { new Coordinate(0, 0), new Coordinate(0, 0) };
         donePushes.add(emptyPush);
         triedPushes = 0;
     }
@@ -54,12 +54,14 @@ public class SingleThreadSolver implements Runnable {
         for (Coordinate box : state.getBoxPositions()) {
             for (Coordinate spaceNextToBox : map.neighbours(box)) {
                 SokobanObject thingOppositeBox = map.get(box.add(box.add(spaceNextToBox.reverse())));
+
                 if (accessibleSpaces.contains(spaceNextToBox)
                         && (thingOppositeBox == SokobanObject.SPACE
-                        || thingOppositeBox == SokobanObject.PLAYER
-                        || thingOppositeBox == SokobanObject.GOAL
-                        || thingOppositeBox == SokobanObject.PLAYER_ON_GOAL)) {
+                            || thingOppositeBox == SokobanObject.PLAYER
+                            || thingOppositeBox == SokobanObject.GOAL
+                            || thingOppositeBox == SokobanObject.PLAYER_ON_GOAL)) {
                     Coordinate[] aPush = { spaceNextToBox, box.add(spaceNextToBox.reverse()) };
+
                     if (isSafePush(aPush)) {
                         validPushes.add(aPush);
                     }
@@ -75,13 +77,12 @@ public class SingleThreadSolver implements Runnable {
         SokobanObject objectBehindPush = map.get(spaceBehindPush);
         Coordinate spaceToPushInto = (aPush[0].add(aPush[1].mult(2)));
         SokobanObject objectToPushInto = map.get(spaceToPushInto);
-        if (objectToPushInto == SokobanObject.GOAL ||
-                objectToPushInto == SokobanObject.PLAYER_ON_GOAL ||
-                objectBehindPush!=SokobanObject.WALL) {
+        if (objectToPushInto == SokobanObject.GOAL || objectToPushInto == SokobanObject.PLAYER_ON_GOAL
+                || objectBehindPush != SokobanObject.WALL) {
             return true;
-        }
+                }
         Coordinate spaceLeftOfPush = new Coordinate(-1, -1);
-        Coordinate spaceRightOfPush= new Coordinate (-1, -1);
+        Coordinate spaceRightOfPush = new Coordinate(-1, -1);
         if (aPush[1].y == 0) {
             spaceLeftOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0, 1));
             spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(0, -1));
@@ -90,8 +91,7 @@ public class SingleThreadSolver implements Runnable {
             spaceRightOfPush = (aPush[0].add(aPush[1].mult(2))).add(new Coordinate(-1, 0));
         }
 
-        if (map.get(spaceRightOfPush) == SokobanObject.WALL ||
-                map.get(spaceLeftOfPush) == SokobanObject.WALL) {
+        if (map.get(spaceRightOfPush) == SokobanObject.WALL || map.get(spaceLeftOfPush) == SokobanObject.WALL) {
             return false;
         } else {
             return true;
@@ -113,22 +113,22 @@ public class SingleThreadSolver implements Runnable {
         map.undo();
 
         triedPushes++;
-        if (triedPushes%10000 == 0) {
+        if (triedPushes % 10000 == 0) {
             System.out.println(triedPushes);
         }
 
         return isDone;
     }
 
-    public boolean solveLevel(){
+    public boolean solveLevel() {
         int currentStateIndex = 0;
         solving = true;
         boolean solved = false;
-        while (!stopped && solving && currentStateIndex<seenStates.size()) {
+        while (!stopped && solving && currentStateIndex < seenStates.size()) {
             map.loadSimpleState(seenStates.get(currentStateIndex));
             List<Coordinate[]> validPushes = validPushes(currentStateIndex);
-            for (int i=0; i<validPushes.size();i++) {
-                boolean pushed = tryPush(currentStateIndex,validPushes.get(i));
+            for (int i = 0; i < validPushes.size(); i++) {
+                boolean pushed = tryPush(currentStateIndex, validPushes.get(i));
                 if (pushed) {
                     solving = false;
                     solved = true;
@@ -143,11 +143,12 @@ public class SingleThreadSolver implements Runnable {
         return solved;
     }
 
-    public String validPushesTestString(){
+    public String validPushesTestString() {
         List<Coordinate[]> validPushes = validPushes(0);
         String allPushesString = "";
         for (int i = 0; i < validPushes.size(); i++) {
-            allPushesString += (validPushes.get(i)[0] + "    Direction: " + validPushes.get(i)[1] + "\n");
+            allPushesString += (validPushes.get(i)[0] + "    Direction: "
+                                + validPushes.get(i)[1] + "\n");
         }
         return allPushesString;
     }
@@ -160,7 +161,7 @@ public class SingleThreadSolver implements Runnable {
 
         if (solveLevel()) {
             int currentStateIndex = seenStates.size() - 1;
-            solutionString="Solution: \n";
+            solutionString = "Solution: \n";
             while (currentStateIndex > 0) {
                 pushesToSolve.addFirst(donePushes.get(currentStateIndex));
                 currentStateIndex = stateOrigins.get(currentStateIndex);
@@ -168,8 +169,9 @@ public class SingleThreadSolver implements Runnable {
             }
         }
         for (int i = 0; i < pushesToSolve.size(); i++) {
-            solutionString += (pushesToSolve.get(i)[0] + "   Direction: " + pushesToSolve.get(i)[1] + "\n");
-            solution.put(statesToSolve.get(i), new Coordinate[]{ pushesToSolve.get(i)[0], pushesToSolve.get(i)[1] });
+            solutionString += (pushesToSolve.get(i)[0] + "   Direction: "
+                                + pushesToSolve.get(i)[1] + "\n");
+            solution.put(statesToSolve.get(i), new Coordinate[] { pushesToSolve.get(i)[0], pushesToSolve.get(i)[1] });
         }
         System.out.println(solutionString);
 
