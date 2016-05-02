@@ -222,7 +222,6 @@ public class MapPanel extends JPanel {
 
         }
 
-        resetSolver();
         map.reset();
         placeSprites(true);
     }

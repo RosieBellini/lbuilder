@@ -65,6 +65,7 @@ public class SokobanPanel extends JPanel {
     private static SokobanPanel sokobanPanel;
     private static JMenu gameMenu;
     private static JMenuItem toggleItem;
+    private static JMenuItem resetAssistItem;
     private static Set<JMenuItem> editMenuItems = new HashSet<JMenuItem>();
     private static Set<JMenuItem> gameMenuItems = new HashSet<JMenuItem>();
     private static SingleThreadSolver solver;
@@ -147,6 +148,7 @@ public class SokobanPanel extends JPanel {
                         GamePanel.getMapPanel().reset();
                         GamePanel.getMapPanel().setSolution(solution.getKey());
                         GamePanel.redraw();
+                        resetAssistItem.setVisible(true);
                         dialog.dispose();
 
                         int result = JOptionPane.showConfirmDialog(frame,
@@ -475,6 +477,20 @@ public class SokobanPanel extends JPanel {
         helpMenu.add(assistItem);
 
 
+        // Reset assistant
+        resetAssistItem = new JMenuItem("Reset Assistant");
+        resetAssistItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                GamePanel.getMapPanel().resetSolver();
+                GamePanel.getMapPanel().placeSprites(true);
+                resetAssistItem.setVisible(false);
+            }
+        });
+
+        helpMenu.add(resetAssistItem);
+        resetAssistItem.setVisible(false);
+
+
         // Editor help
         JMenuItem editorHelpItem = new JMenuItem("Editor help");
         editorHelpItem.addActionListener(new ActionListener() {
@@ -633,6 +649,7 @@ public class SokobanPanel extends JPanel {
         } else {
             gameMenu.setText("Edit");
             toggleItem.setText("Start game");
+            resetAssistItem.setVisible(false);
         }
 
         GamePanel.toggleMode();
@@ -693,6 +710,7 @@ public class SokobanPanel extends JPanel {
                 lastOpenedMap = new SokobanMap(map);
                 GamePanel.getMapPanel().updateMap(map);
                 changeMagnification(0);
+                resetAssistItem.setVisible(false);
                 GamePanel.redraw();
                 frame.pack();
             }
@@ -744,6 +762,7 @@ public class SokobanPanel extends JPanel {
 
             GamePanel.getMapPanel().updateMap(map);
             lastOpenedMap = new SokobanMap(map);
+            resetAssistItem.setVisible(false);
             changeMagnification(0);
             GamePanel.redraw();
             frame.pack();
@@ -770,6 +789,7 @@ public class SokobanPanel extends JPanel {
                 GamePanel.getMapPanel().updateMap(map);
                 lastOpenedMap = new SokobanMap(map);
                 changeMagnification(0);
+                resetAssistItem.setVisible(false);
                 GamePanel.redraw();
                 currentLevelIndex = -1;
                 frame.pack();
