@@ -242,7 +242,7 @@ public class SokobanMap {
      * @see team1.SaveState#put
      */
     public boolean put(SokobanObject object, Coordinate position) {
-        if (position.inRange(0, 0, xSize, ySize)) {
+        if (position.inRange(0, 0, xSize - 1, ySize - 1)) {
             return getState().put(object, position);
         } else {
             return false;
@@ -264,7 +264,7 @@ public class SokobanMap {
      * @see team1.SaveState#get
      */
     public SokobanObject get(Coordinate position) {
-        if (position.inRange(0, 0, xSize, ySize)) {
+        if (position.inRange(0, 0, xSize - 1, ySize - 1)) {
             return getState().get(position);
         } else {
             return SokobanObject.WALL;
@@ -390,7 +390,7 @@ public class SokobanMap {
         potentialNeighbours.add(origin.add(new Coordinate(0, -1)));
 
         for (Coordinate potentialNeighbor : potentialNeighbours) {
-            if (potentialNeighbor.inRange(0, 0, xSize, ySize)) {
+            if (potentialNeighbor.inRange(0, 0, xSize - 1, ySize - 1)) {
                 neighbours.add(potentialNeighbor);
             }
         }

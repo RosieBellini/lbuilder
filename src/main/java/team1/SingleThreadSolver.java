@@ -23,7 +23,7 @@ public class SingleThreadSolver implements Runnable {
      */
     private Set<Integer> seenStatesValues;
     /**
-     * A list of integers which represent the index location of the 
+     * A list of integers which represent the index location of the
      * state from which the state at the current index in seenStates originated.
      * Used to iterate backwards through seenStates and donePushes
      * to return a solution once one has been found.
@@ -38,7 +38,6 @@ public class SingleThreadSolver implements Runnable {
     private List<Coordinate[]> donePushes;
     private boolean solving;
     private boolean stopped;
-    private int triedPushes;
 
     public SingleThreadSolver(SokobanMap map) {
         this.map = new SokobanMap(map);
@@ -51,7 +50,6 @@ public class SingleThreadSolver implements Runnable {
         donePushes = new ArrayList<Coordinate[]>();
         Coordinate[] emptyPush = { new Coordinate(0, 0), new Coordinate(0, 0) };
         donePushes.add(emptyPush);
-        triedPushes = 0;
     }
 
     public void run() {
@@ -67,7 +65,7 @@ public class SingleThreadSolver implements Runnable {
     }
 
     /**
-     * For a given index, looks in the collection of all seen game states in the 
+     * For a given index, looks in the collection of all seen game states in the
      * seenStates list and returns all the pushes that the player can perform from
      * the area that he can currently access.
      * @param stateIndex The number of the state for which you are finding all the possible pushes.
@@ -156,11 +154,6 @@ public class SingleThreadSolver implements Runnable {
             donePushes.add(aPush);
         }
         map.undo();
-
-        triedPushes++;
-        if (triedPushes % 10000 == 0) {
-            System.out.println(triedPushes);
-        }
 
         return isDone;
     }
