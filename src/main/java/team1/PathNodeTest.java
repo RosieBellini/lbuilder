@@ -1,41 +1,135 @@
 package team1;
+/**
+ * Test class for PathNode.
+ * @version 02/05/2016
+ */
+import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import org.junit.Before;
+import org.junit.Test;
 
-public class PathNodeTest {
-    public static void main(String[] args) {
-        ArrayList<PathNode> list = new ArrayList<PathNode>();
+public class PathNodeTests {
 
-        Coordinate pos1 = new Coordinate(2, 2);
-        Coordinate pos2 = new Coordinate(3, 3);
-        Coordinate pos3 = new Coordinate(4, 4);
-        Coordinate pos4 = new Coordinate(1, 1);
-        Coordinate target = new Coordinate(5, 5);
+	// Variables to use for test methods:
+	
+	PathNode node1;
+	PathNode node2;
+	PathNode node3;
+	PathNode node4;
+	
+	Coordinate coords1;
+	Coordinate coords2;
+	Coordinate coords3;
+	Coordinate coords4;
+	
+	
+	@Before
+	public void setUp() throws Exception 
+	{
+		coords1 = new Coordinate(2,2);
+		coords2 = new Coordinate(1,4);
+		coords3 = new Coordinate(4,4);
+		coords4 = new Coordinate(1,4);
+		
+		node1 = new PathNode(coords1, coords2);
+		node2 = new PathNode(coords3, coords2);
+		node3 = new PathNode(coords4, coords2);
+		node4 = new PathNode(coords2, coords2);
 
-        // PathNode node1 = new PathNode(pos1, pos1, target);
-        // PathNode node2 = new PathNode(pos2, pos1, target);
-        // PathNode node3 = new PathNode(pos3, pos2, target);
-        // PathNode node4 = new PathNode(pos4, pos2, target);
+	}
 
-        // list.add(node2);
-        // list.add(node4);
-        // list.add(node1);
-        // list.add(node3);
+	/**
+	 * Test for constructor PathNode(Coordinate position, PathNode parent,
+                            Coordinate target, int gCost)
+	 */
+	@Test
+	public void testPathNodeCoordinateCoordinate() {
+		PathNode nodeTest = new PathNode(coords1, coords2);
+	}
+	
+	/**
+	 * Test method to check constructor throws IllegalArgumentException if gCost is negative.
+	 */
+	@Test (expected = IllegalArgumentException.class)
+	public void testPathNodeNegativegCost()
+	{
+		PathNode nodeTest = new PathNode(coords1, node2, coords3, -100);
+	}
+	
+	/**
+	 * Test to ensure null parameters are not allowed in constructor.
+	 */
+	@Test (expected = NullPointerException.class)
+	public void testNullParameters()
+	{
+		PathNode nodeTest = new PathNode(null, node2, coords3, 10);
+	}
 
-        // for (PathNode node : list) {
-        //     System.out.println(node.getPosition());
-        // }
+	/**
+	 * Test method to check for the manhattan distance between two coordinates.
+	 */
+	@Test
+	public void testManhattanDistance() {
+		assertEquals("Return the manhattan distance, should return 3", 3, PathNode.manhattanDistance(coords1, coords2));
+	}
 
-        // Collections.sort(list);
-        // System.out.println();
+	/**
+	 * Test method for checking if the accessor for hCost is set correctly:
+	 */
+	@Test
+	public void testGetHCost() {
+		assertEquals("Check H cost returns and is correct", 3, node1.getHCost());
+	}
 
-        // for (PathNode node : list) {
-        //     System.out.println(node.getPosition());
-        // }
+	/**
+	 * Test method to check if accessor for gCost is set correctly for both constructors
+	 */
+	@Test
+	public void testGetGCost() {
+		PathNode nodeTest = new PathNode(coords1, node2, coords3, 10);
+		assertEquals(10, nodeTest.getGCost());
+		PathNode nodeTest2 = new PathNode(coords1, coords2);
+		assertEquals(0, nodeTest2.getGCost());
 
-        // System.out.println(node1.equals(pos1));
-        // System.out.println(list.contains(pos1));
-        // System.out.println(list.indexOf(pos1));
-    }
+	}
+
+	/**
+	 * Method to test getFCost accessor method, which returns the sum of gCost & hCost.
+	 */
+	@Test
+	public void testGetFCost() {
+		PathNode nodeTest = new PathNode(coords1, node2, coords3, 10);
+		int fCost = PathNode.manhattanDistance(coords1, coords3) + 10;
+		assertEquals("gCost + hCost = fCost", fCost, nodeTest.getFCost());
+	}
+
+	/**
+	 * Check accessor method for position:
+	 */
+	@Test
+	public void testGetPosition() {
+		assertEquals("Check position accessor method works:", coords1, node1.getPosition());
+	}
+
+	/**
+	 * Accessor method test for parent node of a PathNode
+	 */
+	@Test
+	public void testGetParent() {
+		PathNode nodeTest = new PathNode(coords1, node2, coords3, 2);
+		assertEquals("Check parent node is set correctly", node2, nodeTest.getParent());
+	}
+	
+	/**
+	 * Test method for overriden equals method:
+	 */
+	@Test
+	public void testEquals()
+	{
+		PathNode nodeTest = new PathNode(coords1, node2, coords3, 2);
+		PathNode nodeTest2 = new PathNode(coords1, node2, coords3, 2);
+		assertEquals(nodeTest, nodeTest2);
+		
+	}
+
 }
