@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+/**
+ * Attempts to find a push-optimised solution for a given SokobanMap.
+ */
 public class SingleThreadSolver implements Runnable {
     private SokobanMap map;
     /**
@@ -56,10 +59,19 @@ public class SingleThreadSolver implements Runnable {
         System.out.println(levelSolution());
     }
 
+    /**
+     * Cancels the current solving operation if the solver is working.
+     */
     public void stopSolving() {
         stopped = true;
     }
 
+    /**
+     * Returns whether or not this SingleThreadSolver is working.
+     *
+     * @return      True if the solver is in the process of calculating a
+     *              solution, false otherwise
+     */
     public boolean isSolving() {
         return solving;
     }
