@@ -191,6 +191,8 @@ public class SokobanPanel extends JPanel {
 
     /**
      * Creates the Sokoban menubar and populates it with MenuItems.
+     *
+     * @return      The generated JMenuBar
      */
     private static JMenuBar makeMenuBar() {
         final int SHORTCUT_MASK = toolkit.getMenuShortcutKeyMask();

@@ -157,6 +157,8 @@ public final class SaveState {
      * SokobanObject.BOX_ON_GOAL and so forth.
      *
      * @param   position        The Coordinate to examine
+     *
+     * @return                  The SokobanObject at the given Coordinate
      */
     public SokobanObject get(Coordinate position) {
         SokobanObject object;

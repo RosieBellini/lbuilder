@@ -70,9 +70,11 @@ public enum SokobanObject {
      * Returns the topmost object if the given SokobanObject represents two
      * objects at the same position, or the input object otherwise.
      *
-     * @return      SokobanObject.PLAYER if the input is PLAYER_ON_GOAL,
-     *              SokobanObject.BOX if the input is BOX_ON_GOAL,
-     *              the input object otherwise
+     * @param   object      The SokobanObject from which to get the top layer
+     *
+     * @return              SokobanObject.PLAYER if the input is PLAYER_ON_GOAL,
+     *                      SokobanObject.BOX if the input is BOX_ON_GOAL,
+     *                      the input object otherwise
      */
     public static SokobanObject getTopLayer(SokobanObject object) {
         if (object == SokobanObject.PLAYER_ON_GOAL) {

@@ -127,7 +127,7 @@ public class MapPanel extends JPanel {
     /**
      * {@code redraw} defaults to false.
      *
-     * @see placeSprites(boolean)
+     * @see team1.MapPanel#placeSprites(boolean)
      */
     public void placeSprites() {
         placeSprites(false);
@@ -172,6 +172,8 @@ public class MapPanel extends JPanel {
      * Returns a randomly selected variant of the given icon.
      *
      * @param   iconName        The icon type to use
+     *
+     * @return                  A random variant of the given icon type
      */
     private ImageIcon randomIcon(String iconName) {
         int iconCount = iconCountMap.get(iconName);

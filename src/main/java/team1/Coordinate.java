@@ -162,7 +162,7 @@ public class Coordinate implements Comparable<Coordinate> {
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * @see java.lang.Object#hashCode
      */
     @Override
     public int hashCode() {
@@ -173,7 +173,7 @@ public class Coordinate implements Comparable<Coordinate> {
      * Compares this Coordinate to another one. The difference in the X
      * dimension takes precedence.
      *
-     * @see java.lang.Comparable#compareTo(T);
+     * @see java.lang.Comparable#compareTo
      */
     @Override
     public int compareTo(Coordinate coord) {

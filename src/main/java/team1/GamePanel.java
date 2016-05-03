@@ -127,11 +127,14 @@ public class GamePanel extends JPanel {
      *
      * @param   mapPanel        The MapPanel to use if the GamePanel hasn't been
      *                          instantiated
+     *
+     * @return                  The singular GamePanel instance
      */
     public static GamePanel getInstance(MapPanel mapPanel) {
         if (instance == null) {
             instance = new GamePanel(mapPanel);
         }
+
         return instance;
     }
 

@@ -107,7 +107,7 @@ public class PathNode implements Comparable<PathNode> {
      * Compares this PathNode to another one. The smallest fCost takes
      * precedence.
      *
-     * @see java.lang.Comparable#compareTo(T);
+     * @see java.lang.Comparable#compareTo
      */
     @Override
     public int compareTo(PathNode p) {

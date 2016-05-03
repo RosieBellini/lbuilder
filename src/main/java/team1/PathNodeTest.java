@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PathNodeTests {
+public class PathNodeTest {
 
 	// Variables to use for test methods:
 	

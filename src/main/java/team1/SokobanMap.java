@@ -58,6 +58,9 @@ public class SokobanMap {
      * as the initial state for the new one.
      *
      * @param   mapToCopy       The SokobanMap to copy
+     *
+     * @return                  A new SokobanMap with an initial state equal to
+     *                          the current state of the mapToCopy parameter
      */
     public static SokobanMap shallowCopy(SokobanMap mapToCopy) {
         SokobanMap newMap = new SokobanMap(mapToCopy);
@@ -117,7 +120,8 @@ public class SokobanMap {
     /**
      * Sets the initial state of this SokobanMap to a different one.
      *
-     * @return      The new SaveState to use as this map's initialState
+     * @param   initialState        The new SaveState to use as this map's
+     *                              initialState
      */
     public void setInitialState(SaveState initialState) {
         this.initialState = initialState;
@@ -162,9 +166,6 @@ public class SokobanMap {
     /**
      * Pops a SaveState out of the history stack. Does not allow the stack's
      * size to drop below 1.
-     *
-     * @param   sendToRedoStack     True to add the popped stack to the
-     *                              redoStack, false to discard it
      */
     public void undo() {
         SaveState state = history.pop();
@@ -379,6 +380,10 @@ public class SokobanMap {
 
     /**
      * Returns the orthogonal neighbours of a given Coordinate.
+     *
+     * @param   origin      The Coordinate to search for neighbours of
+     *
+     * @return              The orthogonal neighbours of the given Coordinate
      */
     public Set<Coordinate> neighbours(Coordinate origin) {
         Set<Coordinate> potentialNeighbours = new HashSet<Coordinate>();
