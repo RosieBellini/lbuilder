@@ -445,6 +445,8 @@ public class SokobanPanel extends JPanel {
         // Enable autoscale
         JCheckBoxMenuItem autoScaleItem
                             = new JCheckBoxMenuItem("Enable autoscale", false);
+        autoScaleItem.setAccelerator(
+                    KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, SHORTCUT_MASK));
 
         autoScaleItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
