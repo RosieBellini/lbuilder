@@ -45,9 +45,9 @@ public class SingleThreadSolver implements Runnable {
     public SingleThreadSolver(SokobanMap map) {
         this.map = new SokobanMap(map);
         seenStates = new ArrayList<SaveState>();
-        seenStates.add(map.getSimpleState());
+        seenStates.add(this.map.getSimpleState());
         seenStatesValues = new HashSet<Integer>();
-        seenStatesValues.add(map.getSimpleState().hashCode());
+        seenStatesValues.add(this.map.getSimpleState().hashCode());
         stateOrigins = new ArrayList<Integer>();
         stateOrigins.add(-1);
         donePushes = new ArrayList<Coordinate[]>();
