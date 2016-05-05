@@ -527,10 +527,10 @@ public class SokobanMap {
             int x = position.x;
             int y = position.y;
 
-            xStart = xStart > x ? x : xStart;
-            xEnd = xEnd < x ? x : xEnd;
-            yStart = yStart > y ? y : yStart;
-            yEnd = xEnd < y ? y : yEnd;
+            xStart = x < xStart ? x : xStart;
+            xEnd = x > xEnd ? x : xEnd;
+            yStart = y < yStart ? y : yStart;
+            yEnd = y > yEnd ? y : yEnd;
         }
 
         int newXSize = xEnd - xStart + 1;
