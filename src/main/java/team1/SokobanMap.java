@@ -488,20 +488,22 @@ public class SokobanMap {
         int boxCount = 0;
         int goalCount = 0;
 
-        for (Coordinate position : inaccessibleSpaces()) {
+        Set<Coordinate> inaccessibleSpaces = inaccessibleSpaces();
+
+        for (Coordinate position : inaccessibleSpaces) {
             if (get(position) == SokobanObject.GOAL) {
                 return false;
             }
         }
 
-        Coordinate playerPosition = getState().getPlayerPos();
-        for (Coordinate position : accessibleSpaces(playerPosition, true)) {
-            if (get(position) == SokobanObject.BOX) {
-                boxCount++;
-            } else if (get(position) == SokobanObject.GOAL) {
-                goalCount++;
-            }
-        }
+        Set<Coordinate> boxPositions = getState().getBoxPositions();
+        Set<Coordinate> goalPositions = getState().getGoalPositions();
+
+        boxPositions.removeAll(inaccessibleSpaces);
+        goalPositions.removeAll(inaccessibleSpaces);
+
+        boxCount = boxPositions.size();
+        goalCount = goalPositions.size();
 
         return boxCount >= goalCount && !isDone() && goalCount > 0;
     }
