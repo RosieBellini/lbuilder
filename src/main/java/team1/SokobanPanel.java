@@ -521,7 +521,7 @@ public class SokobanPanel extends JPanel {
         aboutItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(GamePanel.getMapPanel(),
-                        "A Sokoban clone.\n\nRosie Bellini\nJosh Gant\nDoris"
+                        "Wonderful Sokoban 1.01\nA Sokoban clone.\n\nRosie Bellini\nJosh Gant\nDoris"
                         + " Hao\nHaiza Hazali\nLoki Li\nTom Picton\nMarcus "
                         + "Redgrave-Close\nJohn Zhuang\n\nLevels designed by "
                         + "Lee J. Haywood", "Wonderful Sokoban",
